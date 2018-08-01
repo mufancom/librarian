@@ -1,0 +1,26 @@
+import classNames from 'classnames';
+import React, {Component} from 'react';
+
+import {styled} from 'theme';
+import {observer} from 'utils/mobx';
+
+const Wrapper = styled.div``;
+
+export interface ${ModuleName}Props {
+  className?: string;
+}
+
+@observer
+export class ${ModuleName} extends Component<${ModuleName}Props> {
+  render() {
+    let {className} = this.props;
+
+    return (
+      <Wrapper className={classNames('${htmlClassName}', className)}>
+        ${htmlClassName}
+      </Wrapper>
+    );
+  }
+
+  static Wrapper = Wrapper;
+}

@@ -1,0 +1,11 @@
+{
+  "extends": "../node_modules/vts/tsconfig.json",
+  "compilerOptions": {
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true,
+
+    "rootDir": "src",
+    "outDir": "bld"
+  },
+  "include": ["src"]
+}
