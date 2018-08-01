@@ -5,9 +5,9 @@ import {Route, Switch} from 'react-router';
 import {ConventionIndexStore} from 'stores';
 import {styled} from 'theme';
 
-import {Header as HomeHeader} from './common';
 import {Content as HomeContent} from './content';
 import {Convention} from './convention';
+import {Header as HomeHeader} from './header';
 
 const {Header, Content} = Layout;
 
