@@ -12,13 +12,15 @@ import registerServiceWorker from 'utils/register-service-worker';
 import './global.less';
 
 import {HomeContainer} from 'components/home/home-container';
+import {AuthStore} from 'stores';
 
 const browserHistory = createBrowserHistory();
 const routerStore = new RouterStore();
 const history = syncHistoryWithStore(browserHistory, routerStore);
 
 const stores = {
-  router: routerStore,
+  authStore: new AuthStore(),
+  routerStore,
 };
 
 ReactDOM.render(

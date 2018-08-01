@@ -1,6 +1,6 @@
 import {Col, Layout, Row} from 'antd';
-// import {inject, observer} from 'mobx-react';
 import * as React from 'react';
+
 import {ConventionIndexStore} from 'stores';
 import {SideNav} from './@convention-side-nav';
 
@@ -25,18 +25,17 @@ export class Convention extends React.Component<ConventionProps> {
           <Layout>
             <Sider
               style={{
-                overflow: 'scroll-y',
-                height: '100hv',
+                overflow: 'auto',
+                top: '88px',
+                bottom: 0,
                 position: 'fixed',
                 backgroundColor: 'transparent',
               }}
             >
               <SideNav {...this.props} />
             </Sider>
-            <Content style={{margin: '24px 16px 0', overflow: 'auto'}}>
-              <div
-                style={{padding: 24, background: '#fff', textAlign: 'center'}}
-              >
+            <Content style={{margin: '24px 16px 0 300px', overflow: 'auto'}}>
+              <div style={{padding: 24, background: '#fff'}}>
                 ...
                 <br />
                 Really

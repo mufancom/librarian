@@ -1,6 +1,7 @@
 import classNames from 'classnames';
 import React, {Component} from 'react';
-import {NavLink} from 'react-router-dom';
+import {RouteComponentProps} from 'react-router';
+import {NavLink, withRouter} from 'react-router-dom';
 
 import {styled} from 'theme';
 import {observer} from 'utils/mobx';
@@ -42,7 +43,7 @@ const Wrapper = styled.div`
   }
 `;
 
-export interface HeaderNavProps {
+export interface HeaderNavProps extends RouteComponentProps<any> {
   className?: string;
 }
 
@@ -70,3 +71,5 @@ export class HeaderNav extends Component<HeaderNavProps> {
 
   static Wrapper = Wrapper;
 }
+
+export const HeaderNavWithRouter = withRouter(HeaderNav);

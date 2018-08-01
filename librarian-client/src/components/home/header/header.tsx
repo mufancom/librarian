@@ -3,7 +3,8 @@ import logoImg from 'assets/images/librarian.svg';
 import * as React from 'react';
 import {styled} from 'theme';
 
-import {HeaderNav} from './@header-nav';
+import {HeaderNav, HeaderNavWithRouter} from './@header-nav';
+import {HeaderUser} from './@header-user';
 
 const Wrapper = styled.div`
   .header-nav {
@@ -34,12 +35,16 @@ const Wrapper = styled.div`
     }
   }
 
-  ${HeaderNav.Wrapper} {
+  .menu {
     float: right;
   }
 
-  .user {
-    float: right;
+  ${HeaderNav.Wrapper} {
+    float: left;
+  }
+
+  ${HeaderUser.Wrapper} {
+    float: left;
     margin-left: 10px;
   }
 `;
@@ -63,8 +68,10 @@ export class Header extends React.Component {
               </div>
               <div className="logo-text">Librarian</div>
             </div>
-            <HeaderNav />
-            <div className="user" />
+            <div className="menu">
+              <HeaderNavWithRouter />
+              <HeaderUser />
+            </div>
           </Col>
         </Row>
       </Wrapper>
