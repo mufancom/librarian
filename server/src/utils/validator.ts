@@ -64,7 +64,7 @@ export function Validate() {
 
           await _validate(dataWrapper).then(errors => {
             if (errors.length > 0) {
-              throw api.error(describeError(errors[0]), 1);
+              throw api.error(describeError(errors[0]), 4000);
             }
           });
 

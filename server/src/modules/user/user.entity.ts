@@ -6,13 +6,16 @@ export class User {
   id!: number;
 
   @Column()
-  type!: number;
+  role!: number;
 
   @Column({length: 20})
   username!: string;
 
   @Column({length: 48})
   password!: string;
+
+  @Column({length: 80})
+  avatar!: string;
 
   @Column({length: 50})
   email!: string;

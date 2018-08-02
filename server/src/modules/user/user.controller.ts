@@ -2,7 +2,9 @@ import {Body, Controller, Get, Post, Query} from '@nestjs/common';
 import {Length} from 'class-validator';
 
 import {api} from 'utils/api-formater';
+import {passwordEncrypt} from 'utils/encrypt';
 import {Validate, Wrap} from 'utils/validator';
+
 import {User} from './user.entity';
 import {UserService} from './user.service';
 
@@ -25,13 +27,20 @@ export class UserController {
     @Body()
     data: LoginPostData,
   ) {
-    const user: User = await this.userService
-      .findByUsername(data.username)
-      .catch(reason => {
-        throw api.error('invalid username or password', 4001);
-      });
-
-    return api.success(user);
+    const user: User | undefined = await this.userService.findByUsernameOrEmail(
+      data.username,
+    );
+    if (!user || user.password !== passwordEncrypt(data.password)) {
+      throw api.error('invalid username or password', 4001);
+    }
+    await this.userService.generateToken(user);
+    return api.success({
+      id: user.id,
+      role: user.role,
+      username: user.username,
+      avatar: user.avatar,
+      token: user.token,
+    });
   }
 
   @Get('info')
