@@ -53,7 +53,7 @@ export function Validate() {
       );
 
       if (wrappedParameters) {
-        for (const [index, parameter] of wrappedParameters.entries()) {
+        for (const [index] of wrappedParameters.entries()) {
           const dataWrapper = new wrappedParameters[
             index
           ].dataWrapperConstructor();

@@ -1,7 +1,7 @@
 import {HttpException, HttpStatus} from '../../../node_modules/@nestjs/common';
 
 export namespace api {
-  export function success(data: object, message?: string): object {
+  export function success(data?: object, message?: string): object {
     return {
       code: 200,
       data,

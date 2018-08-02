@@ -2,7 +2,6 @@ import {Injectable} from '@nestjs/common';
 import {InjectRepository} from '@nestjs/typeorm';
 import {Repository} from 'typeorm';
 
-import {api} from 'utils/api-formater';
 import {randomStr} from 'utils/string';
 import {User} from './user.entity';
 
@@ -12,10 +11,24 @@ export class UserService {
     @InjectRepository(User) private readonly userRepository: Repository<User>,
   ) {}
 
-  async findByUsernameOrEmail(username: string): Promise<User | undefined> {
+  async findByIdentifier(
+    identifier: string,
+    searchIn: 'username' | 'email' | 'both' = 'both',
+  ): Promise<User | undefined> {
+    let sql: string;
+
+    switch (searchIn) {
+      case 'both':
+        sql = 'username = :identifier or email = :identifier';
+        break;
+      default:
+        sql = `${searchIn} = :identifier`;
+        break;
+    }
+
     return this.userRepository
       .createQueryBuilder()
-      .where('username = :username or email = :username', {username})
+      .where(sql, {identifier})
       .getOne();
   }
 
@@ -23,5 +36,9 @@ export class UserService {
     user.token = randomStr(24);
     await this.userRepository.save(user);
     return user.token;
+  }
+
+  async registerUser(user: User): Promise<void> {
+    await this.userRepository.save(user);
   }
 }
