@@ -15,8 +15,8 @@
   },
   "workspaces": {
     "packages": [
-      "librarian-client",
-      "librarian-server"
+      "client",
+      "server"
     ]
   }
 }
