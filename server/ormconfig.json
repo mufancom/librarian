@@ -1,5 +1,0 @@
-{
-  "type": "sqlite",
-  "database": "./db/data.sqlite",
-  "entities": ["./src/**/**.entity{.ts,.js}"]
-}

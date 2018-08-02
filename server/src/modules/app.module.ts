@@ -11,6 +11,7 @@ import {UserModule} from './user/user.module';
       type: 'sqlite',
       database: './db/data.sqlite',
       entities: ['./src/**/**.entity{.ts,.js}'],
+      entityPrefix: 'lb_',
     }),
     UserModule,
   ],

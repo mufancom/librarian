@@ -1,24 +1,16 @@
-import {
-  Body,
-  Controller,
-  Get,
-  HttpException,
-  HttpStatus,
-  Post,
-  Query,
-  Res,
-} from '@nestjs/common';
-import {Length, validate} from 'class-validator';
-import {Response} from 'express';
+import {Body, Controller, Get, Post, Query} from '@nestjs/common';
+import {Length} from 'class-validator';
 
-import {DataWrapper, Wrap} from 'utils/validator';
+import {api} from 'utils/api-formater';
+import {Validate, Wrap} from 'utils/validator';
+import {User} from './user.entity';
 import {UserService} from './user.service';
 
-export class LoginPostData extends DataWrapper {
-  @Length(4, 20)
+class LoginPostData {
+  @Length(4, 20, {message: '用户名长度为4-20位'})
   username!: string;
 
-  @Length(8, 48)
+  @Length(8, 48, {message: '密码长度为8-48位'})
   readonly password!: string;
 }
 
@@ -27,14 +19,19 @@ export class UserController {
   constructor(private readonly userService: UserService) {}
 
   @Post()
+  @Validate()
   async login(
-    @Res() res: Response,
-    @Wrap()
+    @Wrap(LoginPostData)
     @Body()
     data: LoginPostData,
   ) {
-    data = new LoginPostData(data);
-    return validate(data).then(errors => errors);
+    const user: User = await this.userService
+      .findByUsername(data.username)
+      .catch(reason => {
+        throw api.error('invalid username or password', 4001);
+      });
+
+    return api.success(user);
   }
 
   @Get('info')
