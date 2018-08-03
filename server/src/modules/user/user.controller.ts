@@ -1,37 +1,26 @@
-import {Body, Controller, Get, Post, Query} from '@nestjs/common';
-import {IsEmail, Length} from 'class-validator';
+import {Body, Controller, Get, Post, Query, UseGuards} from '@nestjs/common';
 
 import {api} from 'utils/api-formater';
 import {passwordEncrypt} from 'utils/encrypt';
 import {Validate, Wrap} from 'utils/validator';
 
+import {AuthGuard} from '../auth/auth.guard';
 import {User} from './user.entity';
 import {UserService} from './user.service';
 
-class LoginPostData {
-  @Length(4, 20)
-  readonly username!: string;
-
-  @Length(8, 48)
-  readonly password!: string;
-}
-
-class RegisterPostData extends LoginPostData {
-  @Length(6, 50)
-  @IsEmail()
-  readonly email!: string;
-}
+import {ChangePasswordDto, LoginDto, RegisterDto} from './dto';
 
 @Controller('user')
+@UseGuards(AuthGuard)
 export class UserController {
   constructor(private readonly userService: UserService) {}
 
   @Post('login')
   @Validate()
   async login(
-    @Wrap(LoginPostData)
+    @Wrap(LoginDto)
     @Body()
-    data: LoginPostData,
+    data: LoginDto,
   ) {
     const user: User | undefined = await this.userService.findByIdentifier(
       data.username,
@@ -54,9 +43,9 @@ export class UserController {
   @Post('register')
   @Validate()
   async register(
-    @Wrap(RegisterPostData)
+    @Wrap(RegisterDto)
     @Body()
-    data: RegisterPostData,
+    data: RegisterDto,
   ) {
     if (await this.userService.findByIdentifier(data.username, 'username')) {
       throw api.error('username already exists', 4001);
@@ -76,8 +65,25 @@ export class UserController {
     return api.success();
   }
 
+  @Post('chg_pw')
+  @Validate()
+  async changePassword(
+    @Wrap(ChangePasswordDto)
+    @Body()
+    data: ChangePasswordDto,
+  ) {
+    return 'you are here to change your pwd';
+  }
+
   @Get('info')
-  info(@Query('id') id: number) {
-    return id;
+  async info(@Query('id') id: number) {
+    let user = await this.userService.findByIdentifier(id, 'id');
+    if (!user) {
+      throw api.error('user not found', 4001);
+    }
+
+    let {username, email, avatar} = user;
+
+    return api.success({id, username, email, avatar});
   }
 }

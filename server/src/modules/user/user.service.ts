@@ -12,13 +12,17 @@ export class UserService {
   ) {}
 
   async findByIdentifier(
-    identifier: string,
-    searchIn: 'username' | 'email' | 'both' = 'both',
+    identifier: string | number,
+    searchIn:
+      | 'id'
+      | 'username'
+      | 'email'
+      | 'usernameAndEmail' = 'usernameAndEmail',
   ): Promise<User | undefined> {
     let sql: string;
 
     switch (searchIn) {
-      case 'both':
+      case 'usernameAndEmail':
         sql = 'username = :identifier or email = :identifier';
         break;
       default:

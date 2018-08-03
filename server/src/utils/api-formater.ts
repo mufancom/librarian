@@ -1,4 +1,4 @@
-import {HttpException, HttpStatus} from '../../../node_modules/@nestjs/common';
+import {HttpException, HttpStatus} from '@nestjs/common';
 
 export namespace api {
   export function success(data?: object, message?: string): object {
