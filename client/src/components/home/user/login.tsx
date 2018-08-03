@@ -26,6 +26,7 @@ export class Login extends Component<LoginProps, LoginState> {
 
   constructor(props: any) {
     super(props);
+
     this.state = {
       loginLoading: false,
     };

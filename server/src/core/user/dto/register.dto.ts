@@ -1,7 +1,7 @@
 import {IsEmail, Length} from 'class-validator';
-import {LoginDto} from '../../auth/dto';
+import {LoginDTO} from '../../auth/dto';
 
-export class RegisterDto extends LoginDto {
+export class RegisterDTO extends LoginDTO {
   @Length(6, 50)
   @IsEmail()
   readonly email!: string;

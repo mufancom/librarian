@@ -1,7 +1,10 @@
-import {validate as _validate} from 'class-validator';
-import {Constructor} from 'lang';
 import 'reflect-metadata';
-import {api} from './api-formater';
+
+import {validate as _validate} from 'class-validator';
+
+import {Constructor} from 'lang';
+
+import {API} from './api-formater';
 
 const wrapMetadataKey = Symbol('Wrap');
 
@@ -33,6 +36,7 @@ function describeError(error: any): string {
   for (const key in error.constraints) {
     return error.constraints[key];
   }
+
   return 'unknown';
 }
 
@@ -64,7 +68,7 @@ export function Validate() {
 
           await _validate(dataWrapper).then(errors => {
             if (errors.length > 0) {
-              throw api.error(describeError(errors[0]), 4000);
+              throw API.error(describeError(errors[0]), 4000);
             }
           });
 

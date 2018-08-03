@@ -4,6 +4,12 @@ import {Repository} from 'typeorm';
 
 import {User} from './user.entity';
 
+export type UserServiceFindByIdentifierSearchFieldName =
+  | 'id'
+  | 'username'
+  | 'email'
+  | 'usernameAndEmail';
+
 @Injectable()
 export class UserService {
   constructor(
@@ -12,11 +18,7 @@ export class UserService {
 
   async findByIdentifier(
     identifier: string | number,
-    searchIn:
-      | 'id'
-      | 'username'
-      | 'email'
-      | 'usernameAndEmail' = 'usernameAndEmail',
+    searchIn: UserServiceFindByIdentifierSearchFieldName = 'usernameAndEmail',
   ): Promise<User | undefined> {
     let sql: string;
 

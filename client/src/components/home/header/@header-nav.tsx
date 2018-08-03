@@ -43,6 +43,8 @@ const Wrapper = styled.div`
   }
 `;
 
+const HeaderNavLink = styled(NavLink)``;
+
 export interface HeaderNavProps extends RouteComponentProps<any> {
   className?: string;
 }
