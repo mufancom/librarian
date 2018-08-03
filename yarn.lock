@@ -86,6 +86,12 @@
   version "2.1.0"
   resolved "http://registry.npm.taobao.org/@types/cookiejar/download/@types/cookiejar-2.1.0.tgz#4b7daf2c51696cfc70b942c11690528229d1a1ce"
 
+"@types/dotenv@^4.0.3":
+  version "4.0.3"
+  resolved "http://registry.npm.taobao.org/@types/dotenv/download/@types/dotenv-4.0.3.tgz#ebcfc40da7bc0728b705945b7db48485ec5b4b67"
+  dependencies:
+    "@types/node" "*"
+
 "@types/events@*":
   version "1.2.0"
   resolved "http://registry.npm.taobao.org/@types/events/download/@types/events-1.2.0.tgz#81a6731ce4df43619e5c8c945383b3e62a89ea86"
@@ -2793,6 +2799,10 @@ dotenv@4.0.0, dotenv@^4.0.0:
 dotenv@^5.0.1:
   version "5.0.1"
   resolved "http://registry.npm.taobao.org/dotenv/download/dotenv-5.0.1.tgz#a5317459bd3d79ab88cff6e44057a6a3fbb1fcef"
+
+dotenv@^6.0.0:
+  version "6.0.0"
+  resolved "http://registry.npm.taobao.org/dotenv/download/dotenv-6.0.0.tgz#24e37c041741c5f4b25324958ebbc34bca965935"
 
 draft-js@^0.10.0, draft-js@~0.10.0:
   version "0.10.5"

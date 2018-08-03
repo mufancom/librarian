@@ -11,6 +11,11 @@ bld/
 yarn-error.log
 lerna-debug.log
 
+# Data
+
+db/
+public/
+
 # Testing files
 
 test.*

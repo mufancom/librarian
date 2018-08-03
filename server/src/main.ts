@@ -1,9 +1,7 @@
 import {ExpressSessionMiddleware} from '@nest-middlewares/express-session';
 import {NestFactory} from '@nestjs/core';
 import {AppModule} from 'app.module';
-import {HttpExceptionFilter} from 'common/filters/http-exception.filter';
-import {AuthGuard} from 'modules/auth/auth.guard';
-import {AuthModule} from 'modules/auth/auth.module';
+import {HttpExceptionFilter} from 'modules/filters/http-exception.filter';
 import {join} from 'path';
 
 async function bootstrap() {
