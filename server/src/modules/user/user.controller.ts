@@ -1,44 +1,27 @@
-import {Body, Controller, Get, Post, Query, UseGuards} from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  Post,
+  Query,
+  Req,
+  UseGuards,
+} from '@nestjs/common';
+import {Request} from 'express';
 
 import {api} from 'utils/api-formater';
 import {passwordEncrypt} from 'utils/encrypt';
 import {Validate, Wrap} from 'utils/validator';
 
 import {AuthGuard} from '../auth/auth.guard';
+
+import {ChangePasswordDto, RegisterDto} from './dto';
 import {User} from './user.entity';
 import {UserService} from './user.service';
 
-import {ChangePasswordDto, LoginDto, RegisterDto} from './dto';
-
 @Controller('user')
-@UseGuards(AuthGuard)
 export class UserController {
   constructor(private readonly userService: UserService) {}
-
-  @Post('login')
-  @Validate()
-  async login(
-    @Wrap(LoginDto)
-    @Body()
-    data: LoginDto,
-  ) {
-    const user: User | undefined = await this.userService.findByIdentifier(
-      data.username,
-    );
-    if (!user || user.password !== passwordEncrypt(data.password)) {
-      throw api.error('invalid username or password', 4001);
-    }
-
-    await this.userService.generateToken(user);
-
-    return api.success({
-      id: user.id,
-      role: user.role,
-      username: user.username,
-      avatar: user.avatar,
-      token: user.token,
-    });
-  }
 
   @Post('register')
   @Validate()
@@ -60,19 +43,27 @@ export class UserController {
       password: passwordEncrypt(data.password),
       role: 1,
     };
-    await this.userService.registerUser(user);
+    await this.userService.saveUser(user);
 
     return api.success();
   }
 
   @Post('chg_pw')
-  @Validate()
+  @UseGuards(AuthGuard)
   async changePassword(
+    @Req() req: Request,
     @Wrap(ChangePasswordDto)
     @Body()
     data: ChangePasswordDto,
   ) {
-    return 'you are here to change your pwd';
+    if (req.user.password !== passwordEncrypt(data.oldPassword)) {
+      throw api.error('invalid old password', 4001);
+    }
+
+    req.user.password = passwordEncrypt(data.newPassword);
+    await this.userService.saveUser(req.user);
+
+    return api.success();
   }
 
   @Get('info')

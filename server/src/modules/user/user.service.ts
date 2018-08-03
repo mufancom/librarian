@@ -2,7 +2,6 @@ import {Injectable} from '@nestjs/common';
 import {InjectRepository} from '@nestjs/typeorm';
 import {Repository} from 'typeorm';
 
-import {randomStr} from 'utils/string';
 import {User} from './user.entity';
 
 @Injectable()
@@ -36,13 +35,7 @@ export class UserService {
       .getOne();
   }
 
-  async generateToken(user: User): Promise<string> {
-    user.token = randomStr(24);
-    await this.userRepository.save(user);
-    return user.token;
-  }
-
-  async registerUser(user: User): Promise<void> {
+  async saveUser(user: User): Promise<void> {
     await this.userRepository.save(user);
   }
 }

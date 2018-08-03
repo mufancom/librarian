@@ -19,7 +19,4 @@ export class User {
 
   @Column({length: 50})
   email!: string;
-
-  @Column({length: 32})
-  token?: string;
 }
