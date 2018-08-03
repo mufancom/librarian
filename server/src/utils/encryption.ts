@@ -11,6 +11,8 @@ export function md5(data: string): string {
     .digest('hex');
 }
 
-export function passwordEncrypt(pwd: string): string {
-  return md5(`${md5(pwd)}s8nQkZ2l`);
+// TODO: bcrypt
+
+export function encryptPassword(password: string): string {
+  return md5(`${md5(password)}s8nQkZ2l`);
 }

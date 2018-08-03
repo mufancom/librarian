@@ -6,13 +6,12 @@ import * as ReactDOM from 'react-dom';
 import {Route, Router, Switch} from 'react-router';
 import {ThemeProvider} from 'styled-components';
 
+import {HomeContainer} from 'components/home/home-container';
+import {AuthStore} from 'stores';
 import {theme} from 'theme';
 import registerServiceWorker from 'utils/register-service-worker';
 
 import './global.less';
-
-import {HomeContainer} from 'components/home/home-container';
-import {AuthStore} from 'stores';
 
 const browserHistory = createBrowserHistory();
 const routerStore = new RouterStore();

@@ -1,10 +1,8 @@
 import {Module} from '@nestjs/common';
 import {TypeOrmModule} from '@nestjs/typeorm';
 
-import {AuthModule} from 'modules/auth/auth.module';
-import {ConventionModule} from 'modules/convention/convention.module';
-import {UserModule} from 'modules/user/user.module';
-import {Config} from 'utils/config';
+import {AuthModule} from 'core/auth/auth.module';
+import {UserModule} from 'core/user/user.module';
 
 @Module({
   imports: [

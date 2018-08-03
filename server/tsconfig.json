@@ -5,6 +5,7 @@
     "experimentalDecorators": true,
 
     "baseUrl": "src",
+
     "rootDir": "src",
     "outDir": "bld"
   },

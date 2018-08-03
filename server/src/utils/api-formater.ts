@@ -1,11 +1,31 @@
 import {HttpException, HttpStatus} from '@nestjs/common';
 
-export namespace api {
+export class LibrarianHttpException extends HttpException {
+  constructor(code: string, message: string) {
+    super(
+      {
+        error: {
+          code,
+          message,
+        },
+      },
+      HttpStatus.OK,
+    );
+  }
+}
+
+export class InvalidArgumentsException extends LibrarianHttpException {
+  constructor(message = 'Invalid arguments') {
+    super('INVALID_ARGUMENTS', message);
+  }
+}
+
+export namespace API {
   export function success(data?: object, message?: string): object {
     return {
       code: 200,
       data,
-      msg: message,
+      message,
     };
   }
 
@@ -17,7 +37,7 @@ export namespace api {
     return new HttpException(
       {
         code,
-        msg: message,
+        message,
       },
       statusCode,
     );

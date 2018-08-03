@@ -3,8 +3,7 @@ import {NavLink} from 'react-router-dom';
 import {styled} from 'theme';
 import {inject, observer} from 'utils/mobx';
 
-import {ConventionIndexStore} from 'stores';
-import {IndexTree} from 'stores/convention-index-store';
+import {ConventionIndexStore, IndexTree} from 'stores';
 import {ConventionProps} from './convention';
 
 const Wrapper = styled.div`

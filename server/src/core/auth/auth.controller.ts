@@ -1,12 +1,12 @@
 import {Body, Controller, Inject, Post, Req, forwardRef} from '@nestjs/common';
 import {Request} from 'express';
 
-import {api} from 'utils/api-formater';
-import {passwordEncrypt} from 'utils/encrypt';
+import {API} from 'utils/api-formater';
+import {encryptPassword} from 'utils/encryption';
 import {Validate, Wrap} from 'utils/validator';
 
 import {AuthService} from './auth.service';
-import {LoginDto} from './dto';
+import {LoginDTO} from './dto';
 
 @Controller('auth')
 export class AuthController {
@@ -18,23 +18,20 @@ export class AuthController {
   @Post('login')
   @Validate()
   async login(
-    @Wrap(LoginDto)
+    @Wrap(LoginDTO)
     @Body()
-    data: LoginDto,
+    data: LoginDTO,
     @Req() req: Request,
   ) {
     let user = await this.authService.findUserByUsernameOrEmail(data.username);
 
-    if (!user || user.password !== passwordEncrypt(data.password)) {
-      console.log(passwordEncrypt(data.password));
-      throw api.error('invalid username or password', 4001);
+    if (!user || user.password !== encryptPassword(data.password)) {
+      console.log(encryptPassword(data.password));
+      throw new UsernamePasswordMismatchException();
     }
 
     let session = req.session as Express.Session;
-    session.user = {
-      id: user.id,
-    };
 
-    return api.success();
+    session.user = {id: user.id};
   }
 }

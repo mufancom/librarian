@@ -1,6 +1,6 @@
 import {Length} from 'class-validator';
 
-export class ChangePasswordDto {
+export class ChangePasswordDTO {
   @Length(8, 48)
   readonly oldPassword!: string;
 

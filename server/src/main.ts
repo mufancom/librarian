@@ -1,18 +1,19 @@
+import * as Path from 'path';
+
 import {ExpressSessionMiddleware} from '@nest-middlewares/express-session';
 import {NestFactory} from '@nestjs/core';
+
 import {AppModule} from 'app.module';
-import {HttpExceptionFilter} from 'modules/filters/http-exception.filter';
-import {join} from 'path';
+import {HttpExceptionFilter} from 'common/filters/http-exception.filter';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   ExpressSessionMiddleware.configure({secret: 's2nKjZqL'});
   app.use(new ExpressSessionMiddleware().resolve());
-  app.useStaticAssets(join(__dirname, '..', 'public'));
+  app.useStaticAssets(Path.join(__dirname, '../public'));
   app.useGlobalFilters(new HttpExceptionFilter());
 
   await app.listen(3001);
 }
 
-// tslint:disable-next-line:no-console
 bootstrap().catch(console.error);

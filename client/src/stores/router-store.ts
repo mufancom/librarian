@@ -7,6 +7,7 @@ import {
 export class RouterStore extends BaseRouterStore {
   constructor(history?: History) {
     super();
+
     if (history) {
       this.history = syncHistoryWithStore(history, this);
     }

@@ -1,7 +1,10 @@
 {
   "extends": "vts/tslint-prettier",
   "rules": {
-    "no-implicit-dependencies": false,
-    "no-console": false
+    "no-implicit-dependencies": [
+      true,
+      ["app.module", "common", "core", "utils", "lang"]
+    ],
+    "no-console": [true, "log"]
   }
 }
