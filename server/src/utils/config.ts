@@ -1,33 +1,49 @@
-import * as fs from 'fs';
+import * as FS from 'fs';
 
-export interface Config {
-  [prop: string]: string;
-}
+import {TypeOrmModuleOptions} from '@nestjs/typeorm/dist/interfaces/typeorm-options.interface';
+import {ExcludeProperty} from 'lang';
+import {ConnectionOptions} from 'typeorm';
 
-export class ConfigService {
-  private readonly envConfig: Config;
+const hasOwnProperty = Object.prototype.hasOwnProperty;
+
+export class ConfigService<T extends object> {
+  private readonly data: T;
 
   constructor(filePath: string) {
-    this.envConfig = JSON.parse(fs.readFileSync(filePath).toLocaleString());
+    this.data = JSON.parse(FS.readFileSync(filePath).toLocaleString());
   }
 
-  get(): Config;
-  get(key: string, fallback?: string): string;
-  get(key?: string, fallback?: string): string | Config {
+  get(): T;
+  get<K extends keyof T>(key: K): T[K] | undefined;
+  get<K extends keyof T>(key: K, fallback: T[K]): T[K];
+  get<K extends keyof T>(key?: K, fallback?: T[K]): T[K] | T | undefined {
+    let data = this.data;
+
     if (key) {
-      if (typeof this.envConfig[key] === 'undefined' && fallback) {
-        return fallback;
+      if (hasOwnProperty.call(data, key)) {
+        return data[key];
       }
-      return this.envConfig[key];
+
+      return fallback;
     }
-    return this.envConfig;
+
+    return data;
   }
 }
 
 const configBasePath = './config';
 
+export type DatabaseConfig = ExcludeProperty<
+  TypeOrmModuleOptions & Partial<ConnectionOptions>,
+  'entities'
+>;
+
+export interface GitConfig {}
+
 export class Config {
-  static Database = new ConfigService(`${configBasePath}/database.json`);
+  static Database = new ConfigService<DatabaseConfig>(
+    `${configBasePath}/database.json`,
+  );
   static Git = new ConfigService(`${configBasePath}/git.json`);
   static Session = new ConfigService(`${configBasePath}/session.json`);
 }
