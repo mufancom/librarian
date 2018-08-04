@@ -11,7 +11,7 @@ import {Config} from 'utils/config';
     TypeOrmModule.forRoot({
       entities: ['./src/**/**.entity{.ts,.js}'],
       ...Config.Database.get(),
-      entityPrefix: Config.Database.get('prefix', 'lb_'),
+      entityPrefix: Config.Database.get('entityPrefix', 'lb_'),
     }),
     UserModule,
     AuthModule,
