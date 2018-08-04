@@ -5,15 +5,18 @@ import {NestFactory} from '@nestjs/core';
 
 import {AppModule} from 'app.module';
 import {HttpExceptionFilter} from 'common/filters/http-exception.filter';
+import {APIInterceptor} from 'common/interceptors/api.interceptor';
+import {Config} from 'utils/config';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
-  ExpressSessionMiddleware.configure({secret: 's2nKjZqL'});
+  ExpressSessionMiddleware.configure(Config.Session.get() as {secret: string});
   app.use(new ExpressSessionMiddleware().resolve());
   app.useStaticAssets(Path.join(__dirname, '../public'));
   app.useGlobalFilters(new HttpExceptionFilter());
+  app.useGlobalInterceptors(new APIInterceptor());
 
-  await app.listen(3001);
+  await app.listen(3002);
 }
 
 bootstrap().catch(console.error);

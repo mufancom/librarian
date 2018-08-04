@@ -4,6 +4,7 @@ import {
   ExceptionFilter,
   HttpException,
 } from '@nestjs/common';
+import {LibrarianHttpException} from '../exceptions';
 
 @Catch(HttpException)
 export class HttpExceptionFilter implements ExceptionFilter {
@@ -14,12 +15,14 @@ export class HttpExceptionFilter implements ExceptionFilter {
 
     let message = exception.message;
 
-    if (message.msg && message.code) {
+    if (exception instanceof LibrarianHttpException) {
       response.status(status).json(message);
     } else {
       response.status(status).json({
-        code: status,
-        msg: message.message ? message.message : message,
+        error: {
+          code: (message.error as string).toUpperCase().replace(/\s+/g, '_'),
+          message: message.message ? message.message : message,
+        },
       });
     }
   }

@@ -1,8 +1,8 @@
 import {Body, Controller, Inject, Post, Req, forwardRef} from '@nestjs/common';
 import {Request} from 'express';
 
-import {API} from 'utils/api-formater';
-import {encryptPassword} from 'utils/encryption';
+import {AuthenticationFailedException} from 'common/exceptions';
+import {comparePassword} from 'utils/encryption';
 import {Validate, Wrap} from 'utils/validator';
 
 import {AuthService} from './auth.service';
@@ -25,9 +25,8 @@ export class AuthController {
   ) {
     let user = await this.authService.findUserByUsernameOrEmail(data.username);
 
-    if (!user || user.password !== encryptPassword(data.password)) {
-      console.log(encryptPassword(data.password));
-      throw new UsernamePasswordMismatchException();
+    if (!user || !(await comparePassword(data.password, user.password))) {
+      throw new AuthenticationFailedException();
     }
 
     let session = req.session as Express.Session;

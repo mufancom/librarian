@@ -1,18 +1,10 @@
-import {Buffer} from 'buffer';
-import * as crypto from 'crypto';
+import * as bcrypt from 'bcrypt';
 
-export function md5(data: string): string {
-  const buffer = new Buffer(data);
-  const bin = buffer.toString('binary');
-
-  return crypto
-    .createHash('md5WithRSAEncryption')
-    .update(bin)
-    .digest('hex');
+export async function encryptPassword(password: string): Promise<string> {
+  const salt = await bcrypt.genSalt(10);
+  return bcrypt.hash(password, salt);
 }
 
-// TODO: bcrypt
-
-export function encryptPassword(password: string): string {
-  return md5(`${md5(password)}s8nQkZ2l`);
+export async function comparePassword(data: string, encrypted: string) {
+  return bcrypt.compare(data, encrypted);
 }

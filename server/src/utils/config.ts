@@ -1,4 +1,3 @@
-import * as dotenv from 'dotenv';
 import * as fs from 'fs';
 
 export interface Config {
@@ -9,13 +8,16 @@ export class ConfigService {
   private readonly envConfig: Config;
 
   constructor(filePath: string) {
-    this.envConfig = dotenv.parse(fs.readFileSync(filePath));
+    this.envConfig = JSON.parse(fs.readFileSync(filePath).toLocaleString());
   }
 
   get(): Config;
-  get(key: string): string;
-  get(key?: string): string | Config {
+  get(key: string, fallback?: string): string;
+  get(key?: string, fallback?: string): string | Config {
     if (key) {
+      if (typeof this.envConfig[key] === 'undefined' && fallback) {
+        return fallback;
+      }
       return this.envConfig[key];
     }
     return this.envConfig;
@@ -25,6 +27,7 @@ export class ConfigService {
 const configBasePath = './config';
 
 export class Config {
-  static Database = new ConfigService(`${configBasePath}/database.env`);
-  static Git = new ConfigService(`${configBasePath}/git.env`);
+  static Database = new ConfigService(`${configBasePath}/database.json`);
+  static Git = new ConfigService(`${configBasePath}/git.json`);
+  static Session = new ConfigService(`${configBasePath}/session.json`);
 }

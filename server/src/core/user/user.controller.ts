@@ -9,10 +9,15 @@ import {
 } from '@nestjs/common';
 import {Request} from 'express';
 
-import {API} from 'utils/api-formater';
-import {encryptPassword} from 'utils/encryption';
+import {comparePassword, encryptPassword} from 'utils/encryption';
 import {Validate, Wrap} from 'utils/validator';
 
+import {
+  AuthenticationFailedException,
+  EmailAlreadyExistsException,
+  UserNotFoundException,
+  UsernameAlreadyExistsException,
+} from 'common/exceptions';
 import {AuthGuard} from '../auth/auth.guard';
 import {ChangePasswordDTO, RegisterDTO} from './dto';
 import {User} from './user.entity';
@@ -30,23 +35,21 @@ export class UserController {
     data: RegisterDTO,
   ) {
     if (await this.userService.findByIdentifier(data.username, 'username')) {
-      throw API.error('username already exists', 4001);
+      throw new UsernameAlreadyExistsException();
     }
 
     if (await this.userService.findByIdentifier(data.email, 'email')) {
-      throw API.error('email already exists', 4002);
+      throw new EmailAlreadyExistsException();
     }
 
     const user: User = {
       ...data,
       id: undefined,
-      password: encryptPassword(data.password),
+      password: await encryptPassword(data.password),
       role: 1,
     };
 
     await this.userService.saveUser(user);
-
-    return API.success();
   }
 
   @Post('chg_pw')
@@ -57,15 +60,13 @@ export class UserController {
     @Body()
     data: ChangePasswordDTO,
   ) {
-    if (req.user.password !== encryptPassword(data.oldPassword)) {
-      throw API.error('invalid old password', 4001);
+    if (await comparePassword(data.oldPassword, req.user.password)) {
+      throw new AuthenticationFailedException();
     }
 
-    req.user.password = encryptPassword(data.newPassword);
+    req.user.password = await encryptPassword(data.newPassword);
 
     await this.userService.saveUser(req.user);
-
-    return API.success();
   }
 
   @Get('info')
@@ -73,11 +74,14 @@ export class UserController {
     let user = await this.userService.findByIdentifier(id, 'id');
 
     if (!user) {
-      throw API.error('user not found', 4001);
+      throw new UserNotFoundException();
     }
 
     let {username, email, avatar} = user;
 
-    return API.success({id, username, email, avatar});
+    return {id, username, email, avatar};
   }
+
+  @Get('test')
+  async test() {}
 }

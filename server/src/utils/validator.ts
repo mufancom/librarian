@@ -2,9 +2,8 @@ import 'reflect-metadata';
 
 import {validate as _validate} from 'class-validator';
 
+import {ValidationFailed} from 'common/exceptions';
 import {Constructor} from 'lang';
-
-import {API} from './api-formater';
 
 const wrapMetadataKey = Symbol('Wrap');
 
@@ -37,7 +36,7 @@ function describeError(error: any): string {
     return error.constraints[key];
   }
 
-  return 'unknown';
+  return 'Unknown';
 }
 
 export function Validate() {
@@ -46,7 +45,7 @@ export function Validate() {
     propertyName: string,
     descriptor: TypedPropertyDescriptor<any>,
   ) => {
-    let method: Function = descriptor.value as Function;
+    let method = descriptor.value as Function;
 
     descriptor.value = async function() {
       let _arguments = arguments;
@@ -68,7 +67,7 @@ export function Validate() {
 
           await _validate(dataWrapper).then(errors => {
             if (errors.length > 0) {
-              throw API.error(describeError(errors[0]), 4000);
+              throw new ValidationFailed(describeError(errors[0]));
             }
           });
 
