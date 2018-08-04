@@ -16,6 +16,8 @@ lerna-debug.log
 db/
 public/
 
+.config
+
 # Testing files
 
 test.*
