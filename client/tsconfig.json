@@ -1,7 +1,6 @@
 {
   "extends": "../node_modules/vts/tsconfig-browser.json",
   "compilerOptions": {
-    "allowJs": true,
     "jsx": "react",
     "module": "esnext",
     "moduleResolution": "node",

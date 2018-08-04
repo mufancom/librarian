@@ -1,6 +1,18 @@
 {
   "extends": "vts/tslint-prettier",
   "rules": {
-    "no-implicit-dependencies": [true]
+    "no-implicit-dependencies": [
+      true,
+      [
+        "history",
+        "react-router",
+        "mobx-react",
+        "components",
+        "stores",
+        "utils",
+        "theme",
+        "assets"
+      ]
+    ]
   }
 }

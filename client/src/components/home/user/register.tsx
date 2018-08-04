@@ -41,13 +41,14 @@ export class Register extends Component<RegisterProps, RegisterState> {
           width="450px"
           footer={[
             <a
+              key="login"
               onClick={this.props.onLoginBtnClick}
               style={{marginRight: '15px'}}
             >
               已有账号？去登录
             </a>,
             <Button
-              key="submit"
+              key="register"
               type="primary"
               loading={this.state.registerLoading}
               onClick={this.handleOk}

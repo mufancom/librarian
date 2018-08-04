@@ -11,39 +11,38 @@ const Wrapper = styled.div`
     li {
       list-style-type: none;
       float: left;
-
-      a {
-        display: inline-block;
-        text-decoration: none;
-        color: ${props => props.theme.text.navPlaceholder};
-        font-size: 16px;
-        padding: 0 20px;
-
-        &:hover {
-          color: ${props => props.theme.text.navPrimary};
-        }
-
-        &.active {
-          color: ${props => props.theme.text.navPrimary};
-
-          &::after {
-            top: -10px;
-            content: '';
-            margin-left: auto;
-            margin-right: auto;
-            position: relative;
-            display: block;
-            width: 20px;
-            height: 4px;
-            background-color: ${props => props.theme.accent()};
-          }
-        }
-      }
     }
   }
 `;
 
-const HeaderNavLink = styled(NavLink)``;
+const HeaderNavLink = styled(NavLink)`
+  display: inline-block;
+  text-decoration: none;
+  color: ${props => props.theme.text.navPlaceholder};
+  font-size: 16px;
+  padding: 0 20px;
+
+  &:hover {
+    color: ${props => props.theme.text.navPrimary};
+  }
+
+  &.active {
+    color: ${props => props.theme.text.navPrimary};
+    text-decoration: none;
+
+    &::after {
+      top: -10px;
+      content: '';
+      margin-left: auto;
+      margin-right: auto;
+      position: relative;
+      display: block;
+      width: 20px;
+      height: 4px;
+      background-color: ${props => props.theme.accent()};
+    }
+  }
+`;
 
 export interface HeaderNavProps extends RouteComponentProps<any> {
   className?: string;
@@ -58,13 +57,13 @@ export class HeaderNav extends Component<HeaderNavProps> {
       <Wrapper className={classNames('header-nav', className)}>
         <ul>
           <li>
-            <NavLink to="/convention">规范</NavLink>
+            <HeaderNavLink to="/convention">规范</HeaderNavLink>
           </li>
           <li>
-            <NavLink to="/qa">问答</NavLink>
+            <HeaderNavLink to="/qa">问答</HeaderNavLink>
           </li>
           <li>
-            <NavLink to="/proposal">提议</NavLink>
+            <HeaderNavLink to="/proposal">提议</HeaderNavLink>
           </li>
         </ul>
       </Wrapper>

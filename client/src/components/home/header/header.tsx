@@ -1,8 +1,11 @@
 import {Col, Row} from 'antd';
-import logoImg from 'assets/images/librarian.svg';
+import classNames from 'classnames';
 import * as React from 'react';
 import {styled} from 'theme';
 
+import {RouteComponentProps, withRouter} from 'react-router';
+import {observer} from 'utils/mobx';
+import {HeaderLogo} from './@header-logo';
 import {HeaderNav, HeaderNavWithRouter} from './@header-nav';
 import {HeaderUser} from './@header-user';
 
@@ -11,32 +14,6 @@ const Wrapper = styled.div`
     display: inline-block;
     position: relative;
     padding-top: 10px;
-  }
-
-  .logo {
-    float: left;
-    height: 70px;
-    margin-left: 10px;
-
-    .logo-icon {
-      float: left;
-      img {
-        height: 38px;
-        width: 38px;
-      }
-    }
-
-    .logo-text {
-      float: left;
-      padding-left: 10px;
-      font-size: 23px;
-      font-weight: lighter;
-      color: #409eff;
-    }
-  }
-
-  .menu {
-    float: right;
   }
 
   ${HeaderNav.Wrapper} {
@@ -49,10 +26,21 @@ const Wrapper = styled.div`
   }
 `;
 
-export class Header extends React.Component {
+const MenuWrapper = styled.div`
+  float: right;
+`;
+
+export interface HeaderProps extends RouteComponentProps<any> {
+  className?: string;
+}
+
+@observer
+export class Header extends React.Component<HeaderProps> {
   render() {
+    let {className} = this.props;
+
     return (
-      <Wrapper>
+      <Wrapper className={classNames('header', className)}>
         <Row>
           <Col
             xs={{span: 24, offset: 0}}
@@ -62,19 +50,18 @@ export class Header extends React.Component {
             xl={{span: 16, offset: 4}}
             className="header-nav"
           >
-            <div className="logo">
-              <div className="logo-icon">
-                <img src={logoImg} />
-              </div>
-              <div className="logo-text">Librarian</div>
-            </div>
-            <div className="menu">
+            <HeaderLogo />
+            <MenuWrapper>
               <HeaderNavWithRouter />
               <HeaderUser />
-            </div>
+            </MenuWrapper>
           </Col>
         </Row>
       </Wrapper>
     );
   }
+
+  static Wrapper = Wrapper;
 }
+
+export const HeaderWithRouter = withRouter(Header);

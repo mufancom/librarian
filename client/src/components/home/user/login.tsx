@@ -45,13 +45,14 @@ export class Login extends Component<LoginProps, LoginState> {
           width="400px"
           footer={[
             <a
+              key="register"
               onClick={this.props.onRegisterBtnClick}
               style={{marginRight: '15px'}}
             >
               注册账号
             </a>,
             <Button
-              key="submit"
+              key="login"
               type="primary"
               loading={this.state.loginLoading}
               onClick={this.handleOk}

@@ -16,11 +16,11 @@ export default function(source: Source): IDtplConfig {
   let templates: IUserTemplate[] = [
     {
       name: 'templates/component.tsx.dtpl',
-      matches: 'librarian-client/src/components/**/*.tsx',
+      matches: 'client/src/components/**/*.tsx',
     },
     {
       name: 'templates/component-module',
-      matches: 'librarian-client/src/components/**',
+      matches: 'client/src/components/**',
     },
     {
       name: 'templates/module',

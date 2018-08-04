@@ -7,7 +7,10 @@ import {styled} from 'theme';
 
 import {Content as HomeContent} from './content';
 import {Convention} from './convention';
-import {Header as HomeHeader} from './header';
+import {
+  Header as HomeHeader,
+  HeaderWithRouter as HomeHeaderWithRouter,
+} from './header';
 
 const {Header, Content} = Layout;
 
@@ -21,16 +24,13 @@ const Wrapper = styled.div`
     }
   }
 
-  .header {
+  ${HomeHeader.Wrapper} {
     position: fixed;
     height: 80px;
     width: 100%;
     z-index: 100;
     display: block;
-  }
-
-  .content {
-    margin-top: 80px;
+    background: ${props => props.theme.light};
   }
 `;
 
@@ -44,10 +44,10 @@ export class HomeContainer extends React.Component {
       <Wrapper>
         <Provider {...homeStore}>
           <Layout>
-            <Header className="header">
-              <HomeHeader />
+            <Header>
+              <HomeHeaderWithRouter />
             </Header>
-            <Content className="content">
+            <Content style={{marginTop: 80}}>
               <Switch>
                 <Route path="/convention" component={Convention} />
                 <Route path="/" component={HomeContent} />
