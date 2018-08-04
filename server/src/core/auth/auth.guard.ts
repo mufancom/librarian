@@ -4,7 +4,7 @@ import {Observable} from 'rxjs';
 
 import {AuthService} from './auth.service';
 
-import {User} from '../user/user.entity';
+import {User} from '../user';
 
 declare global {
   namespace Express {

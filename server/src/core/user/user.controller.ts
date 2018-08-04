@@ -18,7 +18,7 @@ import {
   UserNotFoundException,
   UsernameAlreadyExistsException,
 } from 'common/exceptions';
-import {AuthGuard} from '../auth/auth.guard';
+import {AuthGuard} from '../auth';
 import {ChangePasswordDTO, RegisterDTO} from './dto';
 import {User} from './user.entity';
 import {UserService} from './user.service';

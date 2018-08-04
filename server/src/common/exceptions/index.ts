@@ -1,1 +1,1 @@
-export * from './LibrarianHttpException';
+export * from './librarian-http-exception';
