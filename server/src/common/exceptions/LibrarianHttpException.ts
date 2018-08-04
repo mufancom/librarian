@@ -40,12 +40,12 @@ export class UserNotFoundException extends LibrarianHttpException {
 
 export class UsernameAlreadyExistsException extends LibrarianHttpException {
   constructor(message = 'Username already exists') {
-    super('USERNAME ALREADY EXISTS', message);
+    super('USERNAME_ALREADY_EXISTS', message);
   }
 }
 
 export class EmailAlreadyExistsException extends LibrarianHttpException {
   constructor(message = 'Email already exists') {
-    super('EMAIL ALREADY EXISTS', message);
+    super('EMAIL_ALREADY_EXISTS', message);
   }
 }
