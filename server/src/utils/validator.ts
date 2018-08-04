@@ -2,7 +2,7 @@ import 'reflect-metadata';
 
 import {validate as _validate} from 'class-validator';
 
-import {ValidationFailed} from 'common/exceptions';
+import {ValidationFailedException} from 'common/exceptions';
 import {Constructor} from 'lang';
 
 const wrapMetadataKey = Symbol('Wrap');
@@ -67,7 +67,7 @@ export function Validate() {
 
           await _validate(dataWrapper).then(errors => {
             if (errors.length > 0) {
-              throw new ValidationFailed(describeError(errors[0]));
+              throw new ValidationFailedException(describeError(errors[0]));
             }
           });
 
