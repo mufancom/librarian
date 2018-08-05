@@ -1,10 +1,21 @@
-import {Body, Controller, Inject, Post, Req, forwardRef} from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  Inject,
+  Post,
+  Req,
+  Session,
+  UseGuards,
+  forwardRef,
+} from '@nestjs/common';
 import {Request} from 'express';
 
 import {AuthenticationFailedException} from 'common/exceptions';
 import {comparePassword} from 'utils/encryption';
 import {Validate, Wrap} from 'utils/validator';
 
+import {AuthGuard} from './auth.guard';
 import {AuthService} from './auth.service';
 import {LoginDTO} from './dto';
 
@@ -32,5 +43,11 @@ export class AuthController {
     let session = req.session as Express.Session;
 
     session.user = {id: user.id};
+  }
+
+  @Get('logout')
+  @UseGuards(AuthGuard)
+  async logout(@Session() session: Express.Session) {
+    session.user = undefined;
   }
 }

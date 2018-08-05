@@ -3,7 +3,7 @@
   "rules": {
     "no-implicit-dependencies": [
       true,
-      ["app.module", "common", "core", "utils", "lang", "paths"]
+      ["app.module", "common", "core", "utils", "lang", "paths", "fs-extra"]
     ],
     "no-console": [true, "log"]
   }

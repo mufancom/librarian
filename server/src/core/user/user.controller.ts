@@ -53,6 +53,7 @@ export class UserController {
   }
 
   @Post('chg_pw')
+  @Validate()
   @UseGuards(AuthGuard)
   async changePassword(
     @Req() req: Request,
