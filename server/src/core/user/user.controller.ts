@@ -53,15 +53,15 @@ export class UserController {
   }
 
   @Post('chg_pw')
-  @Validate()
   @UseGuards(AuthGuard)
+  @Validate()
   async changePassword(
-    @Req() req: Request,
     @Wrap(ChangePasswordDTO)
     @Body()
     data: ChangePasswordDTO,
+    @Req() req: Request,
   ) {
-    if (await comparePassword(data.oldPassword, req.user.password)) {
+    if (!(await comparePassword(data.oldPassword, req.user.password))) {
       throw new AuthenticationFailedException();
     }
 
@@ -82,7 +82,4 @@ export class UserController {
 
     return {id, username, email, avatar};
   }
-
-  @Get('test')
-  async test() {}
 }
