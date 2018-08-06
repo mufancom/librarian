@@ -1,6 +1,6 @@
 import 'reflect-metadata';
 
-import {validate as _validate} from 'class-validator';
+import {ValidatorOptions, validate as _validate} from 'class-validator';
 
 import {ValidationFailedException} from 'common/exceptions';
 import {Constructor} from 'lang';
@@ -39,7 +39,9 @@ function describeError(error: any): string {
   return 'Unknown';
 }
 
-export function Validate() {
+export function Validate(
+  options: ValidatorOptions = {forbidUnknownValues: true, whitelist: true},
+) {
   return (
     target: any,
     propertyName: string,
@@ -65,7 +67,7 @@ export function Validate() {
             dataWrapper[key] = _arguments[index][key];
           }
 
-          await _validate(dataWrapper).then(errors => {
+          await _validate(dataWrapper, options).then(errors => {
             if (errors.length > 0) {
               throw new ValidationFailedException(describeError(errors[0]));
             }

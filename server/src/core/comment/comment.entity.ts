@@ -17,9 +17,9 @@ export class Comment {
   @Column()
   content!: string;
 
-  @Column()
+  @Column({name: 'created_at'})
   createdAt!: number;
 
-  @Column()
+  @Column({name: 'updated_at'})
   updatedAt!: number;
 }

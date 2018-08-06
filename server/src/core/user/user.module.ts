@@ -8,7 +8,10 @@ import {User} from './user.entity';
 import {UserService} from './user.service';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([User]), forwardRef(() => AuthModule)],
+  imports: [
+    TypeOrmModule.forFeature([User]),
+    forwardRef(() => AuthModule), // to solve circular dependency
+  ],
   controllers: [UserController],
   providers: [UserService],
   exports: [UserService],

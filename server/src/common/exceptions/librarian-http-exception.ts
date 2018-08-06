@@ -49,3 +49,9 @@ export class EmailAlreadyExistsException extends LibrarianHttpException {
     super('EMAIL_ALREADY_EXISTS', message);
   }
 }
+
+export class ConventionNotFoundException extends LibrarianHttpException {
+  constructor(message = 'Convention not found') {
+    super('CONVENTION_NOT_FOUND', message);
+  }
+}

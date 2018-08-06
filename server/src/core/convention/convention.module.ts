@@ -8,6 +8,6 @@ import {ConventionService} from './convention.service';
   imports: [AuthModule],
   controllers: [ConventionController],
   providers: [ConventionService],
-  exports: [],
+  exports: [ConventionService],
 })
 export class ConventionModule {}

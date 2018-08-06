@@ -36,7 +36,12 @@ function formIndex(fileTree: File.FileInfo[]) {
 @Injectable()
 export class ConventionService {
   async getIndex() {
-    const files = await File.find(CONVENTION_MD_PATH, /.*\.md/, 3);
+    const files = await File.find(CONVENTION_MD_PATH, /.*\.md/, 2 + 1);
     return formIndex(files);
+  }
+
+  async exists(filePath: string) {
+    const fullPath = Path.join(CONVENTION_MD_PATH, filePath);
+    return File.exists(fullPath);
   }
 }

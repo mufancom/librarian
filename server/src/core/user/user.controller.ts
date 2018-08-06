@@ -44,7 +44,6 @@ export class UserController {
 
     const user: User = {
       ...data,
-      id: undefined,
       password: await encryptPassword(data.password),
       role: 1,
     };

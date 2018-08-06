@@ -5,6 +5,7 @@ import {promisify} from 'util';
 export namespace FS {
   export const readdir = promisify(_FS.readdir);
   export const stat = promisify(_FS.stat);
+  export const access = promisify(_FS.access);
 }
 
 export interface FileInfo {
@@ -54,4 +55,13 @@ export async function find(
   }
 
   return result;
+}
+
+export async function exists(filePath: string) {
+  try {
+    await FS.access(filePath);
+    return true;
+  } catch (_error) {
+    return false;
+  }
 }
