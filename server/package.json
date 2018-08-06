@@ -1,0 +1,38 @@
+{
+  "name": "librarian-server",
+  "version": "1.0.0",
+  "description": "Server side for Librarian",
+  "author": "Dizy",
+  "license": "MIT",
+  "private": true,
+  "scripts": {
+    "start": "ts-node -r tsconfig-paths/register src/main.ts",
+    "start:dev": "nodemon",
+    "prestart:prod": "rm -rf dist && tsc",
+    "start:prod": "node dist/main.js"
+  },
+  "dependencies": {
+    "@nest-middlewares/express-session": "^5.0.0",
+    "@nestjs/common": "^5.1.0",
+    "@nestjs/core": "^5.1.0",
+    "@nestjs/typeorm": "^5.1.0",
+    "@types/dotenv": "^4.0.3",
+    "bcrypt": "^3.0.0",
+    "class-validator": "^0.9.1",
+    "express": "^4.16.3",
+    "reflect-metadata": "^0.1.12",
+    "rxjs": "^6.2.2",
+    "simple-git": "^1.96.0",
+    "sqlite3": "^4.0.2",
+    "typeorm": "^0.2.7"
+  },
+  "devDependencies": {
+    "@types/bcrypt": "^2.0.0",
+    "@types/express": "^4.0.39",
+    "@types/node": "^9.3.0",
+    "@types/supertest": "^2.0.4",
+    "nodemon": "^1.14.1",
+    "ts-node": "^4.1.0",
+    "tsconfig-paths": "^3.1.1"
+  }
+}

@@ -1,0 +1,23 @@
+# Installable packages
+
+node_modules/
+
+# Building artifacts
+
+bld/
+
+# Debugging outputs
+
+yarn-error.log
+lerna-debug.log
+
+# Data
+
+db/
+public/
+
+.config
+
+# Testing files
+
+test.*

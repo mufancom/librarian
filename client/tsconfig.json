@@ -1,0 +1,16 @@
+{
+  "extends": "../node_modules/vts/tsconfig-browser.json",
+  "compilerOptions": {
+    "jsx": "react",
+    "module": "esnext",
+    "moduleResolution": "node",
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true,
+    "allowSyntheticDefaultImports": true,
+
+    "baseUrl": "src",
+    "rootDir": "src",
+    "outDir": "bld"
+  },
+  "include": ["src", "types"]
+}
