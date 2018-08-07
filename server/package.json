@@ -20,7 +20,6 @@
     "bcrypt": "^3.0.0",
     "class-validator": "^0.9.1",
     "express": "^4.16.3",
-    "i18n-ts": "^1.0.2",
     "reflect-metadata": "^0.1.12",
     "rxjs": "^6.2.2",
     "simple-git": "^1.96.0",

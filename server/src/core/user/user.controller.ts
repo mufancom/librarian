@@ -14,7 +14,7 @@ import {Validate, Wrap} from 'utils/validator';
 
 import {
   AuthenticationFailedException,
-  FieldAlreadyExistsException,
+  ResourceConflictingException,
   ResourceNotFoundException,
 } from 'common/exceptions';
 import {AuthGuard} from '../auth';
@@ -35,11 +35,11 @@ export class UserController {
     @Req() req: Request,
   ) {
     if (await this.userService.findByIdentifier(data.username, 'username')) {
-      throw new FieldAlreadyExistsException(req.lang.usernameAlreadyExists);
+      throw new ResourceConflictingException('USERNAME_ALREADY_EXISTS');
     }
 
     if (await this.userService.findByIdentifier(data.email, 'email')) {
-      throw new FieldAlreadyExistsException(req.lang.emailAlreadyExists);
+      throw new ResourceConflictingException('EMAIL_ALREADY_EXISTS');
     }
 
     const user: User = {
@@ -61,9 +61,7 @@ export class UserController {
     @Req() req: Request,
   ) {
     if (!(await comparePassword(data.oldPassword, req.user.password))) {
-      throw new AuthenticationFailedException(
-        req.lang.usernamePasswordMismatch,
-      );
+      throw new AuthenticationFailedException('USERNAME_PASSWORD_MISMATCH');
     }
 
     req.user.password = await encryptPassword(data.newPassword);
@@ -76,7 +74,7 @@ export class UserController {
     let user = await this.userService.findByIdentifier(id, 'id');
 
     if (!user) {
-      throw new ResourceNotFoundException(req.lang.userNotFound);
+      throw new ResourceNotFoundException('USER_NOT_FOUND');
     }
 
     let {username, email, avatar} = user;

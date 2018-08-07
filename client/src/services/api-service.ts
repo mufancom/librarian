@@ -1,5 +1,6 @@
 import axios from 'axios';
 import * as Url from 'url';
+import {translation} from 'utils/lang';
 
 const API_BASE_URL = 'http://localhost:3002/';
 
@@ -38,6 +39,17 @@ export interface APICallOptions {
   onDownloadProgress?: OnProgress;
 }
 
+function errorMessageToLocalize(_code: string, _message: string) {
+  const message = _message.toLowerCase().replace(/\_(\w)/g, (_all, letter) => {
+    return letter.toUpperCase();
+  });
+
+  if (translation.hasOwnProperty(message)) {
+    return translation[message];
+  }
+  return _message;
+}
+
 export class APIService {
   async call<T>(
     method: string,
@@ -67,7 +79,10 @@ export class APIService {
       throw undefined;
     } else if ('error' in result) {
       let error = result.error;
-      throw new APIErrorException(error.code, error.message);
+      throw new APIErrorException(
+        error.code,
+        errorMessageToLocalize(error.code, error.message),
+      );
     } else {
       return result.data;
     }

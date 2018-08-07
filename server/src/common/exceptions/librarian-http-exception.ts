@@ -15,31 +15,31 @@ export class LibrarianHttpException extends HttpException {
 }
 
 export class InvalidArgumentsException extends LibrarianHttpException {
-  constructor(message = 'Invalid arguments') {
+  constructor(message = 'INVALID_ARGUMENTS') {
     super('INVALID_ARGUMENTS', message);
   }
 }
 
 export class ValidationFailedException extends LibrarianHttpException {
-  constructor(message = 'Validation failed') {
+  constructor(message = 'VALIDATION_FAILED') {
     super('VALIDATION_FAILED', message);
   }
 }
 
 export class AuthenticationFailedException extends LibrarianHttpException {
-  constructor(message = 'Authentication failed') {
+  constructor(message = 'AUTHENTICATION_FAILED') {
     super('AUTHENTICATION_FAILED', message);
   }
 }
 
 export class ResourceNotFoundException extends LibrarianHttpException {
-  constructor(message = 'Resource not found') {
+  constructor(message = 'RESOURCE_NOT_FOUND') {
     super('RESOURCE_NOT_FOUND', message);
   }
 }
 
-export class FieldAlreadyExistsException extends LibrarianHttpException {
-  constructor(message = 'Field already exists') {
-    super('FIELD_ALREADY_EXISTS', message);
+export class ResourceConflictingException extends LibrarianHttpException {
+  constructor(message = 'RESOURCE_CONFLICTING') {
+    super('RESOURCE_CONFLICTING', message);
   }
 }

@@ -33,10 +33,9 @@ export function Wrap(withType: Constructor<any>) {
 
 function describeError(error: any): string {
   for (const key in error.constraints) {
-    return error.constraints[key];
+    return key.toUpperCase();
   }
-
-  return 'Unknown';
+  return 'UNKNOWN';
 }
 
 export function Validate(
@@ -69,7 +68,12 @@ export function Validate(
 
           await _validate(dataWrapper, options).then(errors => {
             if (errors.length > 0) {
-              throw new ValidationFailedException(describeError(errors[0]));
+              const propertyName = errors[0].property
+                .replace(/([A-Z])/g, '-$1')
+                .toUpperCase();
+              throw new ValidationFailedException(
+                `${propertyName}_${describeError(errors[0])}_EXCEPTION`,
+              );
             }
           });
 

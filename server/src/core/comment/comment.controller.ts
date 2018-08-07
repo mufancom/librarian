@@ -9,10 +9,7 @@ import {
 } from '@nestjs/common';
 import {Request} from 'express';
 
-import {
-  FieldAlreadyExistsException,
-  ResourceNotFoundException,
-} from 'common/exceptions';
+import {ResourceNotFoundException} from 'common/exceptions';
 import {Validate, Wrap} from 'utils/validator';
 import {AuthGuard} from '../auth';
 import {ConventionService} from '../convention';
@@ -54,7 +51,7 @@ export class CommentController {
     };
 
     if (!(await this.conventionService.exists(data.filePath))) {
-      throw new ResourceNotFoundException(req.lang.conventionNotFound);
+      throw new ResourceNotFoundException('CONVENTION_NOT_FOUND');
     }
 
     await this.commentService.saveComment(comment);
