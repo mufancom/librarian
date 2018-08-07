@@ -1,7 +1,7 @@
 import classNames from 'classnames';
 import React, {Component} from 'react';
 
-import {AuthStore} from 'stores';
+import {AuthStore} from 'stores/auth-store';
 import {styled} from 'theme';
 import {inject, observer} from 'utils/mobx';
 import {HeaderUserIcon} from './@header-user-icon';

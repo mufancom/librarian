@@ -2,7 +2,7 @@ import {Layout} from 'antd';
 import {Provider} from 'mobx-react';
 import * as React from 'react';
 import {Route, Switch} from 'react-router';
-import {ConventionIndexStore} from 'stores';
+import {ConventionIndexStore} from 'stores/convention-index-store';
 import {styled} from 'theme';
 
 import {Content as HomeContent} from './content';

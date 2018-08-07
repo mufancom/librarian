@@ -32,26 +32,14 @@ export class AuthenticationFailedException extends LibrarianHttpException {
   }
 }
 
-export class UserNotFoundException extends LibrarianHttpException {
-  constructor(message = 'User not found') {
-    super('USER_NOT_FOUND', message);
+export class ResourceNotFoundException extends LibrarianHttpException {
+  constructor(message = 'Resource not found') {
+    super('RESOURCE_NOT_FOUND', message);
   }
 }
 
-export class UsernameAlreadyExistsException extends LibrarianHttpException {
-  constructor(message = 'Username already exists') {
-    super('USERNAME_ALREADY_EXISTS', message);
-  }
-}
-
-export class EmailAlreadyExistsException extends LibrarianHttpException {
-  constructor(message = 'Email already exists') {
-    super('EMAIL_ALREADY_EXISTS', message);
-  }
-}
-
-export class ConventionNotFoundException extends LibrarianHttpException {
-  constructor(message = 'Convention not found') {
-    super('CONVENTION_NOT_FOUND', message);
+export class FieldAlreadyExistsException extends LibrarianHttpException {
+  constructor(message = 'Field already exists') {
+    super('FIELD_ALREADY_EXISTS', message);
   }
 }

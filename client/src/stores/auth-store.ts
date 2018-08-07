@@ -1,4 +1,4 @@
-import {action, computed, observable} from 'mobx';
+import {computed, observable} from 'mobx';
 
 export class AuthStore {
   @observable
@@ -10,8 +10,12 @@ export class AuthStore {
   @observable
   username: string;
 
+  @observable
+  role: number;
+
   constructor() {
     this.id = 0;
+    this.role = 0;
     this.avatar = '';
     this.username = '';
   }
@@ -19,11 +23,5 @@ export class AuthStore {
   @computed
   get isLoggedIn(): boolean {
     return this.id !== 0;
-  }
-
-  @action
-  login(username: string, password: string) {
-    // TODO
-    return username + password;
   }
 }

@@ -4006,6 +4006,12 @@ https-browserify@^1.0.0:
   version "1.0.0"
   resolved "http://registry.npm.taobao.org/https-browserify/download/https-browserify-1.0.0.tgz#ec06c10e0a34c0f2faf199f7fd7fc78fffd03c73"
 
+i18n-ts@^1.0.2:
+  version "1.0.2"
+  resolved "http://registry.npm.taobao.org/i18n-ts/download/i18n-ts-1.0.2.tgz#684a79f584fea35a3a7e1aff8a837f59bb3459f7"
+  dependencies:
+    typescript "2.7.1"
+
 iconv-lite@0.4.19:
   version "0.4.19"
   resolved "http://registry.npm.taobao.org/iconv-lite/download/iconv-lite-0.4.19.tgz#f7468f60135f5e5dad3399c0a81be9a1603a082b"
@@ -8774,6 +8780,10 @@ typeorm@^0.2.7:
     xml2js "^0.4.17"
     yargonaut "^1.1.2"
     yargs "^11.1.0"
+
+typescript@2.7.1:
+  version "2.7.1"
+  resolved "http://registry.npm.taobao.org/typescript/download/typescript-2.7.1.tgz#bb3682c2c791ac90e7c6210b26478a8da085c359"
 
 typescript@^2.9.2:
   version "2.9.2"

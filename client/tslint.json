@@ -5,14 +5,19 @@
       true,
       [
         "history",
+        "reflect-metadata",
         "react-router",
         "mobx-react",
-        "components",
-        "stores",
+        "axios",
         "utils",
+        "injection",
+        "stores",
+        "services",
+        "components",
         "theme",
         "assets"
       ]
-    ]
+    ],
+    "no-inferred-empty-object-type": false
   }
 }

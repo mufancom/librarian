@@ -1,7 +1,7 @@
 import {Injectable} from '@nestjs/common';
+import {InjectRepository} from '@nestjs/typeorm';
 import {Repository} from 'typeorm';
-import {InjectRepository} from '../../../../node_modules/@nestjs/typeorm';
-import {ConventionService} from '../convention';
+
 import {Comment} from './comment.entity';
 
 const COMMENT_PAGE_SIZE = 10;
@@ -13,7 +13,7 @@ export class CommentService {
     private readonly commentRepository: Repository<Comment>,
   ) {}
 
-  async listComment(filePath: string, page: number) {
+  async listComments(filePath: string, page: number) {
     return this.commentRepository
       .createQueryBuilder()
       .where('file_path = :filePath', {filePath})

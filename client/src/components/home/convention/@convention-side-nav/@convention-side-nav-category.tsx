@@ -2,7 +2,7 @@ import classNames from 'classnames';
 import React, {Component} from 'react';
 
 import {RouteComponentProps, withRouter} from 'react-router';
-import {IndexTree} from 'stores';
+import {IndexTree} from 'stores/convention-index-store';
 import {styled} from 'theme';
 import {observer} from 'utils/mobx';
 import {ConventionSideNavGroupWithRouter} from './@convention-side-nav-group';

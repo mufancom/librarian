@@ -1,4 +1,4 @@
-import {Controller, Get, Query} from '@nestjs/common';
+import {All, Controller, Get} from '@nestjs/common';
 
 import {ConventionService} from './convention.service';
 
@@ -9,5 +9,10 @@ export class ConventionController {
   @Get('index')
   async index() {
     return this.conventionService.getIndex();
+  }
+
+  @All('sync')
+  async sync() {
+    await this.conventionService.pull();
   }
 }

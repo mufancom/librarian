@@ -37,12 +37,19 @@ export class AuthController {
     let user = await this.authService.findUserByUsernameOrEmail(data.username);
 
     if (!user || !(await comparePassword(data.password, user.password))) {
-      throw new AuthenticationFailedException();
+      throw new AuthenticationFailedException(
+        req.lang.usernamePasswordMismatch,
+      );
     }
 
     let session = req.session as Express.Session;
 
     session.user = {id: user.id};
+
+    return {
+      ...user,
+      password: undefined,
+    };
   }
 
   @Get('logout')

@@ -14,9 +14,8 @@ import {Validate, Wrap} from 'utils/validator';
 
 import {
   AuthenticationFailedException,
-  EmailAlreadyExistsException,
-  UserNotFoundException,
-  UsernameAlreadyExistsException,
+  FieldAlreadyExistsException,
+  ResourceNotFoundException,
 } from 'common/exceptions';
 import {AuthGuard} from '../auth';
 import {ChangePasswordDTO, RegisterDTO} from './dto';
@@ -33,13 +32,14 @@ export class UserController {
     @Wrap(RegisterDTO)
     @Body()
     data: RegisterDTO,
+    @Req() req: Request,
   ) {
     if (await this.userService.findByIdentifier(data.username, 'username')) {
-      throw new UsernameAlreadyExistsException();
+      throw new FieldAlreadyExistsException(req.lang.usernameAlreadyExists);
     }
 
     if (await this.userService.findByIdentifier(data.email, 'email')) {
-      throw new EmailAlreadyExistsException();
+      throw new FieldAlreadyExistsException(req.lang.emailAlreadyExists);
     }
 
     const user: User = {
@@ -61,7 +61,9 @@ export class UserController {
     @Req() req: Request,
   ) {
     if (!(await comparePassword(data.oldPassword, req.user.password))) {
-      throw new AuthenticationFailedException();
+      throw new AuthenticationFailedException(
+        req.lang.usernamePasswordMismatch,
+      );
     }
 
     req.user.password = await encryptPassword(data.newPassword);
@@ -70,11 +72,11 @@ export class UserController {
   }
 
   @Get('info')
-  async info(@Query('id') id: number) {
+  async info(@Query('id') id: number, @Req() req: Request) {
     let user = await this.userService.findByIdentifier(id, 'id');
 
     if (!user) {
-      throw new UserNotFoundException();
+      throw new ResourceNotFoundException(req.lang.userNotFound);
     }
 
     let {username, email, avatar} = user;

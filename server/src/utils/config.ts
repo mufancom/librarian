@@ -43,12 +43,17 @@ export type DatabaseConfig = ExcludeProperty<
   'entities'
 >;
 
+export interface CommonGitConfig {
+  remote: string;
+  branch: string;
+}
+
 export interface ScheduleSyncGitConfig {
   sync: 'schedule';
   interval: number;
 }
 
-export type GitConfig = ScheduleSyncGitConfig;
+export type GitConfig = ScheduleSyncGitConfig & CommonGitConfig;
 
 export interface SessionConfig {
   secret: string;

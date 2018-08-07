@@ -1,7 +1,7 @@
 import {Col, Layout, Row} from 'antd';
 import * as React from 'react';
 
-import {ConventionIndexStore} from 'stores';
+import {ConventionIndexStore} from 'stores/convention-index-store';
 import {ConventionSideNavWithRouter} from './@convention-side-nav';
 
 const {Content, Sider} = Layout;

@@ -9,5 +9,5 @@
     "rootDir": "src",
     "outDir": "bld"
   },
-  "include": ["src"]
+  "include": ["src", "types"]
 }

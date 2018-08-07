@@ -3,7 +3,7 @@ import {styled} from 'theme';
 import {inject, observer} from 'utils/mobx';
 
 import {RouteComponentProps, withRouter} from 'react-router';
-import {ConventionIndexStore, IndexTree} from 'stores';
+import {ConventionIndexStore, IndexTree} from 'stores/convention-index-store';
 import {ConventionSideNavCategoryWithRouter} from './@convention-side-nav-category';
 
 const Wrapper = styled.div`

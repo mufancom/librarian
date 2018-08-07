@@ -2,7 +2,7 @@ import classNames from 'classnames';
 import React, {Component} from 'react';
 import {NavLink, RouteComponentProps, withRouter} from 'react-router-dom';
 
-import {IndexTree} from 'stores';
+import {IndexTree} from 'stores/convention-index-store';
 import {styled} from 'theme';
 
 const Wrapper = styled.li`

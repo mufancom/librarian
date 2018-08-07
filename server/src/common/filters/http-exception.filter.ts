@@ -12,18 +12,17 @@ export class HttpExceptionFilter implements ExceptionFilter {
     const context = host.switchToHttp();
     const response = context.getResponse();
     const status = exception.getStatus();
-
     let message = exception.message;
 
-    if (exception instanceof LibrarianHttpException) {
-      response.status(status).json(message);
-    } else {
-      response.status(status).json({
+    if (!(exception instanceof LibrarianHttpException)) {
+      message = {
         error: {
           code: (message.error as string).toUpperCase().replace(/\s+/g, '_'),
           message: message.message ? message.message : message,
         },
-      });
+      };
     }
+
+    response.status(status).json(message);
   }
 }
