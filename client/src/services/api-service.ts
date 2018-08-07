@@ -3,19 +3,13 @@ import * as Url from 'url';
 
 const API_BASE_URL = 'http://localhost:3002/';
 
-export const APIErrorCode = {
-  invalidArguments: 'INVALID_ARGUMENTS',
-  validationFailed: 'VALIDATION_FAILED',
-  authenticationFailed: 'AUTHENTICATION_FAILED',
-  userNotFound: 'USER_NOT_FOUND',
-  usernameAlreadyExists: 'USERNAME_ALREADY_EXISTS',
-  emailAlreadyExists: 'EMAIL_ALREADY_EXISTS',
-  conventionNotFound: 'CONVENTION_NOT_FOUND',
-};
+export const API_UNKNOWN_ERROR = '网络错误';
 
 export class APIErrorException extends Error {
-  constructor(readonly code: string, readonly message: string) {
-    super(message);
+  message: string;
+  constructor(readonly code: string, _message: string) {
+    super(_message);
+    this.message = _message;
   }
 }
 

@@ -5579,15 +5579,12 @@ mobx-react-router@^4.0.4:
   version "4.0.4"
   resolved "http://registry.npm.taobao.org/mobx-react-router/download/mobx-react-router-4.0.4.tgz#b778618c84f16057f5ae9c09a4d364deade95fd8"
 
-mobx-react@^4.4.2:
-  version "4.4.3"
-  resolved "http://registry.npm.taobao.org/mobx-react/download/mobx-react-4.4.3.tgz#baa9ec41165ee35ae7b9df19bca10190f36f117e"
+mobx-react@^5.2.3:
+  version "5.2.3"
+  resolved "http://registry.npm.taobao.org/mobx-react/download/mobx-react-5.2.3.tgz#cdf6141c2fe63377c5813cbd254e8ce0d4676631"
   dependencies:
-    hoist-non-react-statics "^2.3.1"
-
-mobx@^3.5.1:
-  version "3.6.2"
-  resolved "http://registry.npm.taobao.org/mobx/download/mobx-3.6.2.tgz#fb9f5ff5090539a1ad54e75dc4c098b602693320"
+    hoist-non-react-statics "^2.5.0"
+    react-lifecycles-compat "^3.0.2"
 
 mobx@^5.0.3:
   version "5.0.3"
@@ -7201,7 +7198,7 @@ react-dev-utils@^5.0.1:
     strip-ansi "3.0.1"
     text-table "0.2.0"
 
-react-dom@^16.2.0, react-dom@^16.4.1:
+react-dom@^16.4.1:
   version "16.4.1"
   resolved "http://registry.npm.taobao.org/react-dom/download/react-dom-16.4.1.tgz#7f8b0223b3a5fbe205116c56deb85de32685dad6"
   dependencies:
@@ -7230,15 +7227,6 @@ react-lazy-load@^3.0.12:
 react-lifecycles-compat@^3.0.2, react-lifecycles-compat@^3.0.4:
   version "3.0.4"
   resolved "http://registry.npm.taobao.org/react-lifecycles-compat/download/react-lifecycles-compat-3.0.4.tgz#4f1a273afdfc8f3488a8c516bfda78f872352362"
-
-react-mobx@^0.0.3:
-  version "0.0.3"
-  resolved "http://registry.npm.taobao.org/react-mobx/download/react-mobx-0.0.3.tgz#91f5abb2e60a3f6e9f5937176817ccb21683a527"
-  dependencies:
-    mobx "^3.5.1"
-    mobx-react "^4.4.2"
-    react "^16.2.0"
-    react-dom "^16.2.0"
 
 react-router-dom@^4.3.1:
   version "4.3.1"
@@ -7317,7 +7305,7 @@ react-slick@~0.23.1:
     lodash.debounce "^4.0.8"
     resize-observer-polyfill "^1.5.0"
 
-react@^16.2.0, react@^16.4.1:
+react@^16.4.1:
   version "16.4.1"
   resolved "http://registry.npm.taobao.org/react/download/react-16.4.1.tgz#de51ba5764b5dbcd1f9079037b862bd26b82fe32"
   dependencies:

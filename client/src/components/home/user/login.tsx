@@ -2,7 +2,7 @@ import {Alert, Button, Input, Modal} from 'antd';
 import classNames from 'classnames';
 import React, {Component} from 'react';
 
-import {APIErrorCode, APIErrorException} from 'services/api-service';
+import {API_UNKNOWN_ERROR} from 'services/api-service';
 import {UserService} from 'services/user-service';
 import {styled} from 'theme';
 import {inject, observer} from 'utils/mobx';
@@ -19,6 +19,7 @@ export interface LoginProps {
 export interface LoginState {
   loginLoading: boolean;
   errorAlertVisible: boolean;
+  errorMessage: string;
 }
 
 @observer
@@ -34,6 +35,7 @@ export class Login extends Component<LoginProps, LoginState> {
     this.state = {
       loginLoading: false,
       errorAlertVisible: false,
+      errorMessage: '',
     };
 
     this.usernameInput = React.createRef();
@@ -74,9 +76,9 @@ export class Login extends Component<LoginProps, LoginState> {
         >
           {this.state.errorAlertVisible ? (
             <Alert
-              message="Alert Message Text"
-              type="success"
-              style={{marginBottom: '14px'}}
+              message={this.state.errorMessage}
+              type="error"
+              style={{marginBottom: '15px'}}
               closable
               afterClose={this.handleErrorAlertClose}
             />
@@ -101,24 +103,22 @@ export class Login extends Component<LoginProps, LoginState> {
   async handleLoginButtonOnclick() {
     const username = (this.usernameInput.current as Input).input.value;
     const password = (this.passwordInput.current as Input).input.value;
+
     try {
       await this.userService.login(username, password);
-    } catch (e) {
-      let errorMessage: string;
-      if (e instanceof APIErrorException) {
-        switch (e.code) {
-          case APIErrorCode.authenticationFailed:
-            errorMessage = '用户名或密码错误';
-            break;
-          default:
-            errorMessage = '未知错误';
-            break;
-        }
+    } catch (error) {
+      let errorMessage: string = API_UNKNOWN_ERROR;
+      if (error.message) {
+        errorMessage = error.message;
       }
+
+      this.setState({errorAlertVisible: true, errorMessage});
     }
   }
 
-  handleErrorAlertClose() {}
+  handleErrorAlertClose() {
+    this.setState({errorAlertVisible: false});
+  }
 
   static Wrapper = Wrapper;
 }

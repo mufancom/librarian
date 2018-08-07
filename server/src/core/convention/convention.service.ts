@@ -76,6 +76,8 @@ export class ConventionService {
   }
 
   async pull() {
-    return Git.pull();
+    try {
+      const result = await Git.pull();
+    } catch (error) {}
   }
 }

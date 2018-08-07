@@ -24,8 +24,8 @@ export class UserService {
     });
 
     this.authStore.id = data.id;
+    this.authStore.role = data.role;
     this.authStore.username = data.username;
     this.authStore.avatar = data.avatar ? data.avatar : '';
-    this.authStore.role = data.role;
   }
 }
