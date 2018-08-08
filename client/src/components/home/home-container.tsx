@@ -47,7 +47,7 @@ export class HomeContainer extends React.Component {
             <Header>
               <HomeHeaderWithRouter />
             </Header>
-            <Content style={{marginTop: 80}}>
+            <Content style={{marginTop: 10}}>
               <Switch>
                 <Route path="/convention" component={Convention} />
                 <Route path="/" component={HomeContent} />

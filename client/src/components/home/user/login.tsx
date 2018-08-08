@@ -1,4 +1,4 @@
-import {Alert, Button, Input, Modal, message} from 'antd';
+import {Alert, Button, Icon, Input, Modal, message} from 'antd';
 import classNames from 'classnames';
 import React, {Component} from 'react';
 
@@ -89,16 +89,20 @@ export class Login extends Component<LoginProps, LoginState> {
           )}
           <p>
             <Input
+              prefix={<Icon type="user" style={{color: 'rgba(0,0,0,.25)'}} />}
               type="text"
               placeholder="用户名/邮箱"
               ref={this.usernameInput}
+              onPressEnter={this.handleLoginButtonOnclick}
             />
           </p>
           <p>
             <Input
+              prefix={<Icon type="lock" style={{color: 'rgba(0,0,0,.25)'}} />}
               type="password"
               placeholder="密码"
               ref={this.passwordInput}
+              onPressEnter={this.handleLoginButtonOnclick}
             />
           </p>
         </Modal>
