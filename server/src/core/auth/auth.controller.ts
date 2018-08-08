@@ -13,7 +13,6 @@ import {Request} from 'express';
 
 import {AuthenticationFailedException} from 'common/exceptions';
 import {comparePassword} from 'utils/encryption';
-import {Validate, Wrap} from 'utils/validator';
 
 import {AuthGuard} from './auth.guard';
 import {AuthService} from './auth.service';
@@ -27,13 +26,7 @@ export class AuthController {
   ) {}
 
   @Post('login')
-  @Validate()
-  async login(
-    @Wrap(LoginDTO)
-    @Body()
-    data: LoginDTO,
-    @Req() req: Request,
-  ) {
+  async login(@Body() data: LoginDTO, @Req() req: Request) {
     let user = await this.authService.findUserByUsernameOrEmail(data.username);
 
     if (!user || !(await comparePassword(data.password, user.password))) {

@@ -10,7 +10,6 @@ import {
 import {Request} from 'express';
 
 import {comparePassword, encryptPassword} from 'utils/encryption';
-import {Validate, Wrap} from 'utils/validator';
 
 import {
   AuthenticationFailedException,
@@ -27,13 +26,7 @@ export class UserController {
   constructor(private readonly userService: UserService) {}
 
   @Post('register')
-  @Validate()
-  async register(
-    @Wrap(RegisterDTO)
-    @Body()
-    data: RegisterDTO,
-    @Req() req: Request,
-  ) {
+  async register(@Body() data: RegisterDTO) {
     if (await this.userService.findByIdentifier(data.username, 'username')) {
       throw new ResourceConflictingException('USERNAME_ALREADY_EXISTS');
     }
@@ -53,13 +46,7 @@ export class UserController {
 
   @Post('chg_pw')
   @UseGuards(AuthGuard)
-  @Validate()
-  async changePassword(
-    @Wrap(ChangePasswordDTO)
-    @Body()
-    data: ChangePasswordDTO,
-    @Req() req: Request,
-  ) {
+  async changePassword(@Body() data: ChangePasswordDTO, @Req() req: Request) {
     if (!(await comparePassword(data.oldPassword, req.user.password))) {
       throw new AuthenticationFailedException('USERNAME_PASSWORD_MISMATCH');
     }
@@ -70,7 +57,7 @@ export class UserController {
   }
 
   @Get('info')
-  async info(@Query('id') id: number, @Req() req: Request) {
+  async info(@Query('id') id: number) {
     let user = await this.userService.findByIdentifier(id, 'id');
 
     if (!user) {

@@ -10,7 +10,6 @@ import {
 import {Request} from 'express';
 
 import {ResourceNotFoundException} from 'common/exceptions';
-import {Validate, Wrap} from 'utils/validator';
 import {AuthGuard} from '../auth';
 import {ConventionService} from '../convention';
 import {Comment} from './comment.entity';
@@ -34,13 +33,7 @@ export class CommentController {
 
   @Post('post')
   @UseGuards(AuthGuard)
-  @Validate()
-  async post(
-    @Wrap(PostDTO)
-    @Body()
-    data: PostDTO,
-    @Req() req: Request,
-  ) {
+  async post(@Body() data: PostDTO, @Req() req: Request) {
     const timeStamp = Date.now();
 
     let comment: Comment = {
