@@ -4,14 +4,16 @@ import {
   ExceptionFilter,
   HttpException,
 } from '@nestjs/common';
+
 import {LibrarianHttpException} from '../exceptions';
 
 @Catch(HttpException)
 export class HttpExceptionFilter implements ExceptionFilter {
   catch(exception: HttpException, host: ArgumentsHost) {
-    const context = host.switchToHttp();
-    const response = context.getResponse();
-    const status = exception.getStatus();
+    let context = host.switchToHttp();
+    let response = context.getResponse();
+    let status = exception.getStatus();
+
     let message = exception.message;
 
     if (!(exception instanceof LibrarianHttpException)) {

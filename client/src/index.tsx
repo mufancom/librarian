@@ -6,11 +6,11 @@ import * as ReactDOM from 'react-dom';
 import {Route, Router, Switch} from 'react-router';
 import {ThemeProvider} from 'styled-components';
 
-import {HomeContainer} from 'components/home/home-container';
+import {HomeContainer} from 'components/home';
 import * as services from 'services';
 import * as stores from 'stores';
 import {theme} from 'theme';
-import registerServiceWorker from 'utils/register-service-worker';
+import * as ServiceWorker from 'utils/service-worker';
 
 import './global.less';
 
@@ -29,4 +29,5 @@ ReactDOM.render(
   </ThemeProvider>,
   document.getElementById('root') as HTMLElement,
 );
-registerServiceWorker();
+
+ServiceWorker.register();

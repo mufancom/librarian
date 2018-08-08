@@ -10,6 +10,7 @@ export function fetchErrorMessage(error: any) {
   if (error.message) {
     return error.message as string;
   }
+
   return API_UNKNOWN_ERROR;
 }
 

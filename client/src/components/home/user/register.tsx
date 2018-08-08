@@ -1,5 +1,6 @@
 import {Alert, Button, Input, Modal, message} from 'antd';
 import classNames from 'classnames';
+import {observable} from 'mobx';
 import React, {Component} from 'react';
 
 import {fetchErrorMessage} from 'services/api-service';
@@ -33,8 +34,12 @@ export class Register extends Component<RegisterProps, RegisterState> {
   private passwordInput: React.RefObject<Input>;
   private passwordRepeatInput: React.RefObject<Input>;
 
+  @observable
+  loading = false;
+
   constructor(props: RegisterProps) {
     super(props);
+
     this.state = {
       registerLoading: false,
       errorAlertVisible: false,
@@ -46,8 +51,8 @@ export class Register extends Component<RegisterProps, RegisterState> {
     this.passwordInput = React.createRef();
     this.passwordRepeatInput = React.createRef();
 
-    this.handleRegisterOnclick = this.handleRegisterOnclick.bind(this);
-    this.handleErrorAlertClose = this.handleErrorAlertClose.bind(this);
+    this.onRegisterButtonClick = this.onRegisterButtonClick.bind(this);
+    this.onErrorAlertClose = this.onErrorAlertClose.bind(this);
   }
 
   render() {
@@ -59,7 +64,7 @@ export class Register extends Component<RegisterProps, RegisterState> {
         <Modal
           visible={this.props.visible}
           title="注册"
-          onOk={this.handleRegisterOnclick}
+          onOk={this.onRegisterButtonClick}
           onCancel={this.props.onCancel}
           width="450px"
           footer={[
@@ -74,7 +79,7 @@ export class Register extends Component<RegisterProps, RegisterState> {
               key="register"
               type="primary"
               loading={this.state.registerLoading}
-              onClick={this.handleRegisterOnclick}
+              onClick={this.onRegisterButtonClick}
             >
               立即注册
             </Button>,
@@ -86,7 +91,7 @@ export class Register extends Component<RegisterProps, RegisterState> {
               type="error"
               style={{marginBottom: '15px'}}
               closable
-              afterClose={this.handleErrorAlertClose}
+              afterClose={this.onErrorAlertClose}
             />
           ) : (
             undefined
@@ -116,14 +121,13 @@ export class Register extends Component<RegisterProps, RegisterState> {
     );
   }
 
-  async handleRegisterOnclick() {
+  async onRegisterButtonClick() {
     this.setState({registerLoading: true});
 
-    const username = (this.usernameInput.current as Input).input.value;
-    const email = (this.emailInput.current as Input).input.value;
-    const password = (this.passwordInput.current as Input).input.value;
-    const passwordRepeat = (this.passwordRepeatInput.current as Input).input
-      .value;
+    const username = this.usernameInput.current!.input.value;
+    const email = this.emailInput.current!.input.value;
+    const password = this.passwordInput.current!.input.value;
+    const passwordRepeat = this.passwordRepeatInput.current!.input.value;
 
     if (password !== passwordRepeat) {
       this.setState({
@@ -151,7 +155,7 @@ export class Register extends Component<RegisterProps, RegisterState> {
     this.setState({registerLoading: false});
   }
 
-  handleErrorAlertClose() {
+  onErrorAlertClose() {
     this.setState({errorAlertVisible: false});
   }
 

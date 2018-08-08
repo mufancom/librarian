@@ -4010,6 +4010,10 @@ https-browserify@^1.0.0:
   version "1.0.0"
   resolved "http://registry.npm.taobao.org/https-browserify/download/https-browserify-1.0.0.tgz#ec06c10e0a34c0f2faf199f7fd7fc78fffd03c73"
 
+hyphenate@^0.2.1:
+  version "0.2.1"
+  resolved "http://registry.npm.taobao.org/hyphenate/download/hyphenate-0.2.1.tgz#531f403332dc128c3c616ea93fc0f54353a87e85"
+
 i18n-ts@^1.0.2:
   version "1.0.2"
   resolved "http://registry.npm.taobao.org/i18n-ts/download/i18n-ts-1.0.2.tgz#684a79f584fea35a3a7e1aff8a837f59bb3459f7"

@@ -79,7 +79,7 @@ export class HeaderUserLoggedIn extends Component<HeaderUserLoggedInProps> {
     try {
       await this.userService.logout();
 
-      message.success(translation.logoutSunccess);
+      message.success(translation.logoutSuccess);
     } catch (error) {
       message.error(fetchErrorMessage(error));
     }

@@ -13,9 +13,9 @@ export const zh: Translation = {
   emailAlreadyExists: '邮箱已经注册过',
   usernameLengthException: '用户名长度应为4-20位',
   passwordLengthException: '密码长度应为8-48位',
-  emailIsemailException: '请输入有效的邮箱地址',
+  emailIsEmailException: '请输入有效的邮箱地址',
   registerSuccess: '注册成功！',
   loginSuccess: (username: string) => `欢迎回来, ${username}`,
-  logoutSunccess: '退出账号成功',
+  logoutSuccess: '退出账号成功',
   passwordsNotConsistent: '两次输入密码不一致',
 };

@@ -20,7 +20,7 @@ export class InvalidArgumentsException extends LibrarianHttpException {
   }
 }
 
-export class ValidationFailedException extends LibrarianHttpException {
+export class ValidationException extends LibrarianHttpException {
   constructor(message = 'VALIDATION_FAILED') {
     super('VALIDATION_FAILED', message);
   }

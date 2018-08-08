@@ -8,7 +8,16 @@ export interface Response<T> {
 
 @Injectable()
 export class APIInterceptor<T> implements NestInterceptor<T, Response<T>> {
-  intercept(_context: ExecutionContext, call$: Observable<T>): Observable<any> {
-    return call$.pipe(map(data => ({data})));
+  intercept(
+    _context: ExecutionContext,
+    call$: Observable<T>,
+  ): Observable<Response<T>> {
+    return call$.pipe(
+      map(
+        (data): Response<T> => {
+          return {data};
+        },
+      ),
+    );
   }
 }
