@@ -1,16 +1,11 @@
 import {Col, Layout, Row} from 'antd';
 import * as React from 'react';
 
-import {ConventionIndexStore} from 'stores/convention-index-store';
 import {ConventionSideNavWithRouter} from './@convention-side-nav';
 
 const {Content, Sider} = Layout;
 
-export interface ConventionProps {
-  conventionIndex: ConventionIndexStore;
-}
-
-export class Convention extends React.Component<ConventionProps> {
+export class Convention extends React.Component {
   render() {
     return (
       <Row>
@@ -32,7 +27,7 @@ export class Convention extends React.Component<ConventionProps> {
                 backgroundColor: 'transparent',
               }}
             >
-              <ConventionSideNavWithRouter {...this.props} />
+              <ConventionSideNavWithRouter />
             </Sider>
             <Content style={{margin: '24px 16px 0 300px', overflow: 'auto'}}>
               <div style={{padding: 24, background: '#fff'}}>

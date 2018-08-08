@@ -1,9 +1,12 @@
-import {Button, Input, Modal} from 'antd';
+import {Alert, Button, Input, Modal, message} from 'antd';
 import classNames from 'classnames';
 import React, {Component} from 'react';
 
+import {fetchErrorMessage} from 'services/api-service';
+import {UserService} from 'services/user-service';
 import {styled} from 'theme';
-import {observer} from 'utils/mobx';
+import {translation} from 'utils/lang';
+import {inject, observer} from 'utils/mobx';
 
 const Wrapper = styled.div``;
 
@@ -16,15 +19,35 @@ export interface RegisterProps {
 
 export interface RegisterState {
   registerLoading: boolean;
+  errorAlertVisible: boolean;
+  errorMessage: string;
 }
 
 @observer
 export class Register extends Component<RegisterProps, RegisterState> {
+  @inject
+  userService!: UserService;
+
+  private usernameInput: React.RefObject<Input>;
+  private emailInput: React.RefObject<Input>;
+  private passwordInput: React.RefObject<Input>;
+  private passwordRepeatInput: React.RefObject<Input>;
+
   constructor(props: RegisterProps) {
     super(props);
     this.state = {
       registerLoading: false,
+      errorAlertVisible: false,
+      errorMessage: '',
     };
+
+    this.usernameInput = React.createRef();
+    this.emailInput = React.createRef();
+    this.passwordInput = React.createRef();
+    this.passwordRepeatInput = React.createRef();
+
+    this.handleRegisterOnclick = this.handleRegisterOnclick.bind(this);
+    this.handleErrorAlertClose = this.handleErrorAlertClose.bind(this);
   }
 
   render() {
@@ -36,7 +59,7 @@ export class Register extends Component<RegisterProps, RegisterState> {
         <Modal
           visible={this.props.visible}
           title="注册"
-          onOk={this.handleOk}
+          onOk={this.handleRegisterOnclick}
           onCancel={this.props.onCancel}
           width="450px"
           footer={[
@@ -51,30 +74,86 @@ export class Register extends Component<RegisterProps, RegisterState> {
               key="register"
               type="primary"
               loading={this.state.registerLoading}
-              onClick={this.handleOk}
+              onClick={this.handleRegisterOnclick}
             >
               立即注册
             </Button>,
           ]}
         >
+          {this.state.errorAlertVisible ? (
+            <Alert
+              message={this.state.errorMessage}
+              type="error"
+              style={{marginBottom: '15px'}}
+              closable
+              afterClose={this.handleErrorAlertClose}
+            />
+          ) : (
+            undefined
+          )}
           <p>
-            <Input type="text" placeholder="用户名" />
+            <Input type="text" ref={this.usernameInput} placeholder="用户名" />
           </p>
           <p>
-            <Input type="text" placeholder="邮箱" />
+            <Input type="text" ref={this.emailInput} placeholder="邮箱" />
           </p>
           <p>
-            <Input type="password" placeholder="密码" />
+            <Input
+              type="password"
+              ref={this.passwordInput}
+              placeholder="密码"
+            />
           </p>
           <p>
-            <Input type="password" placeholder="重复密码" />
+            <Input
+              type="password"
+              ref={this.passwordRepeatInput}
+              placeholder="重复密码"
+            />
           </p>
         </Modal>
       </Wrapper>
     );
   }
 
-  handleOk() {}
+  async handleRegisterOnclick() {
+    this.setState({registerLoading: true});
+
+    const username = (this.usernameInput.current as Input).input.value;
+    const email = (this.emailInput.current as Input).input.value;
+    const password = (this.passwordInput.current as Input).input.value;
+    const passwordRepeat = (this.passwordRepeatInput.current as Input).input
+      .value;
+
+    if (password !== passwordRepeat) {
+      this.setState({
+        errorAlertVisible: true,
+        errorMessage: translation.passwordsNotConsistent,
+        registerLoading: false,
+      });
+      return;
+    }
+
+    try {
+      await this.userService.register(username, email, password);
+
+      message.success(translation.registerSuccess);
+      this.props.onCancel();
+    } catch (error) {
+      let errorMessage = fetchErrorMessage(error);
+
+      this.setState({
+        errorAlertVisible: true,
+        errorMessage,
+      });
+    }
+
+    this.setState({registerLoading: false});
+  }
+
+  handleErrorAlertClose() {
+    this.setState({errorAlertVisible: false});
+  }
 
   static Wrapper = Wrapper;
 }

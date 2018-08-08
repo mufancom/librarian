@@ -1,41 +1,17 @@
 import {I18nResolver} from 'i18n-ts';
+import * as languages from 'languages';
 
-const defaultEn = {
-  invalidArguments: 'Invalid arguments',
-  validationFailed: 'Validation failed',
-  authenticationFailed: 'Authentication failed',
-  resourceNotFound: 'Resource not found',
-  userNotFound: 'User not found',
-  conventionNotFound: 'Convention not found',
-  usernamePasswordMismatch: 'Username and password mismatch',
-  fieldAlreadyExists: 'Field already exists',
-  usernameAlreadyExists: 'Username already exists',
-  emailAlreadyExists: 'Email already exists',
-  usernameLengthException: 'Username should be 4-20 characters long',
-  passwordLengthException: 'Password should be 8-48 characters long',
-};
+const DEFAULT_LANG = languages.en;
 
-type Translation = typeof defaultEn & {[key: string]: string};
+type TranslationMethod = (...args: any[]) => string;
 
-const zh: Translation = {
-  invalidArguments: '无效参数',
-  validationFailed: '验证失败',
-  authenticationFailed: '授权失败',
-  resourceNotFound: '资源不存在',
-  userNotFound: '用户不存在',
-  conventionNotFound: '规范不存在',
-  usernamePasswordMismatch: '用户名或密码错误',
-  fieldAlreadyExists: '字段已经存在',
-  usernameAlreadyExists: '用户名已经被占用',
-  emailAlreadyExists: '邮箱已经注册过',
-  usernameLengthException: '用户名长度应为4-20位',
-  passwordLengthException: '密码长度应为8-48位',
+export type Translation = typeof DEFAULT_LANG & {
+  [key: string]: string | TranslationMethod;
 };
 
 export const i18n = {
-  default: defaultEn,
-  defaultEn,
-  zh,
+  default: DEFAULT_LANG,
+  ...languages,
 };
 
 function getAcceptableLang(langs: ReadonlyArray<string>) {

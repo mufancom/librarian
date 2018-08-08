@@ -50,6 +50,12 @@ export class AuthController {
     };
   }
 
+  @Get('check')
+  @UseGuards(AuthGuard)
+  async checkStatus(@Req() req: Request) {
+    return {...req.user, password: undefined};
+  }
+
   @Get('logout')
   @UseGuards(AuthGuard)
   async logout(@Session() session: Express.Session) {

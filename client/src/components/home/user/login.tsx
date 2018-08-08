@@ -1,10 +1,11 @@
-import {Alert, Button, Input, Modal} from 'antd';
+import {Alert, Button, Input, Modal, message} from 'antd';
 import classNames from 'classnames';
 import React, {Component} from 'react';
 
-import {API_UNKNOWN_ERROR} from 'services/api-service';
+import {fetchErrorMessage} from 'services/api-service';
 import {UserService} from 'services/user-service';
 import {styled} from 'theme';
+import {translation} from 'utils/lang';
 import {inject, observer} from 'utils/mobx';
 
 const Wrapper = styled.div``;
@@ -26,6 +27,7 @@ export interface LoginState {
 export class Login extends Component<LoginProps, LoginState> {
   @inject
   userService!: UserService;
+
   private usernameInput: React.RefObject<Input>;
   private passwordInput: React.RefObject<Input>;
 
@@ -86,7 +88,11 @@ export class Login extends Component<LoginProps, LoginState> {
             undefined
           )}
           <p>
-            <Input type="text" placeholder="用户名" ref={this.usernameInput} />
+            <Input
+              type="text"
+              placeholder="用户名/邮箱"
+              ref={this.usernameInput}
+            />
           </p>
           <p>
             <Input
@@ -101,19 +107,21 @@ export class Login extends Component<LoginProps, LoginState> {
   }
 
   async handleLoginButtonOnclick() {
+    this.setState({loginLoading: true});
+
     const username = (this.usernameInput.current as Input).input.value;
     const password = (this.passwordInput.current as Input).input.value;
 
     try {
-      await this.userService.login(username, password);
-    } catch (error) {
-      let errorMessage: string = API_UNKNOWN_ERROR;
-      if (error.message) {
-        errorMessage = error.message;
-      }
+      const _username = await this.userService.login(username, password);
 
+      message.success(translation.loginSuccess(_username));
+    } catch (error) {
+      const errorMessage = fetchErrorMessage(error);
       this.setState({errorAlertVisible: true, errorMessage});
     }
+
+    this.setState({loginLoading: false});
   }
 
   handleErrorAlertClose() {

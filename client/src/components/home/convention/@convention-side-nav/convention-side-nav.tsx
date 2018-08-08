@@ -1,9 +1,10 @@
+import classNames from 'classnames';
 import * as React from 'react';
 import {styled} from 'theme';
 import {inject, observer} from 'utils/mobx';
 
 import {RouteComponentProps, withRouter} from 'react-router';
-import {ConventionIndexStore, IndexTree} from 'stores/convention-index-store';
+import {ConventionIndexTree, ConventionStore} from 'stores/convention-store';
 import {ConventionSideNavCategoryWithRouter} from './@convention-side-nav-category';
 
 const Wrapper = styled.div`
@@ -25,7 +26,7 @@ const Wrapper = styled.div`
 `;
 
 interface MenuProps {
-  list: IndexTree[];
+  list: ConventionIndexTree[];
   className?: string;
 }
 
@@ -45,18 +46,20 @@ const Menu: React.SFC<MenuProps> = props => {
 };
 
 export interface ConventionSideNavProps extends RouteComponentProps<any> {
-  conventionIndex: ConventionIndexStore;
+  className?: string;
 }
 
 @observer
 export class ConventionSideNav extends React.Component<ConventionSideNavProps> {
   @inject
-  conventionIndex!: ConventionIndexStore;
+  conventionStore!: ConventionStore;
 
   render() {
+    let {className} = this.props;
+
     return (
-      <Wrapper>
-        <Menu list={this.props.conventionIndex.content} />
+      <Wrapper className={classNames('convention-side-nav', className)}>
+        <Menu list={this.conventionStore.index} />
       </Wrapper>
     );
   }

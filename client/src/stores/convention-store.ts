@@ -1,17 +1,17 @@
 import {observable} from 'mobx';
 
-export interface IndexTree {
+export interface ConventionIndexTree {
   title: string;
   url?: string;
-  children?: IndexTree[];
+  children?: ConventionIndexTree[];
 }
 
-export class ConventionIndexStore {
+export class ConventionStore {
   @observable
-  content: IndexTree[];
+  index: ConventionIndexTree[];
 
   constructor() {
-    this.content = [
+    this.index = [
       {
         title: 'Typescript',
         children: [

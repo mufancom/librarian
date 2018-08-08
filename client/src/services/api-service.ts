@@ -6,6 +6,13 @@ const API_BASE_URL = 'http://localhost:3002/';
 
 export const API_UNKNOWN_ERROR = '网络错误';
 
+export function fetchErrorMessage(error: any) {
+  if (error.message) {
+    return error.message as string;
+  }
+  return API_UNKNOWN_ERROR;
+}
+
 export class APIErrorException extends Error {
   message: string;
   constructor(readonly code: string, _message: string) {
@@ -79,10 +86,10 @@ export class APIService {
       throw undefined;
     } else if ('error' in result) {
       let error = result.error;
-      throw new APIErrorException(
+      throw new APIErrorException(error.code, errorMessageToLocalize(
         error.code,
-        errorMessageToLocalize(error.code, error.message),
-      );
+        error.message,
+      ) as string);
     } else {
       return result.data;
     }

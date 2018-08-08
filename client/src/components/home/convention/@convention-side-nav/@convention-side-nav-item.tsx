@@ -2,7 +2,7 @@ import classNames from 'classnames';
 import React, {Component} from 'react';
 import {NavLink, RouteComponentProps, withRouter} from 'react-router-dom';
 
-import {IndexTree} from 'stores/convention-index-store';
+import {ConventionIndexTree} from 'stores/convention-store';
 import {styled} from 'theme';
 
 const Wrapper = styled.li`
@@ -28,7 +28,7 @@ const Wrapper = styled.li`
 
 export interface ConventionSideNavItemProps extends RouteComponentProps<any> {
   className?: string;
-  item: IndexTree;
+  item: ConventionIndexTree;
 }
 
 export class ConventionSideNavItem extends Component<

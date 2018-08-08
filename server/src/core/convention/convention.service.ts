@@ -17,10 +17,12 @@ function formIndex(fileTree: File.FileInfo[]) {
 
   for (const fileInfo of fileTree) {
     if (fileInfo.type === 'directory') {
-      result.push({
-        title: fileInfo.filename,
-        children: formIndex(fileInfo.children as File.FileInfo[]),
-      });
+      if (fileInfo.filename.indexOf('.') !== 0) {
+        result.push({
+          title: fileInfo.filename,
+          children: formIndex(fileInfo.children as File.FileInfo[]),
+        });
+      }
     } else {
       const fileUrl = Path.join(fileInfo.relativePath, fileInfo.filename);
 

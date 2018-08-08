@@ -2,9 +2,9 @@ import {Layout} from 'antd';
 import {Provider} from 'mobx-react';
 import * as React from 'react';
 import {Route, Switch} from 'react-router';
-import {ConventionIndexStore} from 'stores/convention-index-store';
 import {styled} from 'theme';
 
+import {conventionStore} from 'stores';
 import {Content as HomeContent} from './content';
 import {Convention} from './convention';
 import {
@@ -35,7 +35,7 @@ const Wrapper = styled.div`
 `;
 
 const homeStore = {
-  conventionIndex: new ConventionIndexStore(),
+  conventionStore,
 };
 
 export class HomeContainer extends React.Component {

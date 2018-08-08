@@ -2,7 +2,7 @@ import classNames from 'classnames';
 import React, {Component} from 'react';
 
 import {RouteComponentProps, withRouter} from 'react-router';
-import {IndexTree} from 'stores/convention-index-store';
+import {ConventionIndexTree} from 'stores/convention-store';
 import {styled} from 'theme';
 import {observer} from 'utils/mobx';
 import {ConventionSideNavGroupWithRouter} from './@convention-side-nav-group';
@@ -26,7 +26,7 @@ const Wrapper = styled.li`
 export interface ConventionSideNavCategoryProps
   extends RouteComponentProps<any> {
   className?: string;
-  item: IndexTree;
+  item: ConventionIndexTree;
 }
 
 @observer
@@ -45,13 +45,13 @@ export class ConventionSideNavCategory extends Component<
           {item.children && item.children.length > 0 ? (
             item.children.map(
               val =>
-                val.children && val.children.length > 0 ? (
+                val.url ? (
+                  <ConventionSideNavItemWithRouter key={val.title} item={val} />
+                ) : (
                   <ConventionSideNavGroupWithRouter
                     key={val.title}
                     item={val}
                   />
-                ) : (
-                  <ConventionSideNavItemWithRouter key={val.title} item={val} />
                 ),
             )
           ) : (
