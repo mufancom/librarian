@@ -13,15 +13,19 @@ export interface IndexTree {
   children?: IndexTree[];
 }
 
-function buildIndex(fileTree: File.FileInfo[]): IndexTree[] {
+function buildIndex(fileTree: File.FileStructureInfo[]): IndexTree[] {
   let result: IndexTree[] = [];
 
-  for (let {type, filename, relativePath, children} of fileTree) {
-    if (type === 'directory') {
+  for (let fileInfo of fileTree) {
+    let {filename, relativePath} = fileInfo;
+
+    if (fileInfo.type === 'directory') {
+      let {children} = fileInfo;
+
       if (!filename.startsWith('.')) {
         result.push({
           title: filename,
-          children: buildIndex(children as File.FileInfo[]),
+          children: buildIndex(children),
         });
       }
     } else {

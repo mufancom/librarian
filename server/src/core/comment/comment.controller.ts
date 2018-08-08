@@ -14,7 +14,6 @@ import {ResourceNotFoundException} from 'common/exceptions';
 import {AuthGuard} from '../auth';
 import {ConventionService} from '../convention';
 import {PostDTO} from './comment.dto';
-import {Comment} from './comment.entity';
 import {CommentService} from './comment.service';
 
 @Controller('comment')
@@ -34,20 +33,18 @@ export class CommentController {
 
   @Post('post')
   @UseGuards(AuthGuard)
-  async post(@Body() data: PostDTO, @Req() req: Request) {
-    let now = Date.now();
-
-    let comment: Comment = {
-      ...data,
-      userId: req.user.id,
-      createdAt: now,
-      updatedAt: now,
-    };
-
+  async post(@Body() data: PostDTO, @Req() {user}: Request) {
     if (!(await this.conventionService.exists(data.filePath))) {
       throw new ResourceNotFoundException('CONVENTION_NOT_FOUND');
     }
 
-    await this.commentService.saveComment(comment);
+    let now = Date.now();
+
+    await this.commentService.createComment({
+      ...data,
+      userId: user.id,
+      createdAt: now,
+      updatedAt: now,
+    });
   }
 }

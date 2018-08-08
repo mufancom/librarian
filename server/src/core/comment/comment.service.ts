@@ -1,6 +1,6 @@
 import {Injectable} from '@nestjs/common';
 import {InjectRepository} from '@nestjs/typeorm';
-import {Repository} from 'typeorm';
+import {DeepPartial, Repository} from 'typeorm';
 
 import {Comment} from './comment.entity';
 
@@ -23,5 +23,9 @@ export class CommentService {
 
   async saveComment(comment: Comment) {
     await this.commentRepository.save(comment);
+  }
+
+  async createComment(commentLike: DeepPartial<Comment>) {
+    await this.commentRepository.create(commentLike);
   }
 }

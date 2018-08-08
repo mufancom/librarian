@@ -10,19 +10,12 @@ import {Config} from 'utils/config';
 
 const DEFAULT_PORT = 3002;
 
-declare global {
-  namespace Express {
-    interface SessionData {
-      user?: {id: number};
-    }
-  }
-}
-
 ExpressSessionMiddleware.configure(Config.session.get());
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
+  // TODO: add origin setting into config
   app.enableCors({origin: 'http://localhost:3000', credentials: true});
 
   app.use(new ExpressSessionMiddleware().resolve());

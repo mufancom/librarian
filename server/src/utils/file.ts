@@ -9,18 +9,25 @@ export namespace FS {
 }
 
 export interface FileInfo {
+  type: 'file';
+}
+
+export interface DirectoryInfo {
+  type: 'directory';
+  children: FileStructureInfo[];
+}
+
+export type FileStructureInfo = {
   path: string;
   relativePath: string;
   filename: string;
-  type: 'file' | 'directory';
-  children?: FileInfo[];
-}
+} & (FileInfo | DirectoryInfo);
 
 export async function find(
   path: string | string[],
   pattern?: RegExp,
   depth?: number,
-) {
+): Promise<FileStructureInfo[]> {
   if (depth === 0) {
     return [];
   } else if (typeof depth === 'undefined') {
@@ -34,7 +41,7 @@ export async function find(
   const fullPath = Path.join(...path);
   const files = await FS.readdir(fullPath);
 
-  let result: FileInfo[] = [];
+  let result: FileStructureInfo[] = [];
 
   for (const filename of files) {
     const filePath = Path.join(fullPath, filename);
