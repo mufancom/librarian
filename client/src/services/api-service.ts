@@ -67,17 +67,27 @@ export class APIService {
   ): Promise<T> {
     let url = Url.resolve(API_BASE_URL, path);
 
-    let response = await axios({
-      method,
-      url,
-      withCredentials: true,
-      data: body,
-      headers: {
-        'Content-Type': type,
-      },
-      onUploadProgress,
-      onDownloadProgress,
-    });
+    let response;
+    try {
+      response = await axios({
+        method,
+        url,
+        withCredentials: true,
+        data: body,
+        headers: {
+          'Content-Type': type,
+        },
+        onUploadProgress,
+        onDownloadProgress,
+      });
+    } catch (error) {
+      // tslint:disable-next-line:no-console
+      console.log(error);
+    }
+
+    if (!response) {
+      throw undefined;
+    }
 
     let result = response.data as APIResult;
 
@@ -86,10 +96,11 @@ export class APIService {
       // Unreachable
       throw undefined;
     } else if ('error' in result) {
-      let error = result.error;
-      throw new APIErrorException(error.code, errorMessageToLocalize(
-        error.code,
-        error.message,
+      let {code, message} = result.error;
+
+      throw new APIErrorException(code, errorMessageToLocalize(
+        code,
+        message,
       ) as string);
     } else {
       return result.data;

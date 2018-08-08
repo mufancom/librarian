@@ -1,4 +1,4 @@
-import simpleGit = require('simple-git/promise/index');
+import simpleGit = require('simple-git/promise');
 
 import {CONVENTION_GIT_BASE_PATH} from 'paths';
 

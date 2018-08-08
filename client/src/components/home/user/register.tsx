@@ -1,6 +1,6 @@
 import {Alert, Button, Input, Modal, message} from 'antd';
 import classNames from 'classnames';
-import {observable} from 'mobx';
+import {action, observable} from 'mobx';
 import React, {Component} from 'react';
 
 import {fetchErrorMessage} from 'services/api-service';
@@ -18,16 +18,19 @@ export interface RegisterProps {
   onLoginBtnClick(): void;
 }
 
-export interface RegisterState {
-  registerLoading: boolean;
-  errorAlertVisible: boolean;
-  errorMessage: string;
-}
-
 @observer
-export class Register extends Component<RegisterProps, RegisterState> {
+export class Register extends Component<RegisterProps> {
   @inject
   userService!: UserService;
+
+  @observable
+  registerLoading = false;
+
+  @observable
+  errorAlertVisible = false;
+
+  @observable
+  errorMessage = '';
 
   private usernameInput: React.RefObject<Input>;
   private emailInput: React.RefObject<Input>;
@@ -40,12 +43,6 @@ export class Register extends Component<RegisterProps, RegisterState> {
   constructor(props: RegisterProps) {
     super(props);
 
-    this.state = {
-      registerLoading: false,
-      errorAlertVisible: false,
-      errorMessage: '',
-    };
-
     this.usernameInput = React.createRef();
     this.emailInput = React.createRef();
     this.passwordInput = React.createRef();
@@ -56,21 +53,21 @@ export class Register extends Component<RegisterProps, RegisterState> {
   }
 
   render() {
-    let {className} = this.props;
+    let {className, visible, onCancel, onLoginBtnClick} = this.props;
 
     return (
       <Wrapper className={classNames('register', className)}>
         {' '}
         <Modal
-          visible={this.props.visible}
+          visible={visible}
           title="注册"
           onOk={this.onRegisterButtonClick}
-          onCancel={this.props.onCancel}
+          onCancel={onCancel}
           width="450px"
           footer={[
             <a
               key="login"
-              onClick={this.props.onLoginBtnClick}
+              onClick={onLoginBtnClick}
               style={{marginRight: '15px'}}
             >
               已有账号？去登录
@@ -78,16 +75,16 @@ export class Register extends Component<RegisterProps, RegisterState> {
             <Button
               key="register"
               type="primary"
-              loading={this.state.registerLoading}
+              loading={this.registerLoading}
               onClick={this.onRegisterButtonClick}
             >
               立即注册
             </Button>,
           ]}
         >
-          {this.state.errorAlertVisible ? (
+          {this.errorAlertVisible ? (
             <Alert
-              message={this.state.errorMessage}
+              message={this.errorMessage}
               type="error"
               style={{marginBottom: '15px'}}
               closable
@@ -121,8 +118,9 @@ export class Register extends Component<RegisterProps, RegisterState> {
     );
   }
 
+  @action
   async onRegisterButtonClick() {
-    this.setState({registerLoading: true});
+    this.registerLoading = true;
 
     const username = this.usernameInput.current!.input.value;
     const email = this.emailInput.current!.input.value;
@@ -130,11 +128,9 @@ export class Register extends Component<RegisterProps, RegisterState> {
     const passwordRepeat = this.passwordRepeatInput.current!.input.value;
 
     if (password !== passwordRepeat) {
-      this.setState({
-        errorAlertVisible: true,
-        errorMessage: translation.passwordsNotConsistent,
-        registerLoading: false,
-      });
+      this.errorAlertVisible = true;
+      this.errorMessage = translation.passwordsNotConsistent;
+      this.registerLoading = false;
       return;
     }
 
@@ -146,17 +142,16 @@ export class Register extends Component<RegisterProps, RegisterState> {
     } catch (error) {
       let errorMessage = fetchErrorMessage(error);
 
-      this.setState({
-        errorAlertVisible: true,
-        errorMessage,
-      });
+      this.errorAlertVisible = true;
+      this.errorMessage = errorMessage;
     }
 
-    this.setState({registerLoading: false});
+    this.registerLoading = false;
   }
 
+  @action
   onErrorAlertClose() {
-    this.setState({errorAlertVisible: false});
+    this.errorAlertVisible = false;
   }
 
   static Wrapper = Wrapper;

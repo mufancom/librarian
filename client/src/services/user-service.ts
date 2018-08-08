@@ -23,14 +23,16 @@ export class UserService {
 
   @action
   async checkStatus() {
-    const data = await this.apiService.get<CheckStatusSuccessData>(
-      'auth/check',
-    );
+    try {
+      const data = await this.apiService.get<CheckStatusSuccessData>(
+        'auth/check',
+      );
 
-    this.authStore.id = data.id;
-    this.authStore.role = data.role;
-    this.authStore.username = data.username;
-    this.authStore.avatar = data.avatar ? data.avatar : '';
+      this.authStore.id = data.id;
+      this.authStore.role = data.role;
+      this.authStore.username = data.username;
+      this.authStore.avatar = data.avatar ? data.avatar : '';
+    } catch (error) {}
   }
 
   @action

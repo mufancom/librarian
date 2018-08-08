@@ -1,4 +1,5 @@
 import classNames from 'classnames';
+import {action, observable} from 'mobx';
 import React, {Component} from 'react';
 
 import {styled} from 'theme';
@@ -24,23 +25,13 @@ export interface HeaderUserUnloggedInProps {
   className?: string;
 }
 
-export interface HeaderUserUnloggedInState {
-  userLoginVisible: boolean;
-  userRegisterVisible: boolean;
-}
-
 @observer
-export class HeaderUserUnloggedIn extends Component<
-  HeaderUserUnloggedInProps,
-  HeaderUserUnloggedInState
-> {
-  constructor(props: HeaderUserUnloggedInProps) {
-    super(props);
-    this.state = {
-      userLoginVisible: false,
-      userRegisterVisible: false,
-    };
-  }
+export class HeaderUserUnloggedIn extends Component<HeaderUserUnloggedInProps> {
+  @observable
+  userLoginVisible = false;
+
+  @observable
+  userRegisterVisible = false;
 
   render() {
     let {className} = this.props;
@@ -55,12 +46,12 @@ export class HeaderUserUnloggedIn extends Component<
           <div className="hint-text">未登录</div>
         </Wrapper>
         <Login
-          visible={this.state.userLoginVisible}
+          visible={this.userLoginVisible}
           onCancel={this.loginOnCancel.bind(this)}
           onRegisterBtnClick={this.registerOnClick.bind(this)}
         />
         <Register
-          visible={this.state.userRegisterVisible}
+          visible={this.userRegisterVisible}
           onCancel={this.registerOnCancel.bind(this)}
           onLoginBtnClick={this.loginOnClick.bind(this)}
         />
@@ -68,30 +59,26 @@ export class HeaderUserUnloggedIn extends Component<
     );
   }
 
+  @action
   loginOnClick() {
-    this.setState({
-      userLoginVisible: true,
-      userRegisterVisible: false,
-    });
+    this.userLoginVisible = true;
+    this.userRegisterVisible = false;
   }
 
+  @action
   loginOnCancel() {
-    this.setState({
-      userLoginVisible: false,
-    });
+    this.userLoginVisible = false;
   }
 
+  @action
   registerOnClick() {
-    this.setState({
-      userLoginVisible: false,
-      userRegisterVisible: true,
-    });
+    this.userLoginVisible = false;
+    this.userRegisterVisible = true;
   }
 
+  @action
   registerOnCancel() {
-    this.setState({
-      userRegisterVisible: false,
-    });
+    this.userRegisterVisible = false;
   }
 
   static Wrapper = Wrapper;

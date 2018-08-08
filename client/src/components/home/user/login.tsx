@@ -1,5 +1,6 @@
 import {Alert, Button, Icon, Input, Modal, message} from 'antd';
 import classNames from 'classnames';
+import {action, observable} from 'mobx';
 import React, {Component} from 'react';
 
 import {fetchErrorMessage} from 'services/api-service';
@@ -17,28 +18,25 @@ export interface LoginProps {
   onRegisterBtnClick(): void;
 }
 
-export interface LoginState {
-  loginLoading: boolean;
-  errorAlertVisible: boolean;
-  errorMessage: string;
-}
-
 @observer
-export class Login extends Component<LoginProps, LoginState> {
+export class Login extends Component<LoginProps> {
   @inject
   userService!: UserService;
+
+  @observable
+  loginLoading = false;
+
+  @observable
+  errorAlertVisible = false;
+
+  @observable
+  errorMessage = '';
 
   private usernameInput: React.RefObject<Input>;
   private passwordInput: React.RefObject<Input>;
 
   constructor(props: any) {
     super(props);
-
-    this.state = {
-      loginLoading: false,
-      errorAlertVisible: false,
-      errorMessage: '',
-    };
 
     this.usernameInput = React.createRef();
     this.passwordInput = React.createRef();
@@ -48,20 +46,20 @@ export class Login extends Component<LoginProps, LoginState> {
   }
 
   render() {
-    let {className} = this.props;
+    let {className, onCancel, onRegisterBtnClick, visible} = this.props;
 
     return (
       <Wrapper className={classNames('login', className)}>
         <Modal
-          visible={this.props.visible}
+          visible={visible}
           title="登录"
           onOk={this.handleLoginButtonOnclick}
-          onCancel={this.props.onCancel}
+          onCancel={onCancel}
           width="400px"
           footer={[
             <a
               key="register"
-              onClick={this.props.onRegisterBtnClick}
+              onClick={onRegisterBtnClick}
               style={{marginRight: '15px'}}
             >
               注册账号
@@ -69,16 +67,16 @@ export class Login extends Component<LoginProps, LoginState> {
             <Button
               key="login"
               type="primary"
-              loading={this.state.loginLoading}
+              loading={this.loginLoading}
               onClick={this.handleLoginButtonOnclick}
             >
               登录
             </Button>,
           ]}
         >
-          {this.state.errorAlertVisible ? (
+          {this.errorAlertVisible ? (
             <Alert
-              message={this.state.errorMessage}
+              message={this.errorMessage}
               type="error"
               style={{marginBottom: '15px'}}
               closable
@@ -110,8 +108,9 @@ export class Login extends Component<LoginProps, LoginState> {
     );
   }
 
+  @action
   async handleLoginButtonOnclick() {
-    this.setState({loginLoading: true});
+    this.loginLoading = true;
 
     let username = this.usernameInput.current!.input.value;
     let password = this.passwordInput.current!.input.value;
@@ -122,14 +121,16 @@ export class Login extends Component<LoginProps, LoginState> {
       message.success(translation.loginSuccess(usernameOrEmail));
     } catch (error) {
       let errorMessage = fetchErrorMessage(error);
-      this.setState({errorAlertVisible: true, errorMessage});
+
+      this.errorAlertVisible = true;
+      this.errorMessage = errorMessage;
     }
 
-    this.setState({loginLoading: false});
+    this.loginLoading = false;
   }
 
   handleErrorAlertClose() {
-    this.setState({errorAlertVisible: false});
+    this.errorAlertVisible = false;
   }
 
   static Wrapper = Wrapper;
