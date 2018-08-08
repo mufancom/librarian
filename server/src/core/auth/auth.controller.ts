@@ -14,15 +14,14 @@ import {Request} from 'express';
 import {AuthenticationFailedException} from 'common/exceptions';
 import {comparePassword} from 'utils/encryption';
 
+import {LoginDTO} from './auth.dto';
 import {AuthGuard} from './auth.guard';
 import {AuthService} from './auth.service';
-import {LoginDTO} from './dto';
 
 @Controller('auth')
 export class AuthController {
   constructor(
-    @Inject(forwardRef(() => AuthService))
-    private readonly authService: AuthService,
+    @Inject(forwardRef(() => AuthService)) private authService: AuthService,
   ) {}
 
   @Post('login')
@@ -33,7 +32,7 @@ export class AuthController {
       throw new AuthenticationFailedException('USERNAME_PASSWORD_MISMATCH');
     }
 
-    let session = req.session as Express.Session;
+    let session = req.session!;
 
     session.user = {id: user.id};
 

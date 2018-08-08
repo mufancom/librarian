@@ -9,21 +9,20 @@ import {
 } from '@nestjs/common';
 import {Request} from 'express';
 
-import {comparePassword, encryptPassword} from 'utils/encryption';
-
 import {
   AuthenticationFailedException,
   ResourceConflictingException,
   ResourceNotFoundException,
 } from 'common/exceptions';
+import {comparePassword, encryptPassword} from 'utils/encryption';
+
 import {AuthGuard} from '../auth';
-import {ChangePasswordDTO, RegisterDTO} from './dto';
-import {User} from './user.entity';
+import {ChangePasswordDTO, RegisterDTO} from './user.dto';
 import {UserService} from './user.service';
 
 @Controller('user')
 export class UserController {
-  constructor(private readonly userService: UserService) {}
+  constructor(private userService: UserService) {}
 
   @Post('register')
   async register(@Body() data: RegisterDTO) {
@@ -35,25 +34,26 @@ export class UserController {
       throw new ResourceConflictingException('EMAIL_ALREADY_EXISTS');
     }
 
-    const user: User = {
+    await this.userService.createUser({
       ...data,
       password: await encryptPassword(data.password),
       role: 1,
-    };
-
-    await this.userService.saveUser(user);
+    });
   }
 
-  @Post('chg_pw')
+  @Post('change-password')
   @UseGuards(AuthGuard)
-  async changePassword(@Body() data: ChangePasswordDTO, @Req() req: Request) {
-    if (!(await comparePassword(data.oldPassword, req.user.password))) {
+  async changePassword(
+    @Body() data: ChangePasswordDTO,
+    @Req() {user}: Request,
+  ) {
+    if (!(await comparePassword(data.oldPassword, user.password))) {
       throw new AuthenticationFailedException('USERNAME_PASSWORD_MISMATCH');
     }
 
-    req.user.password = await encryptPassword(data.newPassword);
+    user.password = await encryptPassword(data.newPassword);
 
-    await this.userService.saveUser(req.user);
+    await this.userService.saveUser(user);
   }
 
   @Get('info')

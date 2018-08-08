@@ -8,17 +8,31 @@ import {ValidationPipe} from 'common/pipes/validation.pipe';
 import {PUBLIC_DIR} from 'paths';
 import {Config} from 'utils/config';
 
+const DEFAULT_PORT = 3002;
+
+declare global {
+  namespace Express {
+    interface SessionData {
+      user?: {id: number};
+    }
+  }
+}
+
+ExpressSessionMiddleware.configure(Config.session.get());
+
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
-  ExpressSessionMiddleware.configure(Config.Session.get() as {secret: string});
+
   app.enableCors({origin: 'http://localhost:3000', credentials: true});
+
   app.use(new ExpressSessionMiddleware().resolve());
+
   app.useStaticAssets(PUBLIC_DIR);
   app.useGlobalFilters(new HttpExceptionFilter());
   app.useGlobalInterceptors(new APIInterceptor());
   app.useGlobalPipes(new ValidationPipe());
 
-  await app.listen(process.env.PORT || 3002);
+  await app.listen(process.env.PORT || DEFAULT_PORT);
 }
 
 bootstrap().catch(console.error);

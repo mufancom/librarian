@@ -9,8 +9,7 @@ const COMMENT_PAGE_SIZE = 10;
 @Injectable()
 export class CommentService {
   constructor(
-    @InjectRepository(Comment)
-    private readonly commentRepository: Repository<Comment>,
+    @InjectRepository(Comment) private commentRepository: Repository<Comment>,
   ) {}
 
   async listComments(filePath: string, page: number) {

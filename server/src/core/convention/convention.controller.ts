@@ -4,7 +4,7 @@ import {ConventionService} from './convention.service';
 
 @Controller('convention')
 export class ConventionController {
-  constructor(private readonly conventionService: ConventionService) {}
+  constructor(private conventionService: ConventionService) {}
 
   @Get('index')
   async index() {

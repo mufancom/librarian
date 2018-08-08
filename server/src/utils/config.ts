@@ -60,7 +60,7 @@ export interface SessionConfig {
 }
 
 export class Config {
-  static Database = new ConfigService<DatabaseConfig>(DATABASE_CONFIG_PATH);
-  static Git = new ConfigService<GitConfig>(GIT_CONFIG_PATH);
-  static Session = new ConfigService<SessionConfig>(SESSION_CONFIG_PATH);
+  static database = new ConfigService<DatabaseConfig>(DATABASE_CONFIG_PATH);
+  static git = new ConfigService<GitConfig>(GIT_CONFIG_PATH);
+  static session = new ConfigService<SessionConfig>(SESSION_CONFIG_PATH);
 }

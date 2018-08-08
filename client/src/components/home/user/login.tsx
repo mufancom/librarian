@@ -113,15 +113,15 @@ export class Login extends Component<LoginProps, LoginState> {
   async handleLoginButtonOnclick() {
     this.setState({loginLoading: true});
 
-    const username = (this.usernameInput.current as Input).input.value;
-    const password = (this.passwordInput.current as Input).input.value;
+    let username = this.usernameInput.current!.input.value;
+    let password = this.passwordInput.current!.input.value;
 
     try {
-      const _username = await this.userService.login(username, password);
+      let usernameOrEmail = await this.userService.login(username, password);
 
-      message.success(translation.loginSuccess(_username));
+      message.success(translation.loginSuccess(usernameOrEmail));
     } catch (error) {
-      const errorMessage = fetchErrorMessage(error);
+      let errorMessage = fetchErrorMessage(error);
       this.setState({errorAlertVisible: true, errorMessage});
     }
 

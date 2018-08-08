@@ -1,5 +1,6 @@
-import {Injectable} from '@nestjs/common';
 import * as Path from 'path';
+
+import {Injectable} from '@nestjs/common';
 
 import {CONVENTION_GIT_BASE_PATH} from 'paths';
 import {Config} from 'utils/config';
@@ -8,27 +9,27 @@ import {Git} from 'utils/git';
 
 export interface IndexTree {
   title: string;
-  url?: string;
+  path?: string;
   children?: IndexTree[];
 }
 
-function formIndex(fileTree: File.FileInfo[]) {
+function buildIndex(fileTree: File.FileInfo[]): IndexTree[] {
   let result: IndexTree[] = [];
 
-  for (const fileInfo of fileTree) {
-    if (fileInfo.type === 'directory') {
-      if (fileInfo.filename.indexOf('.') !== 0) {
+  for (let {type, filename, relativePath, children} of fileTree) {
+    if (type === 'directory') {
+      if (!filename.startsWith('.')) {
         result.push({
-          title: fileInfo.filename,
-          children: formIndex(fileInfo.children as File.FileInfo[]),
+          title: filename,
+          children: buildIndex(children as File.FileInfo[]),
         });
       }
     } else {
-      const fileUrl = Path.join(fileInfo.relativePath, fileInfo.filename);
+      let path = Path.join(relativePath, filename);
 
       result.push({
-        title: fileInfo.filename.match(/([^\\/]+?)(?:\.\w+)$/)![1],
-        url: fileUrl,
+        title: filename.match(/([^\\/]+?)(?:\.\w+)$/)![1],
+        path,
       });
     }
   }
@@ -39,7 +40,7 @@ function formIndex(fileTree: File.FileInfo[]) {
 @Injectable()
 export class ConventionService {
   private timer: NodeJS.Timer | undefined;
-  private config = Config.Git;
+  private config = Config.git;
 
   constructor() {
     if (this.config.get('sync', 'schedule') === 'schedule') {
@@ -52,12 +53,14 @@ export class ConventionService {
   };
 
   schedulePullTask() {
-    if (!this.timer) {
-      this.timer = setInterval(
-        this.pullTask,
-        this.config.get('interval', 5) * 1000,
-      );
+    if (this.timer) {
+      return;
     }
+
+    this.timer = setInterval(
+      this.pullTask,
+      this.config.get('interval', 5) * 1000,
+    );
   }
 
   cancelPullTask() {
@@ -68,18 +71,18 @@ export class ConventionService {
   }
 
   async getIndex() {
-    const files = await File.find(CONVENTION_GIT_BASE_PATH, /.*\.md/, 2 + 1);
-    return formIndex(files);
+    let infos = await File.find(CONVENTION_GIT_BASE_PATH, /.*\.md/, 2 + 1);
+    return buildIndex(infos);
   }
 
   async exists(filePath: string) {
-    const fullPath = Path.join(CONVENTION_GIT_BASE_PATH, filePath);
+    let fullPath = Path.join(CONVENTION_GIT_BASE_PATH, filePath);
     return File.exists(fullPath);
   }
 
   async pull() {
     try {
-      const result = await Git.pull();
+      let result = await Git.pull();
     } catch (error) {}
   }
 }

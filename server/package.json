@@ -21,6 +21,7 @@
     "class-transformer": "^0.1.9",
     "class-validator": "^0.9.1",
     "express": "^4.16.3",
+    "hyphenate": "^0.2.1",
     "reflect-metadata": "^0.1.12",
     "rxjs": "^6.2.2",
     "simple-git": "^1.96.0",
