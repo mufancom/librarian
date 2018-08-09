@@ -8,7 +8,7 @@ import {styled} from 'theme';
 const Wrapper = styled.li`
   color: ${props => props.theme.text.navRegular};
   font-size: 14px;
-  font-weight: 300;
+  font-weight: 400;
   padding-top: 15px;
   list-style-type: none;
 
@@ -39,7 +39,9 @@ export class ConventionSideNavItem extends Component<
 
     return (
       <Wrapper className={classNames('convention-side-nav-item', className)}>
-        <NavLink to={item.url ? item.url : '#'}>{item.title}</NavLink>
+        <NavLink to={`/convention/${item.path ? item.path : '#'}`}>
+          {item.title}
+        </NavLink>
       </Wrapper>
     );
   }

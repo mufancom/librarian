@@ -40,9 +40,6 @@ export class Login extends Component<LoginProps> {
 
     this.usernameInput = React.createRef();
     this.passwordInput = React.createRef();
-
-    this.handleLoginButtonOnclick = this.handleLoginButtonOnclick.bind(this);
-    this.handleErrorAlertClose = this.handleErrorAlertClose.bind(this);
   }
 
   render() {
@@ -53,7 +50,7 @@ export class Login extends Component<LoginProps> {
         <Modal
           visible={visible}
           title="登录"
-          onOk={this.handleLoginButtonOnclick}
+          onOk={this.onLoginButtonOnclick}
           onCancel={onCancel}
           width="400px"
           footer={[
@@ -68,7 +65,7 @@ export class Login extends Component<LoginProps> {
               key="login"
               type="primary"
               loading={this.loginLoading}
-              onClick={this.handleLoginButtonOnclick}
+              onClick={this.onLoginButtonOnclick}
             >
               登录
             </Button>,
@@ -80,7 +77,7 @@ export class Login extends Component<LoginProps> {
               type="error"
               style={{marginBottom: '15px'}}
               closable
-              afterClose={this.handleErrorAlertClose}
+              afterClose={this.onErrorAlertClose}
             />
           ) : (
             undefined
@@ -91,7 +88,7 @@ export class Login extends Component<LoginProps> {
               type="text"
               placeholder="用户名/邮箱"
               ref={this.usernameInput}
-              onPressEnter={this.handleLoginButtonOnclick}
+              onPressEnter={this.onLoginButtonOnclick}
             />
           </p>
           <p>
@@ -100,7 +97,7 @@ export class Login extends Component<LoginProps> {
               type="password"
               placeholder="密码"
               ref={this.passwordInput}
-              onPressEnter={this.handleLoginButtonOnclick}
+              onPressEnter={this.onLoginButtonOnclick}
             />
           </p>
         </Modal>
@@ -109,7 +106,7 @@ export class Login extends Component<LoginProps> {
   }
 
   @action
-  async handleLoginButtonOnclick() {
+  private onLoginButtonOnclick = async () => {
     this.loginLoading = true;
 
     let username = this.usernameInput.current!.input.value;
@@ -127,11 +124,12 @@ export class Login extends Component<LoginProps> {
     }
 
     this.loginLoading = false;
-  }
+  };
 
-  handleErrorAlertClose() {
+  @action
+  private onErrorAlertClose = () => {
     this.errorAlertVisible = false;
-  }
+  };
 
   static Wrapper = Wrapper;
 }

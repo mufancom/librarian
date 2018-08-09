@@ -29,7 +29,7 @@ function buildIndex(fileTree: File.FileStructureInfo[]): IndexTree[] {
         });
       }
     } else {
-      let path = Path.join(relativePath, filename);
+      let path = Path.join(relativePath, filename).replace(/\\/g, '/');
 
       result.push({
         title: filename.match(/([^\\/]+?)(?:\.\w+)$/)![1],

@@ -45,7 +45,7 @@ export class ConventionSideNavCategory extends Component<
           {item.children && item.children.length > 0 ? (
             item.children.map(
               val =>
-                val.url ? (
+                val.path ? (
                   <ConventionSideNavItemWithRouter key={val.title} item={val} />
                 ) : (
                   <ConventionSideNavGroupWithRouter

@@ -47,9 +47,6 @@ export class Register extends Component<RegisterProps> {
     this.emailInput = React.createRef();
     this.passwordInput = React.createRef();
     this.passwordRepeatInput = React.createRef();
-
-    this.onRegisterButtonClick = this.onRegisterButtonClick.bind(this);
-    this.onErrorAlertClose = this.onErrorAlertClose.bind(this);
   }
 
   render() {
@@ -119,7 +116,7 @@ export class Register extends Component<RegisterProps> {
   }
 
   @action
-  async onRegisterButtonClick() {
+  private onRegisterButtonClick = async () => {
     this.registerLoading = true;
 
     const username = this.usernameInput.current!.input.value;
@@ -147,12 +144,12 @@ export class Register extends Component<RegisterProps> {
     }
 
     this.registerLoading = false;
-  }
+  };
 
   @action
-  onErrorAlertClose() {
+  private onErrorAlertClose = () => {
     this.errorAlertVisible = false;
-  }
+  };
 
   static Wrapper = Wrapper;
 }

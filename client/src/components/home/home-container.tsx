@@ -6,7 +6,7 @@ import {styled} from 'theme';
 
 import {conventionStore} from 'stores';
 import {Content as HomeContent} from './content';
-import {Convention} from './convention';
+import {ConventionWithRouter} from './convention';
 import {
   Header as HomeHeader,
   HeaderWithRouter as HomeHeaderWithRouter,
@@ -26,7 +26,7 @@ const Wrapper = styled.div`
 
   ${HomeHeader.Wrapper} {
     position: fixed;
-    height: 80px;
+    height: 90px;
     width: 100%;
     z-index: 100;
     display: block;
@@ -47,9 +47,9 @@ export class HomeContainer extends React.Component {
             <Header>
               <HomeHeaderWithRouter />
             </Header>
-            <Content style={{marginTop: 10}}>
+            <Content style={{marginTop: 20}}>
               <Switch>
-                <Route path="/convention" component={Convention} />
+                <Route path="/convention" component={ConventionWithRouter} />
                 <Route path="/" component={HomeContent} />
               </Switch>
             </Content>

@@ -1,18 +1,38 @@
 import {Col, Layout, Row} from 'antd';
 import classNames from 'classnames';
 import * as React from 'react';
+import {Route, RouteComponentProps, Switch, withRouter} from 'react-router';
 import styled from 'styled-components';
 
+import {ConventionService} from 'services/convention-service';
+import {RouterStore} from 'stores/router-store';
+import {inject, observer} from 'utils/mobx';
+import {RouteTrackerWithRouter} from '../../common/TrackingRoute';
+import {ConventionBody} from './@convention-body';
 import {ConventionSideNavWithRouter} from './@convention-side-nav';
+import {ConventionSideSearch} from './@convention-side-search';
+
 const {Content, Sider} = Layout;
 
-const Wrapper = styled.div``;
+const Wrapper = styled.div`
+  ${ConventionSideSearch.Wrapper} {
+    margin-left: 26px;
+    margin-top: 28px;
+  }
+`;
 
-interface ConventionProps {
+interface ConventionProps extends RouteComponentProps<any> {
   className?: string;
 }
 
+@observer
 export class Convention extends React.Component<ConventionProps> {
+  @inject
+  routerStore!: RouterStore;
+
+  @inject
+  conventionService!: ConventionService;
+
   render() {
     let {className} = this.props;
 
@@ -36,7 +56,9 @@ export class Convention extends React.Component<ConventionProps> {
                   position: 'fixed',
                   backgroundColor: 'transparent',
                 }}
+                width={230}
               >
+                <ConventionSideSearch />
                 <ConventionSideNavWithRouter />
               </Sider>
               <Content
@@ -46,103 +68,33 @@ export class Convention extends React.Component<ConventionProps> {
                   padding: 0,
                 }}
               >
-                <div style={{padding: 0, background: '#fff'}}>
-                  ...
-                  <br />
-                  Really
-                  <br />
-                  ...
-                  <br />
-                  ...
-                  <br />
-                  ...
-                  <br />
-                  long
-                  <br />
-                  ...
-                  <br />
-                  ...
-                  <br />
-                  ...
-                  <br />
-                  ...
-                  <br />
-                  ...
-                  <br />
-                  ...
-                  <br />
-                  ...
-                  <br />
-                  ...
-                  <br />
-                  ...
-                  <br />
-                  ...
-                  <br />
-                  ...
-                  <br />
-                  ...
-                  <br />
-                  ...
-                  <br />
-                  ...
-                  <br />
-                  ...
-                  <br />
-                  ...
-                  <br />
-                  ...
-                  <br />
-                  ...
-                  <br />
-                  ...
-                  <br />
-                  ...
-                  <br />
-                  ...
-                  <br />
-                  ...
-                  <br />
-                  ...
-                  <br />
-                  ...
-                  <br />
-                  ...
-                  <br />
-                  ...
-                  <br />
-                  ...
-                  <br />
-                  ...
-                  <br />
-                  ...
-                  <br />
-                  ...
-                  <br />
-                  ...
-                  <br />
-                  ...
-                  <br />
-                  ...
-                  <br />
-                  ...
-                  <br />
-                  ...
-                  <br />
-                  ...
-                  <br />
-                  ...
-                  <br />
-                  ...
-                  <br />
-                  ...
-                  <br />
-                  ...
-                  <br />
-                  ...
-                  <br />
-                  content
-                </div>
+                <Switch>
+                  <Route
+                    path="/convention/:category/:group/:item"
+                    component={(props: any) => (
+                      <RouteTrackerWithRouter
+                        {...props}
+                        onChange={this.onRouteChange}
+                      >
+                        <ConventionBody {...props} />
+                      </RouteTrackerWithRouter>
+                    )}
+                  />
+                  <Route
+                    path="/convention/:category/:item"
+                    component={(props: any) => (
+                      <RouteTrackerWithRouter
+                        {...props}
+                        onChange={this.onRouteChange}
+                      >
+                        <ConventionBody {...props} />
+                      </RouteTrackerWithRouter>
+                    )}
+                  />
+                  <Route>
+                    <div>Miss at {this.routerStore.location.pathname}</div>
+                  </Route>
+                </Switch>
               </Content>
             </Layout>
           </Col>
@@ -150,4 +102,16 @@ export class Convention extends React.Component<ConventionProps> {
       </Wrapper>
     );
   }
+
+  onRouteChange = (match: any) => {
+    // tslint:disable-next-line:no-console
+    let {category, group, item} = match.params;
+
+    let path = `${category}/${group ? `${group}/` : ''}${item}`;
+    this.conventionService.load(path).catch();
+  };
+
+  static Wrapper = Wrapper;
 }
+
+export const ConventionWithRouter = withRouter(Convention);

@@ -4,6 +4,8 @@ import {translation} from 'utils/lang';
 
 const API_BASE_URL = 'http://localhost:3002/';
 
+const RESOURCE_BASE_URL = 'http://localhost:3002/';
+
 export const API_UNKNOWN_ERROR = '网络错误';
 
 export function fetchErrorMessage(error: any) {
@@ -41,7 +43,7 @@ type APIResult = APISuccessResult | APIErrorResult | APIRedirectionResult;
 
 export type OnProgress = (event: ProgressEvent) => void;
 
-export interface APICallOptions {
+export interface RequestOptions {
   type?: string;
   onUploadProgress?: OnProgress;
   onDownloadProgress?: OnProgress;
@@ -63,31 +65,21 @@ export class APIService {
     method: string,
     path: string,
     body?: any,
-    {type, onUploadProgress, onDownloadProgress}: APICallOptions = {},
+    {type, onUploadProgress, onDownloadProgress}: RequestOptions = {},
   ): Promise<T> {
     let url = Url.resolve(API_BASE_URL, path);
 
-    let response;
-    try {
-      response = await axios({
-        method,
-        url,
-        withCredentials: true,
-        data: body,
-        headers: {
-          'Content-Type': type,
-        },
-        onUploadProgress,
-        onDownloadProgress,
-      });
-    } catch (error) {
-      // tslint:disable-next-line:no-console
-      console.log(error);
-    }
-
-    if (!response) {
-      throw undefined;
-    }
+    let response = await axios({
+      method,
+      url,
+      withCredentials: true,
+      data: body,
+      headers: {
+        'Content-Type': type,
+      },
+      onUploadProgress,
+      onDownloadProgress,
+    });
 
     let result = response.data as APIResult;
 
@@ -107,11 +99,46 @@ export class APIService {
     }
   }
 
-  get<T>(url: string, data?: Dict<any>, options?: APICallOptions): Promise<T> {
-    return this.call<T>('get', url, data, options);
+  get<T>(path: string, data?: Dict<any>, options?: RequestOptions): Promise<T> {
+    return this.call<T>('get', path, data, options);
   }
 
-  post<T>(url: string, data?: Dict<any>, options?: APICallOptions): Promise<T> {
-    return this.call<T>('post', url, data, options);
+  post<T>(
+    path: string,
+    data?: Dict<any>,
+    options?: RequestOptions,
+  ): Promise<T> {
+    return this.call<T>('post', path, data, options);
+  }
+
+  async download(
+    path: string,
+    {type, onUploadProgress, onDownloadProgress}: RequestOptions = {},
+  ): Promise<string> {
+    let url = Url.resolve(RESOURCE_BASE_URL, path);
+
+    let response = await axios({
+      method: 'get',
+      url,
+      withCredentials: true,
+      headers: {
+        'Content-Type': type,
+      },
+      onUploadProgress,
+      onDownloadProgress,
+    });
+
+    let result = response.data;
+
+    if (typeof result === 'object' && 'error' in result) {
+      let {code, message} = result.error;
+
+      throw new APIErrorException(code, errorMessageToLocalize(
+        code,
+        message,
+      ) as string);
+    }
+
+    return response.data;
   }
 }

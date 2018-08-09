@@ -2,13 +2,26 @@ import {observable} from 'mobx';
 
 export interface ConventionIndexTree {
   title: string;
-  url?: string;
+  path?: string;
   children?: ConventionIndexTree[];
+}
+
+export interface ConventionCache {
+  [key: string]: string;
 }
 
 export class ConventionStore {
   @observable
   index: ConventionIndexTree[];
+
+  @observable
+  conventionCache: ConventionCache = {};
+
+  @observable
+  currentContent = '';
+
+  @observable
+  currentPath = '';
 
   constructor() {
     this.index = [
@@ -20,15 +33,15 @@ export class ConventionStore {
             children: [
               {
                 title: '编码规范',
-                url: '/convention/typescript/frontend/coding',
+                path: '/convention/typescript/frontend/coding',
               },
               {
                 title: '包管理',
-                url: '/convention/typescript/frontend/package',
+                path: '/convention/typescript/frontend/package',
               },
               {
                 title: 'React',
-                url: '/convention/typescript/frontend/react',
+                path: '/convention/typescript/frontend/react',
               },
             ],
           },
@@ -37,15 +50,15 @@ export class ConventionStore {
             children: [
               {
                 title: '编码规范',
-                url: '/convention/typescript/backend/coding',
+                path: '/convention/typescript/backend/coding',
               },
               {
                 title: '包管理',
-                url: '/convention/typescript/backend/package',
+                path: '/convention/typescript/backend/package',
               },
               {
                 title: 'NodeJs',
-                url: '/convention/typescript/backend/nodejs',
+                path: '/convention/typescript/backend/nodejs',
               },
             ],
           },
@@ -56,19 +69,19 @@ export class ConventionStore {
         children: [
           {
             title: '编码规范',
-            url: '/convention/java/coding',
+            path: '/convention/java/coding',
           },
           {
             title: 'maven使用',
-            url: '/convention/java/maven',
+            path: '/convention/java/maven',
           },
           {
             title: 'Spring相关',
-            url: '/convention/java/spring',
+            path: '/convention/java/spring',
           },
           {
             title: 'Hibernate相关',
-            url: '/convention/java/hibernate',
+            path: '/convention/java/hibernate',
           },
         ],
       },
