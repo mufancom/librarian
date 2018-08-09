@@ -17,7 +17,7 @@ const {Content, Sider} = Layout;
 const Wrapper = styled.div`
   ${ConventionSideSearch.Wrapper} {
     margin-left: 26px;
-    margin-top: 28px;
+    margin-top: 27px;
   }
 `;
 
@@ -109,6 +109,8 @@ export class Convention extends React.Component<ConventionProps> {
 
     let path = `${category}/${group ? `${group}/` : ''}${item}`;
     this.conventionService.load(path).catch();
+
+    scrollTo(0, 0);
   };
 
   static Wrapper = Wrapper;

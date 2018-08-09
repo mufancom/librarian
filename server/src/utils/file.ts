@@ -6,6 +6,7 @@ export namespace FS {
   export const readdir = promisify(_FS.readdir);
   export const stat = promisify(_FS.stat);
   export const access = promisify(_FS.access);
+  export const readFile = promisify(_FS.readFile);
 }
 
 export interface FileInfo {
@@ -71,4 +72,8 @@ export async function exists(filePath: string) {
   } catch (_error) {
     return false;
   }
+}
+
+export async function read(filePath: string) {
+  return (await FS.readFile(filePath)).toLocaleString();
 }

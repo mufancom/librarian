@@ -1,37 +1,19 @@
 import classNames from 'classnames';
-import highlight from 'highlight.js';
-import marked from 'marked';
 import React, {Component} from 'react';
 import {RouteComponentProps, withRouter} from 'react-router';
 
 import {ConventionStore} from 'stores/convention-store';
 import {RouterStore} from 'stores/router-store';
 import {styled} from 'theme';
+import {splitIntoSections} from 'utils/markdown';
 import {inject, observer} from 'utils/mobx';
 import {MarkdownStyle} from '../../../common';
+import {ConventionBodySection} from './@convention-body-section';
 
-const Wrapper = styled(MarkdownStyle)``;
-
-highlight.configure({
-  tabReplace: '  ',
-  classPrefix: 'hljs-',
-  languages: [
-    'CSS',
-    'HTML, XML',
-    'JavaScript',
-    'PHP',
-    'Python',
-    'Stylus',
-    'TypeScript',
-    'Markdown',
-  ],
-});
-
-marked.setOptions({
-  highlight(code) {
-    return highlight.highlightAuto(code).value;
-  },
-});
+const Wrapper = styled(MarkdownStyle)`
+  padding-top: 25px;
+  padding-bottom: 20px;
+`;
 
 export interface ConventionBodyProps extends RouteComponentProps<any> {
   className?: string;
@@ -50,12 +32,16 @@ export class ConventionBody extends Component<ConventionBodyProps> {
 
     return (
       <Wrapper className={classNames('convention-body', className)}>
-        <div
-          className="markdown-body"
-          dangerouslySetInnerHTML={{
-            __html: marked(this.conventionStore.currentContent),
-          }}
-        />
+        <div className="markdown-body" />
+        {splitIntoSections(this.conventionStore.currentContent).map(value => {
+          let {source, annotation} = value;
+          return (
+            <ConventionBodySection
+              key={annotation && annotation.uuid ? annotation.uuid : source}
+              section={value}
+            />
+          );
+        })}
         <div />
       </Wrapper>
     );

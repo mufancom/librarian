@@ -13,7 +13,13 @@ export interface IndexTree {
   children?: IndexTree[];
 }
 
-function buildIndex(fileTree: File.FileStructureInfo[]): IndexTree[] {
+export interface IndexJSON {
+  [key: string]: string | IndexJSON;
+}
+
+function buildIndexFromFileInfos(
+  fileTree: File.FileStructureInfo[],
+): IndexTree[] {
   let result: IndexTree[] = [];
 
   for (let fileInfo of fileTree) {
@@ -25,7 +31,7 @@ function buildIndex(fileTree: File.FileStructureInfo[]): IndexTree[] {
       if (!filename.startsWith('.')) {
         result.push({
           title: filename,
-          children: buildIndex(children),
+          children: buildIndexFromFileInfos(children),
         });
       }
     } else {
@@ -38,6 +44,24 @@ function buildIndex(fileTree: File.FileStructureInfo[]): IndexTree[] {
     }
   }
 
+  return result;
+}
+
+function buildIndexFromJSON(index: IndexJSON): IndexTree[] {
+  let result: IndexTree[] = [];
+  for (let [key, value] of Object.entries(index)) {
+    if (typeof value === 'string') {
+      result.push({
+        title: key,
+        path: value,
+      });
+    } else {
+      result.push({
+        title: key,
+        children: buildIndexFromJSON(value),
+      });
+    }
+  }
   return result;
 }
 
@@ -75,8 +99,18 @@ export class ConventionService {
   }
 
   async getIndex() {
+    let indexPath = Path.join(CONVENTION_GIT_BASE_PATH, 'index.json');
+
+    if (await File.exists(indexPath)) {
+      try {
+        let index = JSON.parse(await File.read(indexPath));
+
+        return buildIndexFromJSON(index);
+      } catch (_error) {}
+    }
+
     let infos = await File.find(CONVENTION_GIT_BASE_PATH, /.*\.md/, 2 + 1);
-    return buildIndex(infos);
+    return buildIndexFromFileInfos(infos);
   }
 
   async exists(filePath: string) {

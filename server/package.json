@@ -26,7 +26,8 @@
     "rxjs": "^6.2.2",
     "simple-git": "^1.96.0",
     "sqlite3": "^4.0.2",
-    "typeorm": "^0.2.7"
+    "typeorm": "^0.2.7",
+    "uuid": "^3.3.2"
   },
   "devDependencies": {
     "@types/bcrypt": "^2.0.0",

@@ -8,6 +8,8 @@ import {ConventionIndexTree, ConventionStore} from 'stores/convention-store';
 import {ConventionSideNavCategoryWithRouter} from './@convention-side-nav-category';
 
 const Wrapper = styled.div`
+  margin-bottom: 40px;
+
   ul {
     margin: 0;
     padding: 0;
