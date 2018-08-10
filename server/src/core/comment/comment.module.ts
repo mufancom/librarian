@@ -3,6 +3,7 @@ import {TypeOrmModule} from '@nestjs/typeorm';
 
 import {AuthModule} from '../auth';
 import {ConventionModule} from '../convention';
+
 import {CommentController} from './comment.controller';
 import {Comment} from './comment.entity';
 import {CommentService} from './comment.service';

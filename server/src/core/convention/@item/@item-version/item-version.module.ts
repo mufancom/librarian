@@ -1,12 +1,13 @@
-import {Module} from '@nestjs/common';
+import {Module, forwardRef} from '@nestjs/common';
+import {TypeOrmModule} from '@nestjs/typeorm';
 
-import {ItemVersionController} from './item-version.controller';
+import {ItemVersion} from './item-version.entity';
 import {ItemVersionService} from './item-version.service';
 
 @Module({
-  imports: [],
-  controllers: [ItemVersionController],
+  imports: [TypeOrmModule.forFeature([ItemVersion])],
+  controllers: [],
   providers: [ItemVersionService],
-  exports: [],
+  exports: [ItemVersionService],
 })
 export class ItemVersionModule {}

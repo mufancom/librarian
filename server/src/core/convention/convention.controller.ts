@@ -43,7 +43,7 @@ export class ConventionController {
 
   @Post('edit')
   async edit(@Body() data: EditDTO) {
-    let convention = await this.conventionService.findConventionById(data.id);
+    let convention = await this.conventionService.findOneById(data.id);
     if (!convention) {
       throw new ResourceNotFoundException('CONVENTION_NOT_FOUND');
     }
