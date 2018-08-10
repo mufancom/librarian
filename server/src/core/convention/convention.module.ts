@@ -1,7 +1,5 @@
-import {Module} from '@nestjs/common';
+import {Module, forwardRef} from '@nestjs/common';
 import {TypeOrmModule} from '@nestjs/typeorm';
-
-import {AuthModule} from '../auth';
 
 import {CategoryModule} from './@category';
 import {ItemModule} from './@item';
@@ -10,12 +8,7 @@ import {Convention} from './convention.entity';
 import {ConventionService} from './convention.service';
 
 @Module({
-  imports: [
-    TypeOrmModule.forFeature([Convention]),
-    CategoryModule,
-    ItemModule,
-    AuthModule,
-  ],
+  imports: [TypeOrmModule.forFeature([Convention]), CategoryModule, ItemModule],
   controllers: [ConventionController],
   providers: [ConventionService],
   exports: [ConventionService],

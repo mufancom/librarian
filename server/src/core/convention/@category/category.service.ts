@@ -21,16 +21,16 @@ export class CategoryService {
   async findById(id: number): Promise<Category | undefined> {
     return this.categoryRepository
       .createQueryBuilder()
-      .where('id = :id', {id})
+      .where('id = :id and status != 0', {id})
       .getOne();
   }
 
   async getMaxOrderId(parentId: number): Promise<number> {
     let maxOrderId = (await this.categoryRepository
       .createQueryBuilder()
-      .where('parent_id = :parentId', {parentId})
+      .where('parent_id = :parentId and status != 0', {parentId})
       .select('max(order_id)')
-      .execute())['max(order_id'];
+      .execute())['max(order_id)'];
 
     if (maxOrderId === null) {
       return -1;
@@ -70,7 +70,7 @@ export class CategoryService {
     let affectedCategories = await this.categoryRepository
       .createQueryBuilder()
       .where(
-        'parent_id = :parentId and order_id >= :theSmaller and order_id <= :theLarger',
+        'parent_id = :parentId and order_id >= :theSmaller and order_id <= :theLarger and status != 0',
         {
           parentId,
           theSmaller,

@@ -25,10 +25,10 @@ export class ConventionService {
     return this.conventionRepository.find();
   }
 
-  async findConventionById(id: number): Promise<Convention | undefined> {
+  async findOneById(id: number): Promise<Convention | undefined> {
     return this.conventionRepository
       .createQueryBuilder()
-      .where('id = :id', {id})
+      .where('id = :id and status != 0', {id})
       .getOne();
   }
 
@@ -37,7 +37,7 @@ export class ConventionService {
       .createQueryBuilder()
       .where('category_id = :categoryId', {categoryId})
       .select('max(order_id)')
-      .execute())['max(order_id'];
+      .execute())['max(order_id)'];
 
     if (maxOrderId === null) {
       return -1;

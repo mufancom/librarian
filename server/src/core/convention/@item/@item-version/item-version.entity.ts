@@ -1,21 +1,18 @@
 import {Column, Entity, PrimaryGeneratedColumn} from 'typeorm';
 
-@Entity('convention_item')
-export class Item {
+@Entity('convention_item_version')
+export class ItemVersion {
   @PrimaryGeneratedColumn()
   id!: number;
 
-  @Column({name: 'order_id'})
-  orderId!: number;
+  @Column({name: 'convention_item_id'})
+  conventionItemId!: number;
 
-  @Column({name: 'convention_id'})
-  conventionId!: number;
+  @Column({name: 'from_id'})
+  fromId!: number;
 
   @Column()
   content!: string;
-
-  @Column({name: 'version_id'})
-  versionId!: number;
 
   @Column({name: 'comment_count'})
   commentCount!: number;
@@ -25,7 +22,4 @@ export class Item {
 
   @Column({name: 'created_at'})
   createdAt!: number;
-
-  @Column({name: 'status'})
-  status!: number;
 }
