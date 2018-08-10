@@ -1,13 +1,13 @@
-import {Body, Controller, Get, Post} from '@nestjs/common';
+import {Body, Controller, Get, Param, Post} from '@nestjs/common';
 
 import {ResourceNotFoundException} from 'common/exceptions';
 
 import {CreateDTO, EditDTO} from './category.dto';
-import {ConventionCategoryService} from './category.service';
+import {CategoryService} from './category.service';
 
 @Controller('convention/category')
-export class ConventionCategoryController {
-  constructor(private categoryService: ConventionCategoryService) {}
+export class CategoryController {
+  constructor(private categoryService: CategoryService) {}
 
   @Post('create')
   async create(@Body() data: CreateDTO) {
@@ -45,5 +45,15 @@ export class ConventionCategoryController {
     }
 
     return this.categoryService.save(category);
+  }
+
+  @Get('delete/:id')
+  async delete(@Param() id: number) {
+    let category = await this.categoryService.findById(id);
+    if (!category) {
+      throw new ResourceNotFoundException('CATEGORY_NOT_FOUND');
+    }
+
+    await this.categoryService.delete(category);
   }
 }

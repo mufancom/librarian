@@ -1,7 +1,7 @@
 import {Column, Entity, PrimaryGeneratedColumn} from 'typeorm';
 
 @Entity('convention_item')
-export class ConventionItem {
+export class Item {
   @PrimaryGeneratedColumn()
   id!: number;
 

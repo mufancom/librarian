@@ -1,4 +1,4 @@
-import {IsNumber, IsOptional, Length, MaxLength} from 'class-validator';
+import {IsNumber, IsOptional, Length, Max, MaxLength} from 'class-validator';
 
 export class CreateDTO {
   @IsNumber()
@@ -6,7 +6,7 @@ export class CreateDTO {
 
   @IsOptional()
   @IsNumber()
-  orderId?: number;
+  afterOrderId?: number;
 
   @Length(1, 20)
   title!: string;
@@ -16,13 +16,20 @@ export class CreateDTO {
   alias?: string;
 }
 
-export class EditItemDTO {
+export class EditDTO {
   @IsNumber()
-  conventionId!: number;
+  id!: number;
 
+  @IsOptional()
   @IsNumber()
-  conventionItemId!: number;
+  @Max(-1)
+  readonly afterOrderId?: number;
 
-  @IsNumber()
-  fromId?: number;
+  @IsOptional()
+  @Length(1, 20)
+  readonly title?: string;
+
+  @IsOptional()
+  @Length(1, 20)
+  readonly alias?: string;
 }

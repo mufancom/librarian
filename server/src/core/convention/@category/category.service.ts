@@ -5,7 +5,7 @@ import {DeepPartial, Repository} from 'typeorm';
 import {Category} from './category.entity';
 
 @Injectable()
-export class ConventionCategoryService {
+export class CategoryService {
   constructor(
     @InjectRepository(Category)
     private categoryRepository: Repository<Category>,
@@ -25,7 +25,7 @@ export class ConventionCategoryService {
       .getOne();
   }
 
-  async maxOrderId(parentId: number): Promise<number> {
+  async getMaxOrderId(parentId: number): Promise<number> {
     let maxOrderId = (await this.categoryRepository
       .createQueryBuilder()
       .where('parent_id = :parentId', {parentId})
@@ -43,8 +43,8 @@ export class ConventionCategoryService {
     parentId: number,
     afterOrderId: number | undefined,
     categoryLike: DeepPartial<Category>,
-  ) {
-    categoryLike.orderId = (await this.maxOrderId(parentId)) + 1;
+  ): Promise<Category> {
+    categoryLike.orderId = (await this.getMaxOrderId(parentId)) + 1;
 
     let category = await this.categoryRepository.create(categoryLike);
 
@@ -95,5 +95,10 @@ export class ConventionCategoryService {
 
   async save(category: Category): Promise<Category> {
     return this.categoryRepository.save(category);
+  }
+
+  async delete(category: Category): Promise<Category> {
+    category.status = 0;
+    return this.save(category);
   }
 }

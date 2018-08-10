@@ -1,4 +1,8 @@
 import {Controller} from '@nestjs/common';
 
-@Controller('item')
-export class ConventionItemController {}
+import {ItemService} from './item.service';
+
+@Controller('convention/item')
+export class ItemController {
+  constructor(private itemService: ItemService) {}
+}

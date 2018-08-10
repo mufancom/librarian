@@ -2,8 +2,8 @@ import {Body, Controller, Get, Param, Post} from '@nestjs/common';
 
 import {ResourceNotFoundException} from 'common/exceptions';
 
-import {ConventionCategoryService} from './@category';
-import {ConventionItemService} from './@item';
+import {CategoryService, EditDTO} from './@category';
+import {ItemService} from './@item';
 import {CreateDTO} from './convention.dto';
 import {ConventionService} from './convention.service';
 
@@ -11,8 +11,8 @@ import {ConventionService} from './convention.service';
 export class ConventionController {
   constructor(
     private conventionService: ConventionService,
-    private categoryService: ConventionCategoryService,
-    private itemService: ConventionItemService,
+    private categoryService: CategoryService,
+    private itemService: ItemService,
   ) {}
 
   @Get('index')
@@ -34,6 +34,48 @@ export class ConventionController {
       throw new ResourceNotFoundException('CATEGORY_NOT_FOUND');
     }
 
-    return this.conventionService.create({...data, status: 1});
+    return this.conventionService.insert(
+      data.categoryId,
+      data.afterOrderId,
+      data,
+    );
+  }
+
+  @Post('edit')
+  async edit(@Body() data: EditDTO) {
+    let convention = await this.conventionService.findConventionById(data.id);
+    if (!convention) {
+      throw new ResourceNotFoundException('CONVENTION_NOT_FOUND');
+    }
+
+    let {afterOrderId} = data;
+
+    if (
+      typeof afterOrderId !== 'undefined' &&
+      afterOrderId !== convention.orderId
+    ) {
+      convention = await this.conventionService.shift(convention, afterOrderId);
+    }
+
+    let {title, alias} = data;
+
+    if (title) {
+      convention.title = title;
+    }
+    if (alias) {
+      convention.alias = alias;
+    }
+
+    return this.conventionService.save(convention);
+  }
+
+  @Get('delete/:id')
+  async delete(@Param('id') id: number) {
+    let category = await this.categoryService.findById(id);
+    if (!category) {
+      throw new ResourceNotFoundException('CATEGORY_NOT_FOUND');
+    }
+
+    await this.categoryService.delete(category);
   }
 }

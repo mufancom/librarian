@@ -2,16 +2,15 @@ import {Injectable} from '@nestjs/common';
 import {InjectRepository} from '@nestjs/typeorm';
 import {Repository} from 'typeorm';
 
-import {ConventionItem} from './item.entity';
+import {Item} from './item.entity';
 
 @Injectable()
-export class ConventionItemService {
+export class ItemService {
   constructor(
-    @InjectRepository(ConventionItem)
-    private conventionItemRepository: Repository<ConventionItem>,
+    @InjectRepository(Item) private conventionItemRepository: Repository<Item>,
   ) {}
 
-  async getItems(conventionId: number): Promise<ConventionItem[]> {
+  async getItems(conventionId: number): Promise<Item[]> {
     return this.conventionItemRepository
       .createQueryBuilder()
       .where('convention_id = :conventionId and status = 1', {conventionId})

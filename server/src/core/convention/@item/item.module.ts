@@ -1,14 +1,15 @@
 import {Module} from '@nestjs/common';
 import {TypeOrmModule} from '@nestjs/typeorm';
 
-import {ConventionItemController} from './item.controller';
-import {ConventionItem} from './item.entity';
-import {ConventionItemService} from './item.service';
+import {ItemVersionModule} from './@item-version';
+import {ItemController} from './item.controller';
+import {Item} from './item.entity';
+import {ItemService} from './item.service';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([ConventionItem])],
-  controllers: [ConventionItemController],
-  providers: [ConventionItemService],
-  exports: [ConventionItemService],
+  imports: [TypeOrmModule.forFeature([Item]), ItemVersionModule],
+  controllers: [ItemController],
+  providers: [ItemService],
+  exports: [ItemService],
 })
-export class ConventionItemModule {}
+export class ItemModule {}
