@@ -17,6 +17,7 @@ import {
 import {comparePassword, encryptPassword} from 'utils/encryption';
 
 import {AuthGuard} from '../auth';
+
 import {ChangePasswordDTO, RegisterDTO} from './user.dto';
 import {UserService} from './user.service';
 
@@ -34,10 +35,9 @@ export class UserController {
       throw new ResourceConflictingException('EMAIL_ALREADY_EXISTS');
     }
 
-    await this.userService.createUser({
+    await this.userService.create({
       ...data,
       password: await encryptPassword(data.password),
-      role: 1,
     });
   }
 
@@ -46,14 +46,14 @@ export class UserController {
   async changePassword(
     @Body() data: ChangePasswordDTO,
     @Req() {user}: Request,
-  ) {
+  ): Promise<void> {
     if (!(await comparePassword(data.oldPassword, user.password))) {
       throw new AuthenticationFailedException('USERNAME_PASSWORD_MISMATCH');
     }
 
     user.password = await encryptPassword(data.newPassword);
 
-    await this.userService.saveUser(user);
+    await this.userService.save(user);
   }
 
   @Get('info')

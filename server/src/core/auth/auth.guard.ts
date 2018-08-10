@@ -2,9 +2,8 @@ import {CanActivate, ExecutionContext, Injectable} from '@nestjs/common';
 import {Request} from 'express';
 import {Observable} from 'rxjs';
 
-import {AuthService} from './auth.service';
-
 import {User} from '../user';
+import {AuthService} from './auth.service';
 
 declare global {
   namespace Express {

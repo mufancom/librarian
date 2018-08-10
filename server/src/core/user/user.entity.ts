@@ -5,9 +5,6 @@ export class User {
   @PrimaryGeneratedColumn()
   id!: number;
 
-  @Column()
-  role!: number;
-
   @Column({length: 20})
   username!: string;
 

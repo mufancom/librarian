@@ -13,7 +13,7 @@ export type UserServiceFindByIdentifierSearchFieldName =
 @Injectable()
 export class UserService {
   constructor(
-    @InjectRepository(User) private readonly userRepository: Repository<User>,
+    @InjectRepository(User) private userRepository: Repository<User>,
   ) {}
 
   async findByIdentifier(
@@ -37,11 +37,11 @@ export class UserService {
       .getOne();
   }
 
-  async saveUser(user: User): Promise<void> {
+  async save(user: User): Promise<void> {
     await this.userRepository.save(user);
   }
 
-  async createUser(data: DeepPartial<User>): Promise<void> {
-    await this.userRepository.create(data);
+  async create(data: DeepPartial<User>): Promise<User> {
+    return this.userRepository.create(data);
   }
 }
