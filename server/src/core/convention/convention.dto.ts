@@ -2,18 +2,18 @@ import {IsNumber, IsOptional, Length, Max, MaxLength} from 'class-validator';
 
 export class CreateDTO {
   @IsNumber()
-  categoryId!: number;
+  readonly categoryId!: number;
 
   @IsOptional()
   @IsNumber()
-  afterOrderId?: number;
+  readonly afterOrderId?: number;
 
   @Length(1, 20)
-  title!: string;
+  readonly title!: string;
 
   @IsOptional()
   @MaxLength(40)
-  alias?: string;
+  readonly alias?: string;
 }
 
 export class EditDTO {

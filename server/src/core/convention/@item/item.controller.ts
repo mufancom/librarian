@@ -26,14 +26,14 @@ export class ItemController {
 
     let {conventionId, afterOrderId} = data;
 
-    let item = await this.itemService.createItem(
+    let {id} = await this.itemService.createItem(
       conventionId,
       afterOrderId,
       data.message,
       data,
     );
 
-    return {id: item.id};
+    return {id};
   }
 
   @Post('edit')
@@ -50,14 +50,12 @@ export class ItemController {
       throw new ResourceConflictingException('BASE_VERSION_OUT_DATED');
     }
 
-    item = await this.itemService.editItem(
+    let {versionId} = await this.itemService.editItem(
       item,
       fromVersionId,
       content,
       message,
     );
-
-    let {versionId} = item;
 
     return {versionId};
   }

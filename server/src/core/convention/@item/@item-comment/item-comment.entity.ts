@@ -29,6 +29,8 @@ export class ItemComment {
   updatedAt!: number;
 
   @Column({name: 'deleted_at'})
+  deletedAt?: number;
+
   @Column()
   status!: ItemCommentStatus;
 }

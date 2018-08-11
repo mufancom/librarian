@@ -17,13 +17,9 @@ export class CategoryController {
       throw new ResourceNotFoundException('PARENT_CATEGORY_NOT_FOUND');
     }
 
-    let category = await this.categoryService.insert(
-      parentId,
-      afterOrderId,
-      data,
-    );
+    let {id} = await this.categoryService.insert(parentId, afterOrderId, data);
 
-    return {id: category.id};
+    return {id};
   }
 
   @Post('edit')

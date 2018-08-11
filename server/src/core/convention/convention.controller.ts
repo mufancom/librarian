@@ -34,11 +34,13 @@ export class ConventionController {
       throw new ResourceNotFoundException('CATEGORY_NOT_FOUND');
     }
 
-    return this.conventionService.insert(
+    let {id} = await this.conventionService.insert(
       data.categoryId,
       data.afterOrderId,
       data,
     );
+
+    return {id};
   }
 
   @Post('edit')
@@ -66,7 +68,7 @@ export class ConventionController {
       convention.alias = alias;
     }
 
-    return this.conventionService.save(convention);
+    await this.conventionService.save(convention);
   }
 
   @Get('delete/:id')
