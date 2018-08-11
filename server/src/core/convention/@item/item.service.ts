@@ -45,7 +45,7 @@ export class ItemService {
   ): Promise<Item> {
     itemLike.orderId = (await this.getMaxOrderId(conventionId)) + 1;
 
-    let item = await this.itemRepository.create(itemLike);
+    let item = await this.create(itemLike);
 
     if (typeof afterOrderId !== 'undefined') {
       item = await this.shift(item, afterOrderId);
@@ -92,12 +92,25 @@ export class ItemService {
     return item;
   }
 
-  async delete(item: Item): Promise<Item> {
-    item.status = 0;
+  async create(itemLike: DeepPartial<Item>): Promise<Item> {
+    let now = Date.now();
+
+    itemLike.status = 1;
+    itemLike.createdAt = now;
+    itemLike.commentCount = 0;
+    itemLike.thumbUpCount = 0;
+
+    let item = this.itemRepository.create(itemLike);
+
     return this.itemRepository.save(item);
   }
 
   async save(item: Item): Promise<Item> {
+    return this.itemRepository.save(item);
+  }
+
+  async delete(item: Item): Promise<Item> {
+    item.status = 0;
     return this.itemRepository.save(item);
   }
 }

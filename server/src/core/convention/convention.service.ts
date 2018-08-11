@@ -53,7 +53,7 @@ export class ConventionService {
   ): Promise<Convention> {
     conventionLike.categoryId = (await this.getMaxOrderId(categoryId)) + 1;
 
-    let convention = await this.conventionRepository.create(conventionLike);
+    let convention = await this.create(conventionLike);
 
     if (typeof afterOrderId !== 'undefined') {
       convention = await this.shift(convention, afterOrderId);
@@ -101,6 +101,13 @@ export class ConventionService {
     await this.conventionRepository.save(affectedConventions);
 
     return convention;
+  }
+
+  async create(conventionLike: DeepPartial<Convention>): Promise<Convention> {
+    let convention = this.conventionRepository.create(conventionLike);
+
+    convention.status = 1;
+    return this.conventionRepository.save(convention);
   }
 
   async save(convention: Convention): Promise<Convention> {

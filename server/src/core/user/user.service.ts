@@ -37,11 +37,12 @@ export class UserService {
       .getOne();
   }
 
-  async save(user: User): Promise<void> {
-    await this.userRepository.save(user);
+  async save(user: User): Promise<User> {
+    return this.userRepository.save(user);
   }
 
-  async create(data: DeepPartial<User>): Promise<User> {
-    return this.userRepository.create(data);
+  async create(userLike: DeepPartial<User>): Promise<User> {
+    let user = this.userRepository.create(userLike);
+    return this.userRepository.save(user);
   }
 }

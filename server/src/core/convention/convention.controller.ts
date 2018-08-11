@@ -30,7 +30,7 @@ export class ConventionController {
 
   @Post('create')
   async create(@Body() data: CreateDTO) {
-    if (await this.categoryService.findById(data.categoryId)) {
+    if (await this.categoryService.findOneById(data.categoryId)) {
       throw new ResourceNotFoundException('CATEGORY_NOT_FOUND');
     }
 
@@ -71,7 +71,7 @@ export class ConventionController {
 
   @Get('delete/:id')
   async delete(@Param('id') id: number) {
-    let category = await this.categoryService.findById(id);
+    let category = await this.categoryService.findOneById(id);
     if (!category) {
       throw new ResourceNotFoundException('CATEGORY_NOT_FOUND');
     }

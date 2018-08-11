@@ -18,7 +18,7 @@ export class CategoryService {
       .getMany();
   }
 
-  async findById(id: number): Promise<Category | undefined> {
+  async findOneById(id: number): Promise<Category | undefined> {
     return this.categoryRepository
       .createQueryBuilder()
       .where('id = :id and status != 0', {id})
@@ -46,7 +46,7 @@ export class CategoryService {
   ): Promise<Category> {
     categoryLike.orderId = (await this.getMaxOrderId(parentId)) + 1;
 
-    let category = await this.categoryRepository.create(categoryLike);
+    let category = await this.create(categoryLike);
 
     if (typeof afterOrderId !== 'undefined') {
       category = await this.shift(category, afterOrderId);
@@ -91,6 +91,14 @@ export class CategoryService {
     await this.categoryRepository.save(affectedCategories);
 
     return category;
+  }
+
+  async create(categoryLike: DeepPartial<Category>): Promise<Category> {
+    categoryLike.status = 1;
+
+    let category = this.categoryRepository.create(categoryLike);
+
+    return this.categoryRepository.save(category);
   }
 
   async save(category: Category): Promise<Category> {

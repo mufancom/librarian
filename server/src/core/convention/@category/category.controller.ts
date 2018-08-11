@@ -13,7 +13,7 @@ export class CategoryController {
   async create(@Body() data: CreateDTO) {
     let {parentId, afterOrderId} = data;
 
-    if (parentId !== 0 && !(await this.categoryService.findById(parentId))) {
+    if (parentId !== 0 && !(await this.categoryService.findOneById(parentId))) {
       throw new ResourceNotFoundException('PARENT_CATEGORY_NOT_FOUND');
     }
 
@@ -28,7 +28,7 @@ export class CategoryController {
 
   @Post('edit')
   async edit(@Body() data: EditDTO) {
-    let category = await this.categoryService.findById(data.id);
+    let category = await this.categoryService.findOneById(data.id);
 
     if (!category) {
       throw new ResourceNotFoundException('CATEGORY_NOT_FOUND');
@@ -56,7 +56,7 @@ export class CategoryController {
 
   @Get('delete/:id')
   async delete(@Param() id: number) {
-    let category = await this.categoryService.findById(id);
+    let category = await this.categoryService.findOneById(id);
 
     if (!category) {
       throw new ResourceNotFoundException('CATEGORY_NOT_FOUND');
