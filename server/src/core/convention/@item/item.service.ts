@@ -29,7 +29,7 @@ export class ItemService {
       .createQueryBuilder()
       .where('convention_id = :conventionId and status != 0', {conventionId})
       .select('max(order_id)')
-      .execute())['max(order_id)'];
+      .execute())[0]['max(order_id)'];
 
     if (maxOrderId === null) {
       return -1;

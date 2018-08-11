@@ -30,7 +30,7 @@ export class CategoryService {
       .createQueryBuilder()
       .where('parent_id = :parentId and status != 0', {parentId})
       .select('max(order_id)')
-      .execute())['max(order_id)'];
+      .execute())[0]['max(order_id)'];
 
     if (maxOrderId === null) {
       return -1;

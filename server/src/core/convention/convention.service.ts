@@ -37,7 +37,7 @@ export class ConventionService {
       .createQueryBuilder()
       .where('category_id = :categoryId', {categoryId})
       .select('max(order_id)')
-      .execute())['max(order_id)'];
+      .execute())[0]['max(order_id)'];
 
     if (maxOrderId === null) {
       return -1;
