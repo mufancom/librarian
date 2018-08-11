@@ -1,5 +1,10 @@
 import {Column, Entity, PrimaryGeneratedColumn} from 'typeorm';
 
+export enum CategoryStatus {
+  deleted,
+  normal,
+}
+
 @Entity()
 export class Category {
   @PrimaryGeneratedColumn()
@@ -17,6 +22,9 @@ export class Category {
   @Column()
   alias?: string;
 
+  @Column({name: 'deleted_at'})
+  deletedAt?: number;
+
   @Column()
-  status!: number;
+  status!: CategoryStatus;
 }

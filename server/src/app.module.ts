@@ -2,7 +2,6 @@ import {Module} from '@nestjs/common';
 import {TypeOrmModule} from '@nestjs/typeorm';
 
 import {AuthModule} from 'core/auth';
-import {CommentModule} from 'core/comment';
 import {ConventionModule} from 'core/convention';
 import {UserModule} from 'core/user';
 import {Config} from 'utils/config';
@@ -16,7 +15,6 @@ import {Config} from 'utils/config';
     UserModule,
     AuthModule,
     ConventionModule,
-    CommentModule,
   ],
   controllers: [],
 })

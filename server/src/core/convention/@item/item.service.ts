@@ -1,116 +1,167 @@
 import {Injectable} from '@nestjs/common';
 import {InjectRepository} from '@nestjs/typeorm';
-import {DeepPartial, Repository} from 'typeorm';
+import {
+  DeepPartial,
+  Repository,
+  Transaction,
+  TransactionRepository,
+} from 'typeorm';
 
-import {Item} from './item.entity';
+import {
+  createItemVersion,
+  insertItem,
+  saveItem,
+  saveItemVersion,
+  shiftItem,
+} from './item-repository-utils';
+import {ItemVersion} from './item-version.entity';
+import {Item, ItemStatus} from './item.entity';
 
 @Injectable()
 export class ItemService {
   constructor(
     @InjectRepository(Item) private itemRepository: Repository<Item>,
+    @InjectRepository(ItemVersion)
+    private itemVersionRepository: Repository<ItemVersion>,
   ) {}
 
-  async findOneById(id: number): Promise<Item | undefined> {
+  async getItemById(id: number): Promise<Item | undefined> {
     return this.itemRepository
       .createQueryBuilder()
-      .where('id = :id and status != 0', {id})
+      .where('id = :id and status != :deleted', {
+        id,
+        deleted: ItemStatus.deleted,
+      })
       .getOne();
   }
 
   async getItems(conventionId: number): Promise<Item[]> {
     return this.itemRepository
       .createQueryBuilder()
-      .where('convention_id = :conventionId and status = 1', {conventionId})
+      .where('convention_id = :conventionId and status != :deleted', {
+        conventionId,
+        deleted: ItemStatus.deleted,
+      })
       .getMany();
   }
 
-  async getMaxOrderId(conventionId: number): Promise<number> {
-    let maxOrderId = (await this.itemRepository
-      .createQueryBuilder()
-      .where('convention_id = :conventionId and status != 0', {conventionId})
-      .select('max(order_id)')
-      .execute())[0]['max(order_id)'];
-
-    if (maxOrderId === null) {
-      return -1;
-    }
-
-    return maxOrderId;
-  }
-
-  async insert(
+  @Transaction()
+  async createItem(
     conventionId: number,
     afterOrderId: number | undefined,
+    message: string | undefined,
     itemLike: DeepPartial<Item>,
+    @TransactionRepository(Item) itemRepository?: Repository<Item>,
+    @TransactionRepository(ItemVersion)
+    itemVersionRepository?: Repository<ItemVersion>,
   ): Promise<Item> {
-    itemLike.orderId = (await this.getMaxOrderId(conventionId)) + 1;
+    let itemVersion = await createItemVersion(
+      {content: itemLike.content, message},
+      itemVersionRepository!,
+    );
 
-    let item = await this.create(itemLike);
+    itemLike.versionId = itemVersion.id;
 
-    if (typeof afterOrderId !== 'undefined') {
-      item = await this.shift(item, afterOrderId);
-    }
+    let item = await insertItem(
+      conventionId,
+      afterOrderId,
+      itemLike,
+      itemRepository!,
+    );
 
-    return item;
-  }
-
-  async shift(item: Item, afterOrderId: number): Promise<Item> {
-    let {orderId: previousOrderId, conventionId} = item;
-    let theSmaller = Math.min(previousOrderId, afterOrderId);
-    let theLarger = Math.max(previousOrderId, afterOrderId);
-
-    let leftShift = false;
-
-    if (theSmaller === afterOrderId) {
-      theSmaller += 1;
-      leftShift = true;
-    }
-
-    let affectedItems = await this.itemRepository
-      .createQueryBuilder()
-      .where(
-        'convention_id = :conventionId and order_id >= :theSmaller and order_id <= :theLarger and status != 0',
-        {
-          conventionId,
-          theSmaller,
-          theLarger,
-        },
-      )
-      .getMany();
-
-    for (let affectedItem of affectedItems) {
-      if (affectedItem.id !== item.id) {
-        affectedItem.orderId += leftShift ? 1 : -1;
-      } else {
-        affectedItem.orderId = afterOrderId + (leftShift ? 1 : 0);
-        item = affectedItem;
-      }
-    }
-
-    await this.itemRepository.save(affectedItems);
+    itemVersion.conventionItemId = item.id;
+    await saveItemVersion(itemVersion, itemVersionRepository!);
 
     return item;
   }
 
-  async create(itemLike: DeepPartial<Item>): Promise<Item> {
+  @Transaction()
+  async editItem(
+    item: Item,
+    fromVersionId: number,
+    content: string,
+    message: string | undefined,
+    @TransactionRepository(Item) itemRepository?: Repository<Item>,
+    @TransactionRepository(ItemVersion)
+    itemVersionRepository?: Repository<ItemVersion>,
+  ): Promise<Item> {
+    let itemVersion = await createItemVersion(
+      {
+        conventionItemId: item.id,
+        content,
+        fromId: fromVersionId,
+        message,
+      },
+      itemVersionRepository!,
+    );
+
+    item.content = content;
+    item.versionId = itemVersion.id;
+
+    // TODO: consistency backward check
+    return saveItem(item, itemRepository!);
+  }
+
+  @Transaction()
+  async shiftItem(
+    item: Item,
+    afterOrderId: number,
+    @TransactionRepository(Item) itemRepository?: Repository<Item>,
+  ): Promise<Item> {
+    return shiftItem(item, afterOrderId, itemRepository!);
+  }
+
+  async deleteItem(
+    item: Item,
+    itemRepository: Repository<Item> = this.itemRepository,
+  ): Promise<Item> {
     let now = Date.now();
 
-    itemLike.status = 1;
-    itemLike.createdAt = now;
-    itemLike.commentCount = 0;
-    itemLike.thumbUpCount = 0;
+    item.status = ItemStatus.deleted;
+    item.deletedAt = now;
 
-    let item = this.itemRepository.create(itemLike);
-
-    return this.itemRepository.save(item);
+    return itemRepository.save(item);
   }
 
-  async save(item: Item): Promise<Item> {
-    return this.itemRepository.save(item);
+  @Transaction()
+  async rollbackItem(
+    item: Item,
+    toVersion: ItemVersion,
+    @TransactionRepository(Item) itemRepository?: Repository<Item>,
+    @TransactionRepository(ItemVersion)
+    itemVersionRepository?: Repository<ItemVersion>,
+  ): Promise<Item> {
+    let message = `Rollback to version: ${toVersion.id}`;
+
+    let itemVersion = await createItemVersion(
+      {...toVersion, id: undefined, fromId: toVersion.id, message},
+      itemVersionRepository!,
+    );
+
+    item.content = toVersion.content;
+    item.versionId = itemVersion.id;
+
+    // TODO: consistency backward check
+    return saveItem(item, itemRepository!);
   }
 
-  async delete(item: Item): Promise<Item> {
-    item.status = 0;
-    return this.itemRepository.save(item);
+  async getItemVersionById(
+    id: number,
+    itemVersionRepository: Repository<ItemVersion> = this.itemVersionRepository,
+  ): Promise<ItemVersion | undefined> {
+    return itemVersionRepository
+      .createQueryBuilder()
+      .where('id = :id', {id})
+      .getOne();
+  }
+
+  async getItemVersionsByItemId(
+    itemId: number,
+    itemVersionRepository: Repository<ItemVersion> = this.itemVersionRepository,
+  ): Promise<ItemVersion[]> {
+    return itemVersionRepository
+      .createQueryBuilder()
+      .where('convention_item_id = :itemId', {itemId})
+      .getMany();
   }
 }

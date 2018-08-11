@@ -2,7 +2,7 @@ import {Injectable} from '@nestjs/common';
 import {InjectRepository} from '@nestjs/typeorm';
 import {DeepPartial, Repository} from 'typeorm';
 
-import {Convention} from './convention.entity';
+import {Convention, ConventionStatus} from './convention.entity';
 
 export interface IndexTree {
   title: string;
@@ -28,14 +28,20 @@ export class ConventionService {
   async findOneById(id: number): Promise<Convention | undefined> {
     return this.conventionRepository
       .createQueryBuilder()
-      .where('id = :id and status != 0', {id})
+      .where('id = :id and status != :deleted', {
+        id,
+        deleted: ConventionStatus.deleted,
+      })
       .getOne();
   }
 
   async getMaxOrderId(categoryId: number): Promise<number> {
     let maxOrderId = (await this.conventionRepository
       .createQueryBuilder()
-      .where('category_id = :categoryId', {categoryId})
+      .where('category_id = :categoryId and status != :deleted', {
+        categoryId,
+        deleted: ConventionStatus.deleted,
+      })
       .select('max(order_id)')
       .execute())[0]['max(order_id)'];
 
@@ -51,7 +57,7 @@ export class ConventionService {
     afterOrderId: number | undefined,
     conventionLike: DeepPartial<Convention>,
   ): Promise<Convention> {
-    conventionLike.categoryId = (await this.getMaxOrderId(categoryId)) + 1;
+    conventionLike.orderId = (await this.getMaxOrderId(categoryId)) + 1;
 
     let convention = await this.create(conventionLike);
 
@@ -80,11 +86,12 @@ export class ConventionService {
     let affectedConventions = await this.conventionRepository
       .createQueryBuilder()
       .where(
-        'category_id = :categoryId and order_id >= :theSmaller and order_id <= :theLarger',
+        'category_id = :categoryId and order_id >= :theSmaller and order_id <= :theLarger and status != :deleted',
         {
           categoryId,
           theSmaller,
           theLarger,
+          deleted: ConventionStatus.deleted,
         },
       )
       .getMany();
@@ -104,9 +111,13 @@ export class ConventionService {
   }
 
   async create(conventionLike: DeepPartial<Convention>): Promise<Convention> {
+    let now = Date.now();
+
     let convention = this.conventionRepository.create(conventionLike);
 
-    convention.status = 1;
+    convention.status = ConventionStatus.normal;
+    convention.createdAt = now;
+
     return this.conventionRepository.save(convention);
   }
 
@@ -115,7 +126,11 @@ export class ConventionService {
   }
 
   async delete(convention: Convention): Promise<Convention> {
-    convention.status = 0;
+    let now = Date.now();
+
+    convention.status = ConventionStatus.deleted;
+    convention.deletedAt = now;
+
     return this.conventionRepository.save(convention);
   }
 }

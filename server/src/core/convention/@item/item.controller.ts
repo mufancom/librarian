@@ -3,11 +3,11 @@ import {Body, Controller, Get, Param, Post} from '@nestjs/common';
 import {
   ResourceConflictingException,
   ResourceNotFoundException,
+  UnnecessaryRequestException,
 } from 'common/exceptions';
 
 import {ConventionService} from '../convention.service';
 
-import {ItemVersionService} from './@item-version';
 import {CreateDTO, EditDTO, RollbackDTO, ShiftDTO} from './item.dto';
 import {ItemService} from './item.service';
 
@@ -15,7 +15,6 @@ import {ItemService} from './item.service';
 export class ItemController {
   constructor(
     private itemService: ItemService,
-    private itemVersionService: ItemVersionService,
     private conventionService: ConventionService,
   ) {}
 
@@ -25,74 +24,77 @@ export class ItemController {
       throw new ResourceNotFoundException('CONVENTION_NOT_FOUND');
     }
 
-    let {content} = data;
-    let itemVersion = await this.itemVersionService.create({content});
+    let {conventionId, afterOrderId} = data;
 
-    data.versionId = itemVersion.id;
-    let item = await this.itemService.insert(
-      data.conventionId,
-      data.afterOrderId,
+    let item = await this.itemService.createItem(
+      conventionId,
+      afterOrderId,
+      data.message,
       data,
     );
-
-    itemVersion.conventionItemId = item.id;
-    await this.itemVersionService.save(itemVersion);
 
     return {id: item.id};
   }
 
   @Post('edit')
   async edit(@Body() data: EditDTO) {
-    let item = await this.itemService.findOneById(data.id);
+    let item = await this.itemService.getItemById(data.id);
 
     if (!item) {
       throw new ResourceNotFoundException('CONVENTION_ITEM_NOT_FOUND');
     }
 
-    if (item.versionId !== data.fromVersionId) {
+    let {fromVersionId, content, message} = data;
+
+    if (item.versionId !== fromVersionId) {
       throw new ResourceConflictingException('BASE_VERSION_OUT_DATED');
     }
 
-    let itemVersion = await this.itemVersionService.create({
-      conventionItemId: item.id,
-      content: data.content,
-      fromId: data.fromVersionId,
-    });
+    item = await this.itemService.editItem(
+      item,
+      fromVersionId,
+      content,
+      message,
+    );
 
-    item.content = data.content;
-    item.versionId = itemVersion.id;
+    let {versionId} = item;
 
-    await this.itemService.save(item);
+    return {versionId};
   }
 
   @Post('shift')
   async shift(@Body() data: ShiftDTO) {
-    let item = await this.itemService.findOneById(data.id);
+    let item = await this.itemService.getItemById(data.id);
     if (!item) {
       throw new ResourceNotFoundException('CONVENTION_ITEM_NOT_FOUND');
     }
 
-    await this.itemService.shift(item, data.afterOrderId);
+    await this.itemService.shiftItem(item, data.afterOrderId);
   }
 
   @Get('delete/:id')
   async delete(@Param('id') id: number) {
-    let item = await this.itemService.findOneById(id);
+    let item = await this.itemService.getItemById(id);
     if (!item) {
       throw new ResourceNotFoundException('CONVENTION_ITEM_NOT_FOUND');
     }
 
-    await this.itemService.delete(item);
+    await this.itemService.deleteItem(item);
+  }
+
+  @Get(':id')
+  async get(@Param('id') id: number) {
+    return this.itemService.getItemById(id);
   }
 
   @Get(':id/versions')
   async versions(@Param('id') id: number) {
-    return this.itemVersionService.getManyByItemId(id);
+    return this.itemService.getItemVersionsByItemId(id);
   }
 
   @Post('rollback')
   async rollback(@Body() data: RollbackDTO) {
-    let itemVersion = await this.itemVersionService.findOneById(
+    let itemVersion = await this.itemService.getItemVersionById(
       data.toVersionId,
     );
 
@@ -100,15 +102,18 @@ export class ItemController {
       throw new ResourceNotFoundException('CONVENTION_ITEM_VERSION_NOT_FOUND');
     }
 
-    let item = await this.itemService.findOneById(itemVersion.conventionItemId);
+    let item = await this.itemService.getItemById(itemVersion.conventionItemId);
 
     if (!item) {
       throw new ResourceNotFoundException('CONVENTION_ITEM_NOT_FOUND');
     }
 
-    item.content = itemVersion.content;
-    item.versionId = itemVersion.id;
+    if (item.versionId === itemVersion.id) {
+      throw new UnnecessaryRequestException(
+        'CANNOT_ROLLBACK_TO_CURRENT_VERSION',
+      );
+    }
 
-    await this.itemService.save(item);
+    await this.itemService.rollbackItem(item, itemVersion);
   }
 }

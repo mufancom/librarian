@@ -16,7 +16,7 @@ export class ConventionController {
   ) {}
 
   @Get('index')
-  async index() {
+  async getIndex() {
     return {
       categories: await this.categoryService.getCategories(),
       conventions: await this.conventionService.getConventions(),
@@ -30,7 +30,7 @@ export class ConventionController {
 
   @Post('create')
   async create(@Body() data: CreateDTO) {
-    if (await this.categoryService.findOneById(data.categoryId)) {
+    if (!(await this.categoryService.findOneById(data.categoryId))) {
       throw new ResourceNotFoundException('CATEGORY_NOT_FOUND');
     }
 

@@ -1,15 +1,20 @@
 import {Column, Entity, PrimaryGeneratedColumn} from 'typeorm';
 
-@Entity()
-export class Comment {
+export enum ItemCommentStatus {
+  deleted,
+  normal,
+}
+
+@Entity('convention_item_comment')
+export class ItemComment {
   @PrimaryGeneratedColumn()
   id!: number;
 
+  @Column({name: 'convention_item_version_id'})
+  itemVersionId!: number;
+
   @Column({name: 'parent_id'})
   parentId!: number;
-
-  @Column({name: 'file_path'})
-  filePath!: string;
 
   @Column({name: 'user_id'})
   userId!: number;
@@ -22,4 +27,8 @@ export class Comment {
 
   @Column({name: 'updated_at'})
   updatedAt!: number;
+
+  @Column({name: 'deleted_at'})
+  @Column()
+  status!: ItemCommentStatus;
 }

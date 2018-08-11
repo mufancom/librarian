@@ -14,6 +14,9 @@ export class ItemVersion {
   @Column()
   content!: string;
 
+  @Column()
+  message?: string;
+
   @Column({name: 'comment_count'})
   commentCount!: number;
 

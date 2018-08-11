@@ -1,5 +1,10 @@
 import {Column, Entity, PrimaryGeneratedColumn} from 'typeorm';
 
+export enum ItemStatus {
+  deleted,
+  normal,
+}
+
 @Entity('convention_item')
 export class Item {
   @PrimaryGeneratedColumn()
@@ -26,6 +31,9 @@ export class Item {
   @Column({name: 'created_at'})
   createdAt!: number;
 
-  @Column({name: 'status'})
-  status!: number;
+  @Column({name: 'deleted_at'})
+  deletedAt?: number;
+
+  @Column()
+  status!: ItemStatus;
 }

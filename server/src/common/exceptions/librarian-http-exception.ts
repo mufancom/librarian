@@ -43,3 +43,9 @@ export class ResourceConflictingException extends LibrarianHttpException {
     super('RESOURCE_CONFLICTING', message);
   }
 }
+
+export class UnnecessaryRequestException extends LibrarianHttpException {
+  constructor(message = 'UNNECESSARY_REQUEST') {
+    super('UNNECESSARY_REQUEST', message);
+  }
+}

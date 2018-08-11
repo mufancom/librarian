@@ -1,5 +1,10 @@
 import {Column, Entity, PrimaryGeneratedColumn} from 'typeorm';
 
+export enum ConventionStatus {
+  deleted,
+  normal,
+}
+
 @Entity()
 export class Convention {
   @PrimaryGeneratedColumn()
@@ -17,6 +22,12 @@ export class Convention {
   @Column()
   alias?: string;
 
+  @Column({name: 'created_at'})
+  createdAt!: number;
+
+  @Column({name: 'deleted_at'})
+  deletedAt?: number;
+
   @Column()
-  status!: number;
+  status!: ConventionStatus;
 }

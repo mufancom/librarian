@@ -1,4 +1,4 @@
-import {IsNumber, IsOptional, Min, MinLength} from 'class-validator';
+import {IsNumber, IsOptional, MaxLength, Min, MinLength} from 'class-validator';
 
 export class CreateDTO {
   @IsNumber()
@@ -11,6 +11,10 @@ export class CreateDTO {
 
   @MinLength(1)
   readonly content!: string;
+
+  @IsOptional()
+  @MaxLength(80)
+  readonly message?: string;
 
   @IsOptional()
   @IsNumber()
@@ -26,6 +30,10 @@ export class EditDTO {
 
   @MinLength(1)
   readonly content!: string;
+
+  @IsOptional()
+  @MaxLength(80)
+  readonly message?: string;
 }
 
 export class ShiftDTO {

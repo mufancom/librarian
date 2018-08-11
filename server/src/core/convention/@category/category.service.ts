@@ -2,7 +2,7 @@ import {Injectable} from '@nestjs/common';
 import {InjectRepository} from '@nestjs/typeorm';
 import {DeepPartial, Repository} from 'typeorm';
 
-import {Category} from './category.entity';
+import {Category, CategoryStatus} from './category.entity';
 
 @Injectable()
 export class CategoryService {
@@ -14,21 +14,27 @@ export class CategoryService {
   async getCategories(): Promise<Category[]> {
     return this.categoryRepository
       .createQueryBuilder()
-      .where('status != 0')
+      .where('status != :deleted', {deleted: CategoryStatus.deleted})
       .getMany();
   }
 
   async findOneById(id: number): Promise<Category | undefined> {
     return this.categoryRepository
       .createQueryBuilder()
-      .where('id = :id and status != 0', {id})
+      .where('id = :id and status != :deleted', {
+        id,
+        deleted: CategoryStatus.deleted,
+      })
       .getOne();
   }
 
   async getMaxOrderId(parentId: number): Promise<number> {
     let maxOrderId = (await this.categoryRepository
       .createQueryBuilder()
-      .where('parent_id = :parentId and status != 0', {parentId})
+      .where('parent_id = :parentId and status != :deleted', {
+        parentId,
+        deleted: CategoryStatus.deleted,
+      })
       .select('max(order_id)')
       .execute())[0]['max(order_id)'];
 
@@ -70,11 +76,12 @@ export class CategoryService {
     let affectedCategories = await this.categoryRepository
       .createQueryBuilder()
       .where(
-        'parent_id = :parentId and order_id >= :theSmaller and order_id <= :theLarger and status != 0',
+        'parent_id = :parentId and order_id >= :theSmaller and order_id <= :theLarger and status != :deleted',
         {
           parentId,
           theSmaller,
           theLarger,
+          deleted: CategoryStatus.deleted,
         },
       )
       .getMany();
@@ -94,7 +101,7 @@ export class CategoryService {
   }
 
   async create(categoryLike: DeepPartial<Category>): Promise<Category> {
-    categoryLike.status = 1;
+    categoryLike.status = CategoryStatus.normal;
 
     let category = this.categoryRepository.create(categoryLike);
 
@@ -106,7 +113,11 @@ export class CategoryService {
   }
 
   async delete(category: Category): Promise<Category> {
-    category.status = 0;
+    let now = Date.now();
+
+    category.status = CategoryStatus.deleted;
+    category.deletedAt = now;
+
     return this.save(category);
   }
 }
