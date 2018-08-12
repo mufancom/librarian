@@ -5,7 +5,6 @@ import {AppModule} from 'app.module';
 import {HttpExceptionFilter} from 'common/filters/http-exception.filter';
 import {APIInterceptor} from 'common/interceptors/api.interceptor';
 import {ValidationPipe} from 'common/pipes/validation.pipe';
-import {PUBLIC_DIR} from 'paths';
 import {Config} from 'utils/config';
 
 const DEFAULT_PORT = 3002;
@@ -15,17 +14,15 @@ ExpressSessionMiddleware.configure(Config.session.get());
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
-  // TODO: add origin setting into config
-  app.enableCors({origin: 'http://localhost:3000', credentials: true});
+  app.enableCors({origin: Config.server.get('crosOrigin'), credentials: true});
 
   app.use(new ExpressSessionMiddleware().resolve());
 
-  app.useStaticAssets(PUBLIC_DIR);
   app.useGlobalFilters(new HttpExceptionFilter());
   app.useGlobalInterceptors(new APIInterceptor());
   app.useGlobalPipes(new ValidationPipe());
 
-  await app.listen(process.env.PORT || DEFAULT_PORT);
+  await app.listen(process.env.PORT || Config.server.get('port', DEFAULT_PORT));
 }
 
 bootstrap().catch(console.error);

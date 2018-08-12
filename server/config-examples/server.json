@@ -1,0 +1,4 @@
+{
+  "port": 3002,
+  "corsOrigin": "http://localhost:3000"
+}

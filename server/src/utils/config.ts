@@ -10,6 +10,7 @@ import {PROJECT_DIR} from 'paths';
 const hasOwnProperty = Object.prototype.hasOwnProperty;
 
 const CONFIG_BASE_PATH = Path.join(PROJECT_DIR, '.config');
+const SERVER_CONFIG_PATH = Path.join(CONFIG_BASE_PATH, 'server.json');
 const DATABASE_CONFIG_PATH = Path.join(CONFIG_BASE_PATH, 'database.json');
 const SESSION_CONFIG_PATH = Path.join(CONFIG_BASE_PATH, 'session.json');
 
@@ -38,6 +39,11 @@ export class ConfigService<T extends object> {
   }
 }
 
+export interface ServerConfig {
+  port: number;
+  crosOrigin: string;
+}
+
 export type DatabaseConfig = ExcludeProperty<
   TypeOrmModuleOptions & Partial<ConnectionOptions>,
   'entities'
@@ -48,6 +54,7 @@ export interface SessionConfig {
 }
 
 export class Config {
+  static server = new ConfigService<ServerConfig>(SERVER_CONFIG_PATH);
   static database = new ConfigService<DatabaseConfig>(DATABASE_CONFIG_PATH);
   static session = new ConfigService<SessionConfig>(SESSION_CONFIG_PATH);
 }
