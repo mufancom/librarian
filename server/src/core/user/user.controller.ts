@@ -64,8 +64,8 @@ export class UserController {
       throw new ResourceNotFoundException('USER_NOT_FOUND');
     }
 
-    let {username, email, avatar} = user;
+    let {username, email} = user;
 
-    return {id, username, email, avatar};
+    return {id, username, email};
   }
 }

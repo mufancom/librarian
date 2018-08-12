@@ -1,4 +1,4 @@
-import {Body, Controller, Get, Param, Post} from '@nestjs/common';
+import {Body, Controller, Get, Param, Post, Query} from '@nestjs/common';
 
 import {
   ResourceConflictingException,
@@ -86,8 +86,8 @@ export class ItemController {
   }
 
   @Get(':id/versions')
-  async versions(@Param('id') id: number) {
-    return this.itemService.getItemVersionsByItemId(id);
+  async getVersions(@Param('id') id: number, @Query('page') page = 1) {
+    return this.itemService.getItemVersionsByItemId(id, page);
   }
 
   @Post('rollback')

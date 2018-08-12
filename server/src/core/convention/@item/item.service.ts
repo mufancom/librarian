@@ -17,6 +17,8 @@ import {
 import {ItemVersion} from './item-version.entity';
 import {Item, ItemStatus} from './item.entity';
 
+const ITEM_VERSION_PAGE_SIZE = 20;
+
 @Injectable()
 export class ItemService {
   constructor(
@@ -157,11 +159,58 @@ export class ItemService {
 
   async getItemVersionsByItemId(
     itemId: number,
+    page: number,
     itemVersionRepository: Repository<ItemVersion> = this.itemVersionRepository,
   ): Promise<ItemVersion[]> {
     return itemVersionRepository
       .createQueryBuilder()
       .where('convention_item_id = :itemId', {itemId})
+      .offset(ITEM_VERSION_PAGE_SIZE * (page - 1))
+      .take(ITEM_VERSION_PAGE_SIZE)
       .getMany();
+  }
+
+  async increaseItemVersionCommentCount(
+    versionId: number,
+    value: number = 1,
+  ): Promise<void> {
+    await this.itemVersionRepository.increment(
+      {id: versionId},
+      'commentCount',
+      value,
+    );
+  }
+
+  async decreaseItemVersionCommentCount(
+    versionId: number,
+    value: number = 1,
+  ): Promise<void> {
+    await this.itemVersionRepository.decrement(
+      {id: versionId},
+      'commentCount',
+      value,
+    );
+  }
+
+  async increaseItemVersionThumbUpCount(
+    versionId: number,
+    value: number = 1,
+  ): Promise<void> {
+    await this.itemVersionRepository.increment(
+      {id: versionId},
+      'thumbUpCount',
+      value,
+    );
+  }
+
+  async decreaseItemVersionThumbUpCount(
+    versionId: number,
+    value: number = 1,
+  ): Promise<void> {
+    await this.itemVersionRepository.decrement(
+      {id: versionId},
+      'thumbUpCount',
+      value,
+    );
   }
 }

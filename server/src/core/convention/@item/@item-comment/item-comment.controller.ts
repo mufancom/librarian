@@ -4,6 +4,7 @@ import {
   Get,
   Param,
   Post,
+  Query,
   Req,
   UseGuards,
 } from '@nestjs/common';
@@ -12,6 +13,7 @@ import {Request} from 'express';
 import {
   AuthenticationFailedException,
   ResourceNotFoundException,
+  ValidationException,
 } from 'common/exceptions';
 
 import {AuthGuard} from '../../../auth';
@@ -59,7 +61,26 @@ export class ItemCommentController {
     await this.itemCommentService.save(comment);
   }
 
-  @Post('delete/:id')
+  @Get('of-version/:versionId')
+  async getByItemVersionId(
+    @Param('versionId') versionId: number,
+    @Query('page') page = 1,
+  ) {
+    if (!(await this.itemService.getItemVersionById(versionId))) {
+      throw new ResourceNotFoundException('CONVENTION_ITEM_VERSION_NOT_FOUND');
+    }
+
+    if (page < 1) {
+      throw new ValidationException('INVALID_PAGE_NUMBER');
+    }
+
+    return this.itemCommentService.getManyWithUserInfoByItemVersionId(
+      versionId,
+      page,
+    );
+  }
+
+  @Get('delete/:id')
   @UseGuards(AuthGuard)
   async delete(@Param('id') id: number, @Req() req: Request) {
     let comment = await this.itemCommentService.getOneById(id);
