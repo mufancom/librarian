@@ -1,6 +1,8 @@
-import {Body, Controller, Get, Param, Post} from '@nestjs/common';
+import {Body, Controller, Get, Param, Post, UseGuards} from '@nestjs/common';
 
 import {ResourceNotFoundException} from 'common/exceptions';
+
+import {AuthGuard} from '../../auth';
 
 import {CreateDTO, EditDTO} from './category.dto';
 import {CategoryService} from './category.service';
@@ -10,6 +12,7 @@ export class CategoryController {
   constructor(private categoryService: CategoryService) {}
 
   @Post('create')
+  @UseGuards(AuthGuard)
   async create(@Body() data: CreateDTO) {
     let {parentId, afterOrderId} = data;
 
@@ -23,6 +26,7 @@ export class CategoryController {
   }
 
   @Post('edit')
+  @UseGuards(AuthGuard)
   async edit(@Body() data: EditDTO) {
     let category = await this.categoryService.findOneById(data.id);
 
@@ -51,6 +55,7 @@ export class CategoryController {
   }
 
   @Get('delete/:id')
+  @UseGuards(AuthGuard)
   async delete(@Param() id: number) {
     let category = await this.categoryService.findOneById(id);
 

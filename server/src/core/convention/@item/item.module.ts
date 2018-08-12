@@ -1,6 +1,7 @@
 import {Module, forwardRef} from '@nestjs/common';
 import {TypeOrmModule} from '@nestjs/typeorm';
 
+import {AuthModule} from '../../auth';
 import {ConventionModule} from '../convention.module';
 
 import {ItemCommentModule} from './@item-comment';
@@ -14,6 +15,7 @@ import {ItemService} from './item.service';
     TypeOrmModule.forFeature([Item, ItemVersion]),
     forwardRef(() => ConventionModule),
     ItemCommentModule,
+    AuthModule,
   ],
   controllers: [ItemController],
   providers: [ItemService],

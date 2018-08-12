@@ -1,4 +1,12 @@
-import {Body, Controller, Get, Param, Post, Query} from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  Param,
+  Post,
+  Query,
+  UseGuards,
+} from '@nestjs/common';
 
 import {
   ResourceConflictingException,
@@ -6,6 +14,7 @@ import {
   UnnecessaryRequestException,
 } from 'common/exceptions';
 
+import {AuthGuard} from '../../auth';
 import {ConventionService} from '../convention.service';
 
 import {CreateDTO, EditDTO, RollbackDTO, ShiftDTO} from './item.dto';
@@ -19,6 +28,7 @@ export class ItemController {
   ) {}
 
   @Post('create')
+  @UseGuards(AuthGuard)
   async create(@Body() data: CreateDTO) {
     if (!(await this.conventionService.findOneById(data.conventionId))) {
       throw new ResourceNotFoundException('CONVENTION_NOT_FOUND');
@@ -37,6 +47,7 @@ export class ItemController {
   }
 
   @Post('edit')
+  @UseGuards(AuthGuard)
   async edit(@Body() data: EditDTO) {
     let item = await this.itemService.getItemById(data.id);
 
@@ -61,6 +72,7 @@ export class ItemController {
   }
 
   @Post('shift')
+  @UseGuards(AuthGuard)
   async shift(@Body() data: ShiftDTO) {
     let item = await this.itemService.getItemById(data.id);
     if (!item) {
@@ -71,6 +83,7 @@ export class ItemController {
   }
 
   @Get('delete/:id')
+  @UseGuards(AuthGuard)
   async delete(@Param('id') id: number) {
     let item = await this.itemService.getItemById(id);
     if (!item) {
@@ -91,6 +104,7 @@ export class ItemController {
   }
 
   @Post('rollback')
+  @UseGuards(AuthGuard)
   async rollback(@Body() data: RollbackDTO) {
     let itemVersion = await this.itemService.getItemVersionById(
       data.toVersionId,

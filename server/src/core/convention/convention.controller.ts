@@ -1,6 +1,8 @@
-import {Body, Controller, Get, Param, Post} from '@nestjs/common';
+import {Body, Controller, Get, Param, Post, UseGuards} from '@nestjs/common';
 
 import {ResourceNotFoundException} from 'common/exceptions';
+
+import {AuthGuard} from '../auth';
 
 import {CategoryService, EditDTO} from './@category';
 import {ItemService} from './@item';
@@ -29,6 +31,7 @@ export class ConventionController {
   }
 
   @Post('create')
+  @UseGuards(AuthGuard)
   async create(@Body() data: CreateDTO) {
     if (!(await this.categoryService.findOneById(data.categoryId))) {
       throw new ResourceNotFoundException('CATEGORY_NOT_FOUND');
@@ -44,6 +47,7 @@ export class ConventionController {
   }
 
   @Post('edit')
+  @UseGuards(AuthGuard)
   async edit(@Body() data: EditDTO) {
     let convention = await this.conventionService.findOneById(data.id);
     if (!convention) {
@@ -72,6 +76,7 @@ export class ConventionController {
   }
 
   @Get('delete/:id')
+  @UseGuards(AuthGuard)
   async delete(@Param('id') id: number) {
     let category = await this.categoryService.findOneById(id);
     if (!category) {
