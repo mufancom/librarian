@@ -1,6 +1,6 @@
 import {Injectable} from '@nestjs/common';
 import {InjectRepository} from '@nestjs/typeorm';
-import {Repository} from 'typeorm';
+import {DeepPartial, Repository} from 'typeorm';
 
 import {User} from './user.entity';
 
@@ -13,7 +13,7 @@ export type UserServiceFindByIdentifierSearchFieldName =
 @Injectable()
 export class UserService {
   constructor(
-    @InjectRepository(User) private readonly userRepository: Repository<User>,
+    @InjectRepository(User) private userRepository: Repository<User>,
   ) {}
 
   async findByIdentifier(
@@ -37,7 +37,12 @@ export class UserService {
       .getOne();
   }
 
-  async saveUser(user: User): Promise<void> {
-    await this.userRepository.save(user);
+  async save(user: User): Promise<User> {
+    return this.userRepository.save(user);
+  }
+
+  async create(userLike: DeepPartial<User>): Promise<User> {
+    let user = this.userRepository.create(userLike);
+    return this.userRepository.save(user);
   }
 }

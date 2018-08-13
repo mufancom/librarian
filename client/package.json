@@ -1,8 +1,7 @@
 {
-  "name": "librarian-client",
+  "name": "client",
   "version": "1.0.0",
   "description": "Client side for Librarian",
-  "author": "Dizy",
   "license": "MIT",
   "private": true,
   "dependencies": {
@@ -10,22 +9,31 @@
     "antd": "^3.7.3",
     "classnames": "^2.2.6",
     "color": "^3.0.0",
+    "highlight.js": "^9.12.0",
+    "i18n-ts": "^1.0.2",
+    "lodash": "^4.17.10",
+    "marked": "^0.4.0",
     "mobx": "^5.0.3",
+    "mobx-react": "^5.2.3",
     "mobx-react-router": "^4.0.4",
     "react": "^16.4.1",
     "react-dom": "^16.4.1",
-    "react-mobx": "^0.0.3",
     "react-router-dom": "^4.3.1",
     "react-scripts-ts": "2.16.0",
-    "styled-components": "^3.3.3"
+    "styled-components": "^3.3.3",
+    "url": "^0.11.0"
   },
   "scripts": {
     "start": "react-app-rewired start --scripts-version react-scripts-ts",
     "build": "react-app-rewired build --scripts-version react-scripts-ts"
   },
   "devDependencies": {
+    "@magicspace/configs": "^0.1.5",
     "@types/classnames": "^2.2.6",
+    "@types/highlight.js": "^9.12.3",
     "@types/history": "^4.7.0",
+    "@types/lodash": "^4.14.116",
+    "@types/marked": "^0.4.0",
     "@types/node": "^10.5.4",
     "@types/react": "^16.4.7",
     "@types/react-dom": "^16.0.6",

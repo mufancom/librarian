@@ -1,0 +1,8 @@
+{
+  "name": "shared",
+  "version": "1.0.0",
+  "private": true,
+  "devDependencies": {
+    "typeorm": "^0.2.7"
+  }
+}

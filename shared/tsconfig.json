@@ -1,0 +1,15 @@
+{
+  "extends": "../node_modules/vts/tsconfig.json",
+  "compilerOptions": {
+    "types": ["node"],
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true,
+    "declaration": true,
+
+    "baseUrl": "src",
+
+    "rootDir": "src",
+    "outDir": "package"
+  },
+  "include": ["src"]
+}

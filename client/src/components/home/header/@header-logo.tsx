@@ -7,7 +7,6 @@ import {styled} from 'theme';
 const Wrapper = styled.div`
   float: left;
   height: 70px;
-  margin-left: 10px;
 `;
 
 const LoginIconWrapper = styled.div`

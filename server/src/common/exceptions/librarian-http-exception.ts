@@ -15,43 +15,37 @@ export class LibrarianHttpException extends HttpException {
 }
 
 export class InvalidArgumentsException extends LibrarianHttpException {
-  constructor(message = 'Invalid arguments') {
+  constructor(message = 'INVALID_ARGUMENTS') {
     super('INVALID_ARGUMENTS', message);
   }
 }
 
-export class ValidationFailedException extends LibrarianHttpException {
-  constructor(message = 'Validation failed') {
+export class ValidationException extends LibrarianHttpException {
+  constructor(message = 'VALIDATION_FAILED') {
     super('VALIDATION_FAILED', message);
   }
 }
 
 export class AuthenticationFailedException extends LibrarianHttpException {
-  constructor(message = 'Authentication failed') {
+  constructor(message = 'AUTHENTICATION_FAILED') {
     super('AUTHENTICATION_FAILED', message);
   }
 }
 
-export class UserNotFoundException extends LibrarianHttpException {
-  constructor(message = 'User not found') {
-    super('USER_NOT_FOUND', message);
+export class ResourceNotFoundException extends LibrarianHttpException {
+  constructor(message = 'RESOURCE_NOT_FOUND') {
+    super('RESOURCE_NOT_FOUND', message);
   }
 }
 
-export class UsernameAlreadyExistsException extends LibrarianHttpException {
-  constructor(message = 'Username already exists') {
-    super('USERNAME_ALREADY_EXISTS', message);
+export class ResourceConflictingException extends LibrarianHttpException {
+  constructor(message = 'RESOURCE_CONFLICTING') {
+    super('RESOURCE_CONFLICTING', message);
   }
 }
 
-export class EmailAlreadyExistsException extends LibrarianHttpException {
-  constructor(message = 'Email already exists') {
-    super('EMAIL_ALREADY_EXISTS', message);
-  }
-}
-
-export class ConventionNotFoundException extends LibrarianHttpException {
-  constructor(message = 'Convention not found') {
-    super('CONVENTION_NOT_FOUND', message);
+export class UnnecessaryRequestException extends LibrarianHttpException {
+  constructor(message = 'UNNECESSARY_REQUEST') {
+    super('UNNECESSARY_REQUEST', message);
   }
 }

@@ -1,12 +1,19 @@
+import classNames from 'classnames';
 import * as React from 'react';
 import {styled} from 'theme';
 import {inject, observer} from 'utils/mobx';
 
 import {RouteComponentProps, withRouter} from 'react-router';
-import {ConventionIndexStore, IndexTree} from 'stores';
+import {
+  ConventionIndexCategoryNode,
+  ConventionIndexNode,
+  ConventionStore,
+} from 'stores/convention-store';
 import {ConventionSideNavCategoryWithRouter} from './@convention-side-nav-category';
 
 const Wrapper = styled.div`
+  margin-bottom: 40px;
+
   ul {
     margin: 0;
     padding: 0;
@@ -25,7 +32,7 @@ const Wrapper = styled.div`
 `;
 
 interface MenuProps {
-  list: IndexTree[];
+  list: ConventionIndexNode[];
   className?: string;
 }
 
@@ -35,7 +42,10 @@ const Menu: React.SFC<MenuProps> = props => {
     return (
       <ul className="menu">
         {list.map(val => (
-          <ConventionSideNavCategoryWithRouter key={val.title} item={val} />
+          <ConventionSideNavCategoryWithRouter
+            key={val.entry.id}
+            node={val as ConventionIndexCategoryNode}
+          />
         ))}
       </ul>
     );
@@ -45,18 +55,20 @@ const Menu: React.SFC<MenuProps> = props => {
 };
 
 export interface ConventionSideNavProps extends RouteComponentProps<any> {
-  conventionIndex: ConventionIndexStore;
+  className?: string;
 }
 
 @observer
 export class ConventionSideNav extends React.Component<ConventionSideNavProps> {
   @inject
-  conventionIndex!: ConventionIndexStore;
+  conventionStore!: ConventionStore;
 
   render() {
+    let {className} = this.props;
+
     return (
-      <Wrapper>
-        <Menu list={this.props.conventionIndex.content} />
+      <Wrapper className={classNames('convention-side-nav', className)}>
+        <Menu list={this.conventionStore.index} />
       </Wrapper>
     );
   }

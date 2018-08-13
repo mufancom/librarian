@@ -1,141 +1,107 @@
 import {Col, Layout, Row} from 'antd';
+import classNames from 'classnames';
 import * as React from 'react';
+import {Route, RouteComponentProps, Switch, withRouter} from 'react-router';
+import styled from 'styled-components';
 
-import {ConventionIndexStore} from 'stores';
+import {ConventionService} from 'services/convention-service';
+import {RouterStore} from 'stores/router-store';
+import {inject, observer} from 'utils/mobx';
+import {RouteTrackerWithRouter} from '../../common/TrackingRoute';
+import {ConventionBody} from './@convention-body';
 import {ConventionSideNavWithRouter} from './@convention-side-nav';
+import {ConventionSideSearch} from './@convention-side-search';
 
 const {Content, Sider} = Layout;
 
-export interface ConventionProps {
-  conventionIndex: ConventionIndexStore;
+const Wrapper = styled.div`
+  ${ConventionSideSearch.Wrapper} {
+    margin-left: 26px;
+    margin-top: 27px;
+  }
+`;
+
+interface ConventionProps extends RouteComponentProps<any> {
+  className?: string;
 }
 
+@observer
 export class Convention extends React.Component<ConventionProps> {
+  @inject
+  routerStore!: RouterStore;
+
+  @inject
+  conventionService!: ConventionService;
+
   render() {
+    let {className} = this.props;
+
     return (
-      <Row>
-        <Col
-          xs={{span: 24, offset: 0}}
-          sm={{span: 22, offset: 1}}
-          md={{span: 20, offset: 2}}
-          lg={{span: 18, offset: 3}}
-          xl={{span: 16, offset: 4}}
-          className="header-nav"
-        >
-          <Layout>
-            <Sider
-              style={{
-                overflow: 'auto',
-                top: '88px',
-                bottom: 0,
-                position: 'fixed',
-                backgroundColor: 'transparent',
-              }}
-            >
-              <ConventionSideNavWithRouter {...this.props} />
-            </Sider>
-            <Content style={{margin: '24px 16px 0 300px', overflow: 'auto'}}>
-              <div style={{padding: 24, background: '#fff'}}>
-                ...
-                <br />
-                Really
-                <br />
-                ...
-                <br />
-                ...
-                <br />
-                ...
-                <br />
-                long
-                <br />
-                ...
-                <br />
-                ...
-                <br />
-                ...
-                <br />
-                ...
-                <br />
-                ...
-                <br />
-                ...
-                <br />
-                ...
-                <br />
-                ...
-                <br />
-                ...
-                <br />
-                ...
-                <br />
-                ...
-                <br />
-                ...
-                <br />
-                ...
-                <br />
-                ...
-                <br />
-                ...
-                <br />
-                ...
-                <br />
-                ...
-                <br />
-                ...
-                <br />
-                ...
-                <br />
-                ...
-                <br />
-                ...
-                <br />
-                ...
-                <br />
-                ...
-                <br />
-                ...
-                <br />
-                ...
-                <br />
-                ...
-                <br />
-                ...
-                <br />
-                ...
-                <br />
-                ...
-                <br />
-                ...
-                <br />
-                ...
-                <br />
-                ...
-                <br />
-                ...
-                <br />
-                ...
-                <br />
-                ...
-                <br />
-                ...
-                <br />
-                ...
-                <br />
-                ...
-                <br />
-                ...
-                <br />
-                ...
-                <br />
-                ...
-                <br />
-                content
-              </div>
-            </Content>
-          </Layout>
-        </Col>
-      </Row>
+      <Wrapper className={classNames('convention', className)}>
+        <Row>
+          <Col
+            xs={{span: 24, offset: 0}}
+            sm={{span: 22, offset: 1}}
+            md={{span: 20, offset: 2}}
+            lg={{span: 18, offset: 3}}
+            xl={{span: 16, offset: 4}}
+            className="header-nav"
+          >
+            <Layout>
+              <Sider
+                style={{
+                  overflow: 'auto',
+                  top: '88px',
+                  bottom: 0,
+                  position: 'fixed',
+                  backgroundColor: 'transparent',
+                }}
+                width={230}
+              >
+                <ConventionSideSearch />
+                <ConventionSideNavWithRouter />
+              </Sider>
+              <Content
+                style={{
+                  margin: '0 16px 0 300px',
+                  overflow: 'auto',
+                  padding: 0,
+                }}
+              >
+                <Switch>
+                  <Route
+                    path="/convention/:id"
+                    component={(props: any) => (
+                      <RouteTrackerWithRouter
+                        {...props}
+                        onChange={this.onRouteChange}
+                      >
+                        <ConventionBody {...props} />
+                      </RouteTrackerWithRouter>
+                    )}
+                  />
+                  <Route>
+                    <div>Miss at {this.routerStore.location.pathname}</div>
+                  </Route>
+                </Switch>
+              </Content>
+            </Layout>
+          </Col>
+        </Row>
+      </Wrapper>
     );
   }
+
+  onRouteChange = (match: any) => {
+    // tslint:disable-next-line:no-console
+    let {id} = match.params;
+
+    this.conventionService.load(id).catch();
+
+    scrollTo(0, 0);
+  };
+
+  static Wrapper = Wrapper;
 }
+
+export const ConventionWithRouter = withRouter(Convention);

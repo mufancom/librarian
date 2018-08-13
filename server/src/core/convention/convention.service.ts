@@ -1,47 +1,131 @@
 import {Injectable} from '@nestjs/common';
-import * as Path from 'path';
-import {PUBLIC_DIR} from 'paths';
-import * as File from 'utils/file';
+import {InjectRepository} from '@nestjs/typeorm';
+import {DeepPartial, Repository} from 'typeorm';
 
-const CONVENTION_MD_PATH = Path.join(PUBLIC_DIR, 'convention');
+import {Convention, ConventionStatus} from './convention.entity';
 
 export interface IndexTree {
   title: string;
-  url?: string;
+  path?: string;
   children?: IndexTree[];
 }
 
-function formIndex(fileTree: File.FileInfo[]) {
-  let result: IndexTree[] = [];
-
-  for (const fileInfo of fileTree) {
-    if (fileInfo.type === 'directory') {
-      result.push({
-        title: fileInfo.filename,
-        children: formIndex(fileInfo.children as File.FileInfo[]),
-      });
-    } else {
-      const fileUrl = Path.join(fileInfo.relativePath, fileInfo.filename);
-
-      result.push({
-        title: fileInfo.filename.match(/([^\\/]+?)(?:\.\w+)$/)![1],
-        url: fileUrl,
-      });
-    }
-  }
-
-  return result;
+export interface IndexJSON {
+  [key: string]: string | IndexJSON;
 }
 
 @Injectable()
 export class ConventionService {
-  async getIndex() {
-    const files = await File.find(CONVENTION_MD_PATH, /.*\.md/, 2 + 1);
-    return formIndex(files);
+  constructor(
+    @InjectRepository(Convention)
+    private conventionRepository: Repository<Convention>,
+  ) {}
+
+  async getConventions(): Promise<Convention[]> {
+    return this.conventionRepository.find();
   }
 
-  async exists(filePath: string) {
-    const fullPath = Path.join(CONVENTION_MD_PATH, filePath);
-    return File.exists(fullPath);
+  async findOneById(id: number): Promise<Convention | undefined> {
+    return this.conventionRepository
+      .createQueryBuilder()
+      .where('id = :id and status != :deleted', {
+        id,
+        deleted: ConventionStatus.deleted,
+      })
+      .getOne();
+  }
+
+  async getMaxOrderId(categoryId: number): Promise<number> {
+    let maxOrderId = (await this.conventionRepository
+      .createQueryBuilder()
+      .where('category_id = :categoryId and status != :deleted', {
+        categoryId,
+        deleted: ConventionStatus.deleted,
+      })
+      .select('max(order_id)')
+      .execute())[0]['max(order_id)'];
+
+    if (maxOrderId === null) {
+      return -1;
+    }
+
+    return maxOrderId;
+  }
+
+  async insert(
+    categoryId: number,
+    afterOrderId: number | undefined,
+    conventionLike: DeepPartial<Convention>,
+  ): Promise<Convention> {
+    conventionLike.orderId = (await this.getMaxOrderId(categoryId)) + 1;
+
+    let convention = await this.create(conventionLike);
+
+    if (typeof afterOrderId !== 'undefined') {
+      convention = await this.shift(convention, afterOrderId);
+    }
+
+    return convention;
+  }
+
+  async shift(
+    convention: Convention,
+    afterOrderId: number,
+  ): Promise<Convention> {
+    let {orderId: previousOrderId, categoryId} = convention;
+    let theSmaller = Math.min(previousOrderId, afterOrderId);
+    let theLarger = Math.max(previousOrderId, afterOrderId);
+
+    let leftShift = false;
+
+    if (theSmaller === afterOrderId) {
+      theSmaller += 1;
+      leftShift = true;
+    }
+
+    let affectedConventions = await this.conventionRepository
+      .createQueryBuilder()
+      .where(
+        'category_id = :categoryId and order_id >= :theSmaller and order_id <= :theLarger and status != :deleted',
+        {
+          categoryId,
+          theSmaller,
+          theLarger,
+          deleted: ConventionStatus.deleted,
+        },
+      )
+      .getMany();
+
+    for (let affectedConvention of affectedConventions) {
+      if (affectedConvention.id !== convention.id) {
+        affectedConvention.orderId += leftShift ? 1 : -1;
+      } else {
+        affectedConvention.orderId = afterOrderId + (leftShift ? 1 : 0);
+        convention = affectedConvention;
+      }
+    }
+
+    await this.conventionRepository.save(affectedConventions);
+
+    return convention;
+  }
+
+  async create(conventionLike: DeepPartial<Convention>): Promise<Convention> {
+    let convention = this.conventionRepository.create(conventionLike);
+
+    convention.status = ConventionStatus.normal;
+
+    return this.conventionRepository.save(convention);
+  }
+
+  async save(convention: Convention): Promise<Convention> {
+    return this.conventionRepository.save(convention);
+  }
+
+  async delete(convention: Convention): Promise<Convention> {
+    convention.status = ConventionStatus.deleted;
+    convention.deletedAt = new Date();
+
+    return this.conventionRepository.save(convention);
   }
 }

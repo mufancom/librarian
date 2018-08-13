@@ -9,64 +9,51 @@ import {
 } from '@nestjs/common';
 import {Request} from 'express';
 
-import {comparePassword, encryptPassword} from 'utils/encryption';
-import {Validate, Wrap} from 'utils/validator';
-
 import {
   AuthenticationFailedException,
-  EmailAlreadyExistsException,
-  UserNotFoundException,
-  UsernameAlreadyExistsException,
+  ResourceConflictingException,
+  ResourceNotFoundException,
 } from 'common/exceptions';
+import {comparePassword, encryptPassword} from 'utils/encryption';
+
 import {AuthGuard} from '../auth';
-import {ChangePasswordDTO, RegisterDTO} from './dto';
-import {User} from './user.entity';
+
+import {ChangePasswordDTO, RegisterDTO} from './user.dto';
 import {UserService} from './user.service';
 
 @Controller('user')
 export class UserController {
-  constructor(private readonly userService: UserService) {}
+  constructor(private userService: UserService) {}
 
   @Post('register')
-  @Validate()
-  async register(
-    @Wrap(RegisterDTO)
-    @Body()
-    data: RegisterDTO,
-  ) {
+  async register(@Body() data: RegisterDTO) {
     if (await this.userService.findByIdentifier(data.username, 'username')) {
-      throw new UsernameAlreadyExistsException();
+      throw new ResourceConflictingException('USERNAME_ALREADY_EXISTS');
     }
 
     if (await this.userService.findByIdentifier(data.email, 'email')) {
-      throw new EmailAlreadyExistsException();
+      throw new ResourceConflictingException('EMAIL_ALREADY_EXISTS');
     }
 
-    const user: User = {
+    await this.userService.create({
       ...data,
       password: await encryptPassword(data.password),
-      role: 1,
-    };
-
-    await this.userService.saveUser(user);
+    });
   }
 
-  @Post('chg_pw')
+  @Post('change-password')
   @UseGuards(AuthGuard)
-  @Validate()
   async changePassword(
-    @Wrap(ChangePasswordDTO)
-    @Body()
-    data: ChangePasswordDTO,
-    @Req() req: Request,
-  ) {
-    if (!(await comparePassword(data.oldPassword, req.user.password))) {
-      throw new AuthenticationFailedException();
+    @Body() data: ChangePasswordDTO,
+    @Req() {user}: Request,
+  ): Promise<void> {
+    if (!(await comparePassword(data.oldPassword, user.password))) {
+      throw new AuthenticationFailedException('USERNAME_PASSWORD_MISMATCH');
     }
 
-    req.user.password = await encryptPassword(data.newPassword);
+    user.password = await encryptPassword(data.newPassword);
 
-    await this.userService.saveUser(req.user);
+    await this.userService.save(user);
   }
 
   @Get('info')
@@ -74,11 +61,11 @@ export class UserController {
     let user = await this.userService.findByIdentifier(id, 'id');
 
     if (!user) {
-      throw new UserNotFoundException();
+      throw new ResourceNotFoundException('USER_NOT_FOUND');
     }
 
-    let {username, email, avatar} = user;
+    let {username, email} = user;
 
-    return {id, username, email, avatar};
+    return {id, username, email};
   }
 }

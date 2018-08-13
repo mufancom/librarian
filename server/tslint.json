@@ -1,9 +1,21 @@
 {
-  "extends": "vts/tslint-prettier",
+  "extends": "@magicspace/configs/tslint-prettier",
   "rules": {
+    "explicit-return-type": false,
+    "scoped-modules": false,
     "no-implicit-dependencies": [
       true,
-      ["app.module", "common", "core", "utils", "lang", "paths", "fs-extra"]
+      [
+        "shared",
+        "app.module",
+        "common",
+        "core",
+        "utils",
+        "lang",
+        "paths",
+        "fs-extra",
+        "class-transformer"
+      ]
     ],
     "no-console": [true, "log"]
   }

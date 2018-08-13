@@ -10,8 +10,12 @@ export class AuthStore {
   @observable
   username: string;
 
+  @observable
+  role: number;
+
   constructor() {
     this.id = 0;
+    this.role = 0;
     this.avatar = '';
     this.username = '';
   }
@@ -22,8 +26,10 @@ export class AuthStore {
   }
 
   @action
-  login(username: string, password: string) {
-    // TODO
-    return username + password;
+  login(id: number, role: number, avatar: string | null, username: string) {
+    this.id = id;
+    this.role = role;
+    this.avatar = avatar ? avatar : '';
+    this.username = username;
   }
 }

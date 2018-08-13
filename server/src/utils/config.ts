@@ -2,15 +2,16 @@ import * as FS from 'fs';
 import * as Path from 'path';
 
 import {TypeOrmModuleOptions} from '@nestjs/typeorm/dist/interfaces/typeorm-options.interface';
+import {ConnectionOptions} from 'typeorm';
+
 import {ExcludeProperty} from 'lang';
 import {PROJECT_DIR} from 'paths';
-import {ConnectionOptions} from 'typeorm';
 
 const hasOwnProperty = Object.prototype.hasOwnProperty;
 
 const CONFIG_BASE_PATH = Path.join(PROJECT_DIR, '.config');
+const SERVER_CONFIG_PATH = Path.join(CONFIG_BASE_PATH, 'server.json');
 const DATABASE_CONFIG_PATH = Path.join(CONFIG_BASE_PATH, 'database.json');
-const GIT_CONFIG_PATH = Path.join(CONFIG_BASE_PATH, 'git.json');
 const SESSION_CONFIG_PATH = Path.join(CONFIG_BASE_PATH, 'session.json');
 
 export class ConfigService<T extends object> {
@@ -38,24 +39,22 @@ export class ConfigService<T extends object> {
   }
 }
 
+export interface ServerConfig {
+  port: number;
+  corsOrigin: string;
+}
+
 export type DatabaseConfig = ExcludeProperty<
   TypeOrmModuleOptions & Partial<ConnectionOptions>,
   'entities'
 >;
-
-export interface ScheduleSyncGitConfig {
-  sync: 'schedule';
-  interval: number;
-}
-
-export type GitConfig = ScheduleSyncGitConfig;
 
 export interface SessionConfig {
   secret: string;
 }
 
 export class Config {
-  static Database = new ConfigService<DatabaseConfig>(DATABASE_CONFIG_PATH);
-  static Git = new ConfigService<GitConfig>(GIT_CONFIG_PATH);
-  static Session = new ConfigService<SessionConfig>(SESSION_CONFIG_PATH);
+  static server = new ConfigService<ServerConfig>(SERVER_CONFIG_PATH);
+  static database = new ConfigService<DatabaseConfig>(DATABASE_CONFIG_PATH);
+  static session = new ConfigService<SessionConfig>(SESSION_CONFIG_PATH);
 }

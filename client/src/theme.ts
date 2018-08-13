@@ -55,7 +55,7 @@ export const theme = {
     navSecondary: '#999',
     navPlaceholder: '#888',
     primary: '#303133',
-    regular: '#606266',
+    regular: '#5e6d82',
     secondary: '#909399',
     placeholder: '#C0C4CC',
   },

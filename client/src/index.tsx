@@ -1,30 +1,25 @@
 import {createBrowserHistory} from 'history';
 import {Provider} from 'mobx-react';
-import {RouterStore, syncHistoryWithStore} from 'mobx-react-router';
+import {syncHistoryWithStore} from 'mobx-react-router';
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';
 import {Route, Router, Switch} from 'react-router';
 import {ThemeProvider} from 'styled-components';
 
-import {HomeContainer} from 'components/home/home-container';
-import {AuthStore} from 'stores';
+import {HomeContainer} from 'components/home';
+import * as services from 'services';
+import * as stores from 'stores';
 import {theme} from 'theme';
-import registerServiceWorker from 'utils/register-service-worker';
+import * as ServiceWorker from 'utils/service-worker';
 
 import './global.less';
 
 const browserHistory = createBrowserHistory();
-const routerStore = new RouterStore();
-const history = syncHistoryWithStore(browserHistory, routerStore);
-
-const stores = {
-  authStore: new AuthStore(),
-  routerStore,
-};
+const history = syncHistoryWithStore(browserHistory, stores.routerStore);
 
 ReactDOM.render(
   <ThemeProvider theme={theme}>
-    <Provider {...stores}>
+    <Provider {...stores} {...services}>
       <Router history={history}>
         <Switch>
           <Route path="/" component={HomeContainer} />
@@ -34,4 +29,5 @@ ReactDOM.render(
   </ThemeProvider>,
   document.getElementById('root') as HTMLElement,
 );
-registerServiceWorker();
+
+ServiceWorker.register();

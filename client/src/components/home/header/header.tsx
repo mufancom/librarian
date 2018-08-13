@@ -16,6 +16,11 @@ const Wrapper = styled.div`
     padding-top: 10px;
   }
 
+  ${HeaderLogo.Wrapper} {
+    margin-left: 15px;
+    margin-top: 10px;
+  }
+
   ${HeaderNav.Wrapper} {
     float: left;
   }
