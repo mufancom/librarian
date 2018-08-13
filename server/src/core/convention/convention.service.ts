@@ -1,8 +1,7 @@
 import {Injectable} from '@nestjs/common';
 import {InjectRepository} from '@nestjs/typeorm';
+import {Convention, ConventionStatus} from 'shared/entities/convention';
 import {DeepPartial, Repository} from 'typeorm';
-
-import {Convention, ConventionStatus} from './convention.entity';
 
 export interface IndexTree {
   title: string;

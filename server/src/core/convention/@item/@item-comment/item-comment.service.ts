@@ -1,13 +1,12 @@
 import {Injectable} from '@nestjs/common';
 import {InjectRepository} from '@nestjs/typeorm';
+import {ItemComment, ItemCommentStatus} from 'shared/entities/convention/item';
+import {User} from 'shared/entities/user';
 import {DeepPartial, Repository} from 'typeorm';
 
 import {splitJoinedResult} from 'utils/repository';
 
-import {User} from '../../../user';
 import {ItemService} from '../item.service';
-
-import {ItemComment, ItemCommentStatus} from './item-comment.entity';
 
 const COMMENT_PAGE_SIZE = 10;
 

@@ -6,6 +6,7 @@
     "no-implicit-dependencies": [
       true,
       [
+        "shared",
         "app.module",
         "common",
         "core",

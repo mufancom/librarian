@@ -2,13 +2,9 @@ import {
   Column,
   CreateDateColumn,
   Entity,
-  ManyToOne,
-  OneToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
-
-import {User} from '../../../user';
 
 export enum ItemCommentStatus {
   deleted,

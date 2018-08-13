@@ -16,7 +16,9 @@
   "workspaces": {
     "packages": [
       "client",
-      "server"
+      "server",
+      "shared",
+      "shared/package"
     ]
   }
 }

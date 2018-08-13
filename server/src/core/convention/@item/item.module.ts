@@ -1,25 +1,28 @@
 import {Module, forwardRef} from '@nestjs/common';
 import {TypeOrmModule} from '@nestjs/typeorm';
+import {
+  Item,
+  ItemComment,
+  ItemThumbUp,
+  ItemVersion,
+} from 'shared/entities/convention/item';
 
 import {AuthModule} from '../../auth';
 import {ConventionModule} from '../convention.module';
 
-import {ItemCommentModule, ItemComment} from './@item-comment';
-import {ItemVersion} from './item-version.entity';
+import {ItemCommentController, ItemCommentService} from './@item-comment';
+import {ItemThumbUpController, ItemThumbUpService} from './@item-thumb-up';
 import {ItemController} from './item.controller';
-import {Item} from './item.entity';
 import {ItemService} from './item.service';
-import {ItemThumbUp} from './@item-thumb-up';
 
 @Module({
   imports: [
     TypeOrmModule.forFeature([Item, ItemVersion, ItemThumbUp, ItemComment]),
     forwardRef(() => ConventionModule),
-    ItemCommentModule,
     AuthModule,
   ],
-  controllers: [ItemController],
-  providers: [ItemService],
+  controllers: [ItemController, ItemCommentController, ItemThumbUpController],
+  providers: [ItemService, ItemCommentService, ItemThumbUpService],
   exports: [ItemService],
 })
 export class ItemModule {}

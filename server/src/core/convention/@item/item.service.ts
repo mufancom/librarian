@@ -1,5 +1,6 @@
 import {Injectable} from '@nestjs/common';
 import {InjectRepository} from '@nestjs/typeorm';
+import {Item, ItemStatus, ItemVersion} from 'shared/entities/convention/item';
 import {
   DeepPartial,
   Repository,
@@ -14,8 +15,6 @@ import {
   saveItemVersion,
   shiftItem,
 } from './item-repository-utils';
-import {ItemVersion} from './item-version.entity';
-import {Item, ItemStatus} from './item.entity';
 
 const ITEM_VERSION_PAGE_SIZE = 20;
 

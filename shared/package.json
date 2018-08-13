@@ -1,0 +1,12 @@
+{
+  "name": "shared-source",
+  "version": "1.0.0",
+  "license": "MIT",
+  "private": true,
+  "scripts": {
+    "build": "tsc"
+  },
+  "devDependencies": {
+    "typeorm": "^0.2.7"
+  }
+}

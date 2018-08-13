@@ -1,8 +1,7 @@
 import {Injectable} from '@nestjs/common';
 import {InjectRepository} from '@nestjs/typeorm';
+import {User} from 'shared/entities/user';
 import {DeepPartial, Repository} from 'typeorm';
-
-import {User} from './user.entity';
 
 export type UserServiceFindByIdentifierSearchFieldName =
   | 'id'

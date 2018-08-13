@@ -1,8 +1,7 @@
 import {CanActivate, ExecutionContext, Injectable} from '@nestjs/common';
 import {Request} from 'express';
 import {Observable} from 'rxjs';
-
-import {User} from '../user';
+import {User} from 'shared/entities/user';
 
 import {AuthService} from './auth.service';
 
