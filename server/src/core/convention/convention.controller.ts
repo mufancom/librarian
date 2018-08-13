@@ -31,7 +31,7 @@ export class ConventionController {
   }
 
   @Post('create')
-  // @UseGuards(AuthGuard)
+  @UseGuards(AuthGuard)
   async create(@Body() data: CreateDTO) {
     if (!(await this.categoryService.findOneById(data.categoryId))) {
       throw new ResourceNotFoundException('CATEGORY_NOT_FOUND');

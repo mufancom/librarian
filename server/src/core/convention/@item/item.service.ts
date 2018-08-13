@@ -58,7 +58,7 @@ export class ItemService {
     itemVersionRepository?: Repository<ItemVersion>,
   ): Promise<Item> {
     let itemVersion = await createItemVersion(
-      {content: itemLike.content, message},
+      {content: itemLike.content, message, conventionItemId: 0},
       itemVersionRepository!,
     );
 

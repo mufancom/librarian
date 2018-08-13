@@ -21,7 +21,7 @@ export class Item {
   @Column({name: 'convention_id'})
   conventionId!: number;
 
-  @Column()
+  @Column({type: 'longtext'})
   content!: string;
 
   @Column({name: 'version_id'})
