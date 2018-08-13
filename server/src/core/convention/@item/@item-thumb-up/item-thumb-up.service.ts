@@ -1,12 +1,13 @@
 import {Injectable} from '@nestjs/common';
 import {InjectRepository} from '@nestjs/typeorm';
-import {ItemThumbUp, ItemThumbUpStatus} from 'shared/entities/convention/item';
-import {User} from 'shared/entities/user';
 import {DeepPartial, Repository} from 'typeorm';
 
 import {UnnecessaryRequestException} from 'common/exceptions';
 
+import {User} from '../../../../../../shared/package/entities/user';
 import {ItemService} from '../item.service';
+
+import {ItemThumbUp, ItemThumbUpStatus} from './item-thumb-up.entity';
 
 @Injectable()
 export class ItemThumbUpService {

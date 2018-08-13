@@ -1,5 +1,7 @@
-import {Item, ItemStatus, ItemVersion} from 'shared/entities/convention/item';
 import {DeepPartial, Repository} from 'typeorm';
+
+import {ItemVersion} from './item-version.entity';
+import {Item, ItemStatus} from './item.entity';
 
 export async function getItemMaxOrderId(
   conventionId: number,

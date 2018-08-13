@@ -1,7 +1,8 @@
 import {Injectable} from '@nestjs/common';
 import {InjectRepository} from '@nestjs/typeorm';
-import {Category, CategoryStatus} from 'shared/entities/convention/category';
 import {DeepPartial, Repository} from 'typeorm';
+
+import {Category, CategoryStatus} from './category.entity';
 
 @Injectable()
 export class CategoryService {

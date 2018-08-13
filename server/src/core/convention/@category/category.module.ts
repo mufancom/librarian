@@ -1,10 +1,10 @@
 import {Module} from '@nestjs/common';
 import {TypeOrmModule} from '@nestjs/typeorm';
-import {Category} from 'shared/entities/convention/category';
 
 import {AuthModule} from '../../auth';
 
 import {CategoryController} from './category.controller';
+import {Category} from './category.entity';
 import {CategoryService} from './category.service';
 
 @Module({

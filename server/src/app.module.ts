@@ -9,7 +9,7 @@ import {Config} from 'utils/config';
 @Module({
   imports: [
     TypeOrmModule.forRoot({
-      entities: ['./src/**/**.entity{.ts,.js}'],
+      entities: ['../shared/**/**.entity{.ts,.js}'],
       ...Config.database.get(),
     }),
     UserModule,

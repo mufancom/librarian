@@ -28,10 +28,10 @@ export class ItemComment {
   @Column()
   content!: string;
 
-  @CreateDateColumn({type: 'timestamp'})
+  @CreateDateColumn({type: 'integer'})
   createdAt!: number;
 
-  @UpdateDateColumn({type: 'timestamp'})
+  @UpdateDateColumn({type: 'integer'})
   updatedAt!: number;
 
   @Column({name: 'deleted_at'})
