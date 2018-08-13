@@ -1,8 +1,7 @@
 {
-  "name": "librarian-server",
+  "name": "server",
   "version": "1.0.0",
   "description": "Server side for Librarian",
-  "author": "Dizy",
   "license": "MIT",
   "private": true,
   "scripts": {
@@ -16,7 +15,6 @@
     "@nestjs/common": "^5.1.0",
     "@nestjs/core": "^5.1.0",
     "@nestjs/typeorm": "^5.1.0",
-    "@types/dotenv": "^4.0.3",
     "bcrypt": "^3.0.0",
     "class-transformer": "^0.1.9",
     "class-validator": "^0.9.1",

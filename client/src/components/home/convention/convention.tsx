@@ -70,18 +70,7 @@ export class Convention extends React.Component<ConventionProps> {
               >
                 <Switch>
                   <Route
-                    path="/convention/:category/:group/:item"
-                    component={(props: any) => (
-                      <RouteTrackerWithRouter
-                        {...props}
-                        onChange={this.onRouteChange}
-                      >
-                        <ConventionBody {...props} />
-                      </RouteTrackerWithRouter>
-                    )}
-                  />
-                  <Route
-                    path="/convention/:category/:item"
+                    path="/convention/:id"
                     component={(props: any) => (
                       <RouteTrackerWithRouter
                         {...props}
@@ -105,10 +94,9 @@ export class Convention extends React.Component<ConventionProps> {
 
   onRouteChange = (match: any) => {
     // tslint:disable-next-line:no-console
-    let {category, group, item} = match.params;
+    let {id} = match.params;
 
-    let path = `${category}/${group ? `${group}/` : ''}${item}`;
-    this.conventionService.load(path).catch();
+    this.conventionService.load(id).catch();
 
     scrollTo(0, 0);
   };

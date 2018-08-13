@@ -2,7 +2,7 @@ import classNames from 'classnames';
 import React, {Component} from 'react';
 import {NavLink, RouteComponentProps, withRouter} from 'react-router-dom';
 
-import {ConventionIndexTree} from 'stores/convention-store';
+import {ConventionIndexConventionNode} from 'stores/convention-store';
 import {styled} from 'theme';
 
 const Wrapper = styled.li`
@@ -28,20 +28,21 @@ const Wrapper = styled.li`
 
 export interface ConventionSideNavItemProps extends RouteComponentProps<any> {
   className?: string;
-  item: ConventionIndexTree;
+  node: ConventionIndexConventionNode;
 }
 
 export class ConventionSideNavItem extends Component<
   ConventionSideNavItemProps
 > {
   render() {
-    let {className, item} = this.props;
+    let {
+      className,
+      node: {entry},
+    } = this.props;
 
     return (
       <Wrapper className={classNames('convention-side-nav-item', className)}>
-        <NavLink to={`/convention/${item.path ? item.path : '#'}`}>
-          {item.title}
-        </NavLink>
+        <NavLink to={`/convention/${entry.id}`}>{entry.title}</NavLink>
       </Wrapper>
     );
   }

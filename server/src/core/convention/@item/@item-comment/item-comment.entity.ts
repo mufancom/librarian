@@ -1,9 +1,11 @@
 import {
   Column,
+  CreateDateColumn,
   Entity,
   ManyToOne,
   OneToOne,
   PrimaryGeneratedColumn,
+  UpdateDateColumn,
 } from 'typeorm';
 
 import {User} from '../../../user';
@@ -30,10 +32,10 @@ export class ItemComment {
   @Column()
   content!: string;
 
-  @Column({name: 'created_at'})
+  @CreateDateColumn({type: 'timestamp'})
   createdAt!: number;
 
-  @Column({name: 'updated_at'})
+  @UpdateDateColumn({type: 'timestamp'})
   updatedAt!: number;
 
   @Column({name: 'deleted_at'})

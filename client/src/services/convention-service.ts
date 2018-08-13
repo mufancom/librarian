@@ -1,9 +1,87 @@
 import {action} from 'mobx';
 
-import {ConventionIndexTree, ConventionStore} from 'stores/convention-store';
+import {
+  Category,
+  Convention,
+  ConventionIndexCategoryNode,
+  ConventionIndexNode,
+  ConventionStore,
+} from 'stores/convention-store';
 import {APIService} from './api-service';
 
-type GetIndexSuccessData = ConventionIndexTree[];
+function insertIntoSortedSiblings<T extends ConventionIndexNode>(
+  siblings: T[],
+  orderId: number,
+  node: T,
+) {
+  let insertIndex = 0;
+
+  while (
+    siblings.length > insertIndex &&
+    siblings[insertIndex].entry.orderId < orderId
+  ) {
+    insertIndex++;
+  }
+
+  siblings.splice(insertIndex, 0, node);
+}
+
+function buildIndexTree(
+  categories: Category[],
+  conventions: Convention[],
+): ConventionIndexNode[] {
+  let categoryMap = new Map<number, ConventionIndexCategoryNode>();
+
+  let result: ConventionIndexNode[] = [];
+
+  for (let category of categories) {
+    let node: ConventionIndexCategoryNode = {
+      type: 'category',
+      entry: category,
+      children: [],
+    };
+    categoryMap.set(category.id, node);
+  }
+
+  for (let node of categoryMap.values()) {
+    let {entry} = node;
+
+    let {parentId, orderId} = entry;
+
+    let siblings = result;
+    if (parentId) {
+      if (!categoryMap.has(parentId)) {
+        continue;
+      }
+
+      siblings = categoryMap.get(parentId)!.children;
+    }
+
+    insertIntoSortedSiblings(siblings, orderId, node);
+  }
+
+  for (let convention of conventions) {
+    let {categoryId, orderId} = convention;
+
+    if (!categoryMap.has(categoryId)) {
+      continue;
+    }
+
+    let siblings = categoryMap.get(categoryId)!.children;
+
+    insertIntoSortedSiblings(siblings, orderId, {
+      type: 'convention',
+      entry: convention,
+    });
+  }
+
+  return result;
+}
+
+interface GetIndexSuccessData {
+  categories: Category[];
+  conventions: Convention[];
+}
 
 export class ConventionService {
   constructor(
@@ -14,25 +92,27 @@ export class ConventionService {
   }
 
   @action
-  async load(path: string) {
-    if (this.conventionStore.currentPath !== path) {
-      this.conventionStore.currentContent = await this.getContent(path);
+  async load(id: number) {
+    if (this.conventionStore.currentId !== id) {
+      this.conventionStore.currentContent = await this.getContent(id);
     }
   }
 
   @action
-  async getIndex() {
-    this.conventionStore.index = await this.apiService.get<GetIndexSuccessData>(
-      'convention/index',
-    );
+  async getIndex(): Promise<void> {
+    let {categories, conventions} = await this.apiService.get<
+      GetIndexSuccessData
+    >('convention/index');
+
+    this.conventionStore.index = buildIndexTree(categories, conventions);
   }
 
   @action
-  async getContent(path: string) {
+  async getContent(id: number) {
     let cacheStore = this.conventionStore.conventionCache;
 
-    if (cacheStore.hasOwnProperty(path)) {
-      return cacheStore[path];
+    if (cacheStore.hasOwnProperty(id)) {
+      return cacheStore[id];
     }
 
     let content = await this.apiService.download(`convention/${path}`);

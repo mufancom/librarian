@@ -2,7 +2,10 @@ import classNames from 'classnames';
 import React, {Component} from 'react';
 
 import {RouteComponentProps, withRouter} from 'react-router';
-import {ConventionIndexTree} from 'stores/convention-store';
+import {
+  ConventionIndexCategoryNode,
+  ConventionIndexConventionNode,
+} from 'stores/convention-store';
 import {styled} from 'theme';
 import {ConventionSideNavItemWithRouter} from './@convention-side-nav-item';
 
@@ -23,22 +26,25 @@ const Wrapper = styled.li`
 
 export interface ConventionSideNavGroupProps extends RouteComponentProps<any> {
   className?: string;
-  item: ConventionIndexTree;
+  node: ConventionIndexCategoryNode;
 }
 
 export class ConventionSideNavGroup extends Component<
   ConventionSideNavGroupProps
 > {
   render() {
-    let {className, item} = this.props;
+    let {className, node} = this.props;
 
     return (
       <Wrapper className={classNames('convention-side-nav-group', className)}>
-        <div>{item.title}</div>
+        <div>{node.entry.title}</div>
         <ul>
-          {item.children && item.children.length > 0 ? (
-            item.children.map(val => (
-              <ConventionSideNavItemWithRouter key={val.title} item={val} />
+          {node.children && node.children.length > 0 ? (
+            node.children.map(val => (
+              <ConventionSideNavItemWithRouter
+                key={val.entry.id}
+                node={val as ConventionIndexConventionNode}
+              />
             ))
           ) : (
             <li />

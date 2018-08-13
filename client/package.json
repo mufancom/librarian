@@ -1,8 +1,7 @@
 {
-  "name": "librarian-client",
+  "name": "client",
   "version": "1.0.0",
   "description": "Client side for Librarian",
-  "author": "Dizy",
   "license": "MIT",
   "private": true,
   "dependencies": {
@@ -29,6 +28,7 @@
     "build": "react-app-rewired build --scripts-version react-scripts-ts"
   },
   "devDependencies": {
+    "@magicspace/configs": "^0.1.5",
     "@types/classnames": "^2.2.6",
     "@types/highlight.js": "^9.12.3",
     "@types/history": "^4.7.0",

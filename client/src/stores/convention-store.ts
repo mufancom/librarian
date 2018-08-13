@@ -1,18 +1,58 @@
 import {observable} from 'mobx';
 
-export interface ConventionIndexTree {
-  title: string;
-  path?: string;
-  children?: ConventionIndexTree[];
+export enum CategoryStatus {
+  deleted,
+  normal,
 }
 
+export interface Category {
+  id: number;
+  parentId: number;
+  orderId: number;
+  title: string;
+  alias?: string;
+  detetedAt?: number;
+  status: CategoryStatus;
+}
+
+export enum ConventionStatus {
+  deleted,
+  normal,
+}
+
+export interface Convention {
+  id: number;
+  categoryId: number;
+  orderId: number;
+  title: string;
+  alias?: string;
+  createdAt?: number;
+  deletedAt?: number;
+  status: ConventionStatus;
+}
+
+export interface ConventionIndexCategoryNode {
+  type: 'category';
+  entry: Category;
+  children: ConventionIndexNode[];
+}
+
+export interface ConventionIndexConventionNode {
+  type: 'convention';
+  entry: Convention;
+}
+
+export type ConventionIndexNode =
+  | ConventionIndexCategoryNode
+  | ConventionIndexConventionNode;
+
 export interface ConventionCache {
-  [key: string]: string;
+  [key: number]: string;
 }
 
 export class ConventionStore {
   @observable
-  index: ConventionIndexTree[];
+  index: ConventionIndexNode[];
 
   @observable
   conventionCache: ConventionCache = {};
@@ -21,70 +61,9 @@ export class ConventionStore {
   currentContent = '';
 
   @observable
-  currentPath = '';
+  currentId = 0;
 
   constructor() {
-    this.index = [
-      {
-        title: 'Typescript',
-        children: [
-          {
-            title: '前端',
-            children: [
-              {
-                title: '编码规范',
-                path: '/convention/typescript/frontend/coding',
-              },
-              {
-                title: '包管理',
-                path: '/convention/typescript/frontend/package',
-              },
-              {
-                title: 'React',
-                path: '/convention/typescript/frontend/react',
-              },
-            ],
-          },
-          {
-            title: '后端',
-            children: [
-              {
-                title: '编码规范',
-                path: '/convention/typescript/backend/coding',
-              },
-              {
-                title: '包管理',
-                path: '/convention/typescript/backend/package',
-              },
-              {
-                title: 'NodeJs',
-                path: '/convention/typescript/backend/nodejs',
-              },
-            ],
-          },
-        ],
-      },
-      {
-        title: 'Java',
-        children: [
-          {
-            title: '编码规范',
-            path: '/convention/java/coding',
-          },
-          {
-            title: 'maven使用',
-            path: '/convention/java/maven',
-          },
-          {
-            title: 'Spring相关',
-            path: '/convention/java/spring',
-          },
-          {
-            title: 'Hibernate相关',
-            path: '/convention/java/hibernate',
-          },
-        ],
-      },
-    ];
+    this.index = [];
   }
 }

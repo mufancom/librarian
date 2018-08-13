@@ -41,7 +41,7 @@ export class ConfigService<T extends object> {
 
 export interface ServerConfig {
   port: number;
-  crosOrigin: string;
+  corsOrigin: string;
 }
 
 export type DatabaseConfig = ExcludeProperty<

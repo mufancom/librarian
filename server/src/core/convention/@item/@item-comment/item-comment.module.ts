@@ -9,11 +9,7 @@ import {ItemComment} from './item-comment.entity';
 import {ItemCommentService} from './item-comment.service';
 
 @Module({
-  imports: [
-    TypeOrmModule.forFeature([ItemComment]),
-    forwardRef(() => ItemModule),
-    AuthModule,
-  ],
+  imports: [forwardRef(() => ItemModule), AuthModule],
   controllers: [ItemCommentController],
   providers: [ItemCommentService],
   exports: [],

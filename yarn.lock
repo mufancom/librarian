@@ -23,9 +23,24 @@
     "@magicspace/tslint-rules" "^0.1.1"
     tslint-config-prettier "^1.10.0"
 
+"@magicspace/configs@^0.1.5":
+  version "0.1.5"
+  resolved "http://registry.npm.taobao.org/@magicspace/configs/download/@magicspace/configs-0.1.5.tgz#9d253ad86ea287bbad7f77c5ebfaf7c205f1c2ac"
+  dependencies:
+    "@magicspace/tslint-rules" "^0.1.2"
+    tslint-config-prettier "^1.10.0"
+
 "@magicspace/tslint-rules@^0.1.1":
   version "0.1.1"
   resolved "http://registry.npm.taobao.org/@magicspace/tslint-rules/download/@magicspace/tslint-rules-0.1.1.tgz#815826666d92b2222427a9df15863513271d9f8c"
+  dependencies:
+    lodash "^4.17.10"
+    resolve "^1.8.1"
+    tsutils "^2.28.0"
+
+"@magicspace/tslint-rules@^0.1.2":
+  version "0.1.2"
+  resolved "http://registry.npm.taobao.org/@magicspace/tslint-rules/download/@magicspace/tslint-rules-0.1.2.tgz#36a13780e7d704451ae24c5b138874dc80d33dcd"
   dependencies:
     lodash "^4.17.10"
     resolve "^1.8.1"
@@ -104,12 +119,6 @@
 "@types/cookiejar@*":
   version "2.1.0"
   resolved "http://registry.npm.taobao.org/@types/cookiejar/download/@types/cookiejar-2.1.0.tgz#4b7daf2c51696cfc70b942c11690528229d1a1ce"
-
-"@types/dotenv@^4.0.3":
-  version "4.0.3"
-  resolved "http://registry.npm.taobao.org/@types/dotenv/download/@types/dotenv-4.0.3.tgz#ebcfc40da7bc0728b705945b7db48485ec5b4b67"
-  dependencies:
-    "@types/node" "*"
 
 "@types/events@*":
   version "1.2.0"

@@ -4,7 +4,11 @@ import {styled} from 'theme';
 import {inject, observer} from 'utils/mobx';
 
 import {RouteComponentProps, withRouter} from 'react-router';
-import {ConventionIndexTree, ConventionStore} from 'stores/convention-store';
+import {
+  ConventionIndexCategoryNode,
+  ConventionIndexNode,
+  ConventionStore,
+} from 'stores/convention-store';
 import {ConventionSideNavCategoryWithRouter} from './@convention-side-nav-category';
 
 const Wrapper = styled.div`
@@ -28,7 +32,7 @@ const Wrapper = styled.div`
 `;
 
 interface MenuProps {
-  list: ConventionIndexTree[];
+  list: ConventionIndexNode[];
   className?: string;
 }
 
@@ -38,7 +42,10 @@ const Menu: React.SFC<MenuProps> = props => {
     return (
       <ul className="menu">
         {list.map(val => (
-          <ConventionSideNavCategoryWithRouter key={val.title} item={val} />
+          <ConventionSideNavCategoryWithRouter
+            key={val.entry.id}
+            node={val as ConventionIndexCategoryNode}
+          />
         ))}
       </ul>
     );

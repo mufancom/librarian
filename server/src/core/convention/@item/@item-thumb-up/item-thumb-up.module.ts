@@ -2,6 +2,7 @@ import {Module, forwardRef} from '@nestjs/common';
 import {TypeOrmModule} from '@nestjs/typeorm';
 
 import {AuthModule} from '../../../auth';
+import {ItemComment} from '../@item-comment';
 import {ItemModule} from '../item.module';
 
 import {ItemThumbUpController} from './item-thumb-up.controller';
@@ -10,7 +11,7 @@ import {ItemThumbUpService} from './item-thumb-up.service';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([ItemThumbUp]),
+    TypeOrmModule.forFeature([ItemThumbUp, ItemComment]),
     forwardRef(() => ItemModule),
     AuthModule,
   ],
