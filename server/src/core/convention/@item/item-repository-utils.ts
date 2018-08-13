@@ -29,7 +29,7 @@ export async function createItem(
 ): Promise<Item> {
   let now = Date.now();
 
-  itemLike.status = 1;
+  itemLike.status = ItemStatus.normal;
   itemLike.createdAt = now;
   itemLike.commentCount = 0;
   itemLike.thumbUpCount = 0;
