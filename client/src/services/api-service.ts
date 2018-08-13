@@ -57,6 +57,7 @@ function errorMessageToLocalize(_code: string, _message: string) {
   if (translation.hasOwnProperty(message)) {
     return translation[message];
   }
+
   return _message;
 }
 

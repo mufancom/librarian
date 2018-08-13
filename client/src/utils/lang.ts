@@ -21,6 +21,7 @@ function getAcceptableLang(langs: ReadonlyArray<string>) {
       return lang;
     }
   }
+
   return 'default';
 }
 

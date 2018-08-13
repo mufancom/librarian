@@ -50,8 +50,8 @@ export function splitIntoSections(source: string): Section[] {
   // tslint:disable-next-line:no-null-keyword
   let lastMatch: RegExpExecArray | null = null;
 
-  // tslint:disable-next-line:no-conditional-assignment
   let match = pattern.exec(source);
+
   if (!match) {
     result.push({
       source,

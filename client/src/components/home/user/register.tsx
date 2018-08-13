@@ -32,13 +32,13 @@ export class Register extends Component<RegisterProps> {
   @observable
   errorMessage = '';
 
+  @observable
+  loading = false;
+
   private usernameInput: React.RefObject<Input>;
   private emailInput: React.RefObject<Input>;
   private passwordInput: React.RefObject<Input>;
   private passwordRepeatInput: React.RefObject<Input>;
-
-  @observable
-  loading = false;
 
   constructor(props: RegisterProps) {
     super(props);
@@ -54,7 +54,6 @@ export class Register extends Component<RegisterProps> {
 
     return (
       <Wrapper className={classNames('register', className)}>
-        {' '}
         <Modal
           visible={visible}
           title="注册"

@@ -68,6 +68,7 @@ export class ConventionController {
     if (title) {
       convention.title = title;
     }
+
     if (alias) {
       convention.alias = alias;
     }
@@ -79,6 +80,7 @@ export class ConventionController {
   @UseGuards(AuthGuard)
   async delete(@Param('id') id: number) {
     let category = await this.categoryService.findOneById(id);
+
     if (!category) {
       throw new ResourceNotFoundException('CATEGORY_NOT_FOUND');
     }
