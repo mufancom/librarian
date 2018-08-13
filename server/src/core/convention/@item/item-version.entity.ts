@@ -16,7 +16,7 @@ export class ItemVersion {
   @Column({name: 'from_id'})
   fromId!: number;
 
-  @Column()
+  @Column({type: 'longtext'})
   content!: string;
 
   @Column({nullable: true})
