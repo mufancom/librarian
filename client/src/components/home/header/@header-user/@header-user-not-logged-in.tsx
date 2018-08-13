@@ -21,12 +21,14 @@ const Wrapper = styled.div`
   }
 `;
 
-export interface HeaderUserUnloggedInProps {
+export interface HeaderUserNotLoggedInProps {
   className?: string;
 }
 
 @observer
-export class HeaderUserUnloggedIn extends Component<HeaderUserUnloggedInProps> {
+export class HeaderUserNotLoggedIn extends Component<
+  HeaderUserNotLoggedInProps
+> {
   @observable
   userLoginVisible = false;
 
@@ -40,7 +42,7 @@ export class HeaderUserUnloggedIn extends Component<HeaderUserUnloggedInProps> {
       <div>
         <Wrapper
           onClick={this.loginOnClick.bind(this)}
-          className={classNames('header-user-unlogged-in', className)}
+          className={classNames('header-user-not-logged-in', className)}
         >
           <HeaderUserIcon />
           <div className="hint-text">未登录</div>

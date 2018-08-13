@@ -6,7 +6,7 @@ import React, {Component} from 'react';
 import {fetchErrorMessage} from 'services/api-service';
 import {UserService} from 'services/user-service';
 import {styled} from 'theme';
-import {translation} from 'utils/lang';
+import {i18n} from 'utils/lang';
 import {inject, observer} from 'utils/mobx';
 
 const Wrapper = styled.div``;
@@ -125,7 +125,7 @@ export class Register extends Component<RegisterProps> {
 
     if (password !== passwordRepeat) {
       this.errorAlertVisible = true;
-      this.errorMessage = translation.passwordsNotConsistent;
+      this.errorMessage = i18n.PASSWORDS_NOT_CONSISTENT;
       this.registerLoading = false;
       return;
     }
@@ -133,7 +133,7 @@ export class Register extends Component<RegisterProps> {
     try {
       await this.userService.register(username, email, password);
 
-      message.success(translation.registerSuccess);
+      message.success(i18n.REGISTER_SUCCESS);
       this.props.onCancel();
     } catch (error) {
       let errorMessage = fetchErrorMessage(error);

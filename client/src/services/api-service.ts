@@ -1,6 +1,7 @@
 import axios from 'axios';
 import * as Url from 'url';
-import {translation} from 'utils/lang';
+import {i18n} from 'utils/lang';
+import {Translation} from '../../../shared/package/translation';
 
 const API_BASE_URL = 'http://localhost:3002/';
 
@@ -49,16 +50,23 @@ export interface RequestOptions {
   onDownloadProgress?: OnProgress;
 }
 
-function errorMessageToLocalize(_code: string, _message: string) {
-  const message = _message.toLowerCase().replace(/\_(\w)/g, (_all, letter) => {
-    return letter.toUpperCase();
-  });
+// TODO: handle variables in error messages
+function errorMessageToLocalize(_code: string, message: string): string {
+  if (isKnownI18nMessageKey(message)) {
+    let i18nMessage = i18n[message];
 
-  if (translation.hasOwnProperty(message)) {
-    return translation[message];
+    if (typeof i18nMessage === 'string') {
+      return i18nMessage;
+    }
+
+    throw new Error('Expecting message to be a string');
   }
 
-  return _message;
+  return message;
+}
+
+function isKnownI18nMessageKey(key: string): key is keyof Translation {
+  return i18n.hasOwnProperty(key);
 }
 
 export class APIService {
@@ -91,10 +99,7 @@ export class APIService {
     } else if ('error' in result) {
       let {code, message} = result.error;
 
-      throw new APIErrorException(code, errorMessageToLocalize(
-        code,
-        message,
-      ) as string);
+      throw new APIErrorException(code, errorMessageToLocalize(code, message));
     } else {
       return result.data;
     }
@@ -134,10 +139,7 @@ export class APIService {
     if (typeof result === 'object' && 'error' in result) {
       let {code, message} = result.error;
 
-      throw new APIErrorException(code, errorMessageToLocalize(
-        code,
-        message,
-      ) as string);
+      throw new APIErrorException(code, errorMessageToLocalize(code, message));
     }
 
     return response.data;

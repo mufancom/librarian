@@ -4,6 +4,7 @@
     "no-implicit-dependencies": [
       true,
       [
+        "shared",
         "history",
         "reflect-metadata",
         "react-router",

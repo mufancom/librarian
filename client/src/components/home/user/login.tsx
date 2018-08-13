@@ -6,7 +6,7 @@ import React, {Component} from 'react';
 import {fetchErrorMessage} from 'services/api-service';
 import {UserService} from 'services/user-service';
 import {styled} from 'theme';
-import {translation} from 'utils/lang';
+import {i18n} from 'utils/lang';
 import {inject, observer} from 'utils/mobx';
 
 const Wrapper = styled.div``;
@@ -115,7 +115,7 @@ export class Login extends Component<LoginProps> {
     try {
       let usernameOrEmail = await this.userService.login(username, password);
 
-      message.success(translation.loginSuccess(usernameOrEmail));
+      message.success(i18n.LOGIN_SUCCESS(usernameOrEmail));
     } catch (error) {
       let errorMessage = fetchErrorMessage(error);
 

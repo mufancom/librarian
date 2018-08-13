@@ -1,15 +1,10 @@
 import {I18nResolver} from 'i18n-ts';
-import * as languages from 'languages';
+import * as languages from '../../../shared/package/languages';
+import {Translation} from '../../../shared/package/translation';
 
 const DEFAULT_LANG = languages.en;
 
-type TranslationMethod = (...args: any[]) => string;
-
-export type Translation = typeof DEFAULT_LANG & {
-  [key: string]: string | TranslationMethod;
-};
-
-export const i18n = {
+export const i18nLanguages = {
   default: DEFAULT_LANG,
   ...languages,
 };
@@ -17,7 +12,7 @@ export const i18n = {
 function getAcceptableLang(langs: ReadonlyArray<string>) {
   for (let lang of langs) {
     lang = lang.replace(/-(\w)/g, (_all, letter) => letter.toUpperCase());
-    if (i18n.hasOwnProperty(lang)) {
+    if (i18nLanguages.hasOwnProperty(lang)) {
       return lang;
     }
   }
@@ -27,5 +22,5 @@ function getAcceptableLang(langs: ReadonlyArray<string>) {
 
 export const CURRENT_LANG = getAcceptableLang(navigator.languages);
 
-export const translation = new I18nResolver<Translation>(i18n, CURRENT_LANG)
+export const i18n: Translation = new I18nResolver(i18nLanguages, CURRENT_LANG)
   .translation;

@@ -6,7 +6,7 @@ import {fetchErrorMessage} from 'services/api-service';
 import {UserService} from 'services/user-service';
 import {AuthStore} from 'stores/auth-store';
 import {styled} from 'theme';
-import {translation} from 'utils/lang';
+import {i18n} from 'utils/lang';
 import {inject, observer} from 'utils/mobx';
 import {HeaderUserIcon} from './@header-user-icon';
 
@@ -79,7 +79,7 @@ export class HeaderUserLoggedIn extends Component<HeaderUserLoggedInProps> {
     try {
       await this.userService.logout();
 
-      message.success(translation.logoutSuccess);
+      message.success(i18n.LOGIN_SUCCESS);
     } catch (error) {
       message.error(fetchErrorMessage(error));
     }

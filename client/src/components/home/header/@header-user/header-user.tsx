@@ -5,7 +5,7 @@ import {AuthStore} from 'stores/auth-store';
 import {styled} from 'theme';
 import {inject, observer} from 'utils/mobx';
 import {HeaderUserLoggedIn} from './@header-user-logged-in';
-import {HeaderUserUnloggedIn} from './@header-user-unlogged-in';
+import {HeaderUserNotLoggedIn} from './@header-user-not-logged-in';
 
 const Wrapper = styled.div``;
 
@@ -26,7 +26,7 @@ export class HeaderUser extends Component<HeaderUserProps> {
         {this.authStore.isLoggedIn ? (
           <HeaderUserLoggedIn />
         ) : (
-          <HeaderUserUnloggedIn />
+          <HeaderUserNotLoggedIn />
         )}
       </Wrapper>
     );
