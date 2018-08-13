@@ -19,10 +19,10 @@ export class Category {
   @Column()
   title!: string;
 
-  @Column()
+  @Column({nullable: true})
   alias?: string;
 
-  @Column({name: 'deleted_at'})
+  @Column({name: 'deleted_at', nullable: true})
   deletedAt?: number;
 
   @Column()

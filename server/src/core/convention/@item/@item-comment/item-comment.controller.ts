@@ -61,11 +61,8 @@ export class ItemCommentController {
     await this.itemCommentService.save(comment);
   }
 
-  @Get('of-version/:versionId')
-  async getByItemVersionId(
-    @Param('versionId') versionId: number,
-    @Query('page') page = 1,
-  ) {
+  @Get('list')
+  async list(@Query('version_id') versionId: number, @Query('page') page = 1) {
     if (!(await this.itemService.getItemVersionById(versionId))) {
       throw new ResourceNotFoundException('CONVENTION_ITEM_VERSION_NOT_FOUND');
     }
@@ -80,7 +77,7 @@ export class ItemCommentController {
     );
   }
 
-  @Get('delete/:id')
+  @Get(':id/delete')
   @UseGuards(AuthGuard)
   async delete(@Param('id') id: number, @Req() req: Request) {
     let comment = await this.itemCommentService.getOneById(id);

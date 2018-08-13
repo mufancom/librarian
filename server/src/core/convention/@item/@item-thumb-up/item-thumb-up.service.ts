@@ -4,7 +4,7 @@ import {DeepPartial, Repository} from 'typeorm';
 
 import {UnnecessaryRequestException} from 'common/exceptions';
 
-import {User} from '../../../../../../shared/package/entities/user';
+import {User} from '../../../user';
 import {ItemService} from '../item.service';
 
 import {ItemThumbUp, ItemThumbUpStatus} from './item-thumb-up.entity';
@@ -65,21 +65,14 @@ export class ItemThumbUpService {
   async create(
     itemThumbUpLike: DeepPartial<ItemThumbUp>,
   ): Promise<ItemThumbUp> {
-    let now = Date.now();
-
     let itemThumbUp = await this.itemThumbUpRepository.create(itemThumbUpLike);
 
     itemThumbUp.status = ItemThumbUpStatus.liked;
-    itemThumbUp.updatedAt = now;
 
     return this.itemThumbUpRepository.save(itemThumbUp);
   }
 
   async save(itemThumbUp: ItemThumbUp): Promise<ItemThumbUp> {
-    let now = Date.now();
-
-    itemThumbUp.updatedAt = now;
-
     return this.itemThumbUpRepository.save(itemThumbUp);
   }
 }

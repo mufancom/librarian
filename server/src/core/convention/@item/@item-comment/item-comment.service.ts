@@ -4,7 +4,7 @@ import {DeepPartial, Repository} from 'typeorm';
 
 import {splitJoinedResult} from 'utils/repository';
 
-import {User} from '../../../../../../shared/package/entities/user';
+import {User} from '../../../user';
 import {ItemService} from '../item.service';
 
 import {ItemComment, ItemCommentStatus} from './item-comment.entity';
@@ -88,8 +88,6 @@ export class ItemCommentService {
   }
 
   async create(userId: number, itemCommentLike: DeepPartial<ItemComment>) {
-    let now = Date.now();
-
     let itemComment = this.itemCommentRepository.create({
       ...itemCommentLike,
       userId,
@@ -100,8 +98,6 @@ export class ItemCommentService {
     }
 
     itemComment.status = ItemCommentStatus.normal;
-    itemComment.createdAt = now;
-    itemComment.updatedAt = now;
 
     await this.itemService.increaseItemVersionCommentCount(
       itemComment.itemVersionId,
@@ -111,18 +107,12 @@ export class ItemCommentService {
   }
 
   async save(itemComment: ItemComment): Promise<ItemComment> {
-    let now = Date.now();
-
-    itemComment.updatedAt = now;
-
     return this.itemCommentRepository.save(itemComment);
   }
 
   async delete(itemComment: ItemComment): Promise<ItemComment> {
-    let now = Date.now();
-
     itemComment.status = ItemCommentStatus.deleted;
-    itemComment.deletedAt = now;
+    itemComment.deletedAt = new Date();
 
     await this.itemService.decreaseItemVersionCommentCount(
       itemComment.itemVersionId,

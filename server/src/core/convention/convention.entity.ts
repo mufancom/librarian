@@ -1,4 +1,9 @@
-import {Column, Entity, PrimaryGeneratedColumn} from 'typeorm';
+import {
+  Column,
+  CreateDateColumn,
+  Entity,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
 
 export enum ConventionStatus {
   deleted,
@@ -19,14 +24,14 @@ export class Convention {
   @Column()
   title!: string;
 
-  @Column()
+  @Column({nullable: true})
   alias?: string;
 
-  @Column({name: 'created_at'})
-  createdAt!: number;
+  @CreateDateColumn({name: 'created_at', type: 'timestamp'})
+  createdAt!: Date;
 
-  @Column({name: 'deleted_at'})
-  deletedAt?: number;
+  @Column({name: 'deleted_at', type: 'timestamp', nullable: true})
+  deletedAt?: Date;
 
   @Column()
   status!: ConventionStatus;

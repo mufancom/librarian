@@ -1,4 +1,9 @@
-import {Column, Entity, PrimaryGeneratedColumn} from 'typeorm';
+import {
+  Column,
+  CreateDateColumn,
+  Entity,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
 
 @Entity('convention_item_version')
 export class ItemVersion {
@@ -14,7 +19,7 @@ export class ItemVersion {
   @Column()
   content!: string;
 
-  @Column()
+  @Column({nullable: true})
   message?: string;
 
   @Column({name: 'comment_count'})
@@ -23,6 +28,6 @@ export class ItemVersion {
   @Column({name: 'thumb_up_count'})
   thumbUpCount!: number;
 
-  @Column({name: 'created_at'})
-  createdAt!: number;
+  @CreateDateColumn({name: 'created_at', type: 'timestamp'})
+  createdAt!: Date;
 }

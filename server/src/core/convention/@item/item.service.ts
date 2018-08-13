@@ -117,10 +117,8 @@ export class ItemService {
     item: Item,
     itemRepository: Repository<Item> = this.itemRepository,
   ): Promise<Item> {
-    let now = Date.now();
-
     item.status = ItemStatus.deleted;
-    item.deletedAt = now;
+    item.deletedAt = new Date();
 
     return itemRepository.save(item);
   }

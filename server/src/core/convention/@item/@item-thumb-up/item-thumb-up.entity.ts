@@ -1,4 +1,9 @@
-import {Column, Entity, PrimaryGeneratedColumn} from 'typeorm';
+import {
+  Column,
+  Entity,
+  PrimaryGeneratedColumn,
+  UpdateDateColumn,
+} from 'typeorm';
 
 export enum ItemThumbUpStatus {
   indifferent,
@@ -16,8 +21,8 @@ export class ItemThumbUp {
   @Column({name: 'convention_item_version_id'})
   itemVersionId!: number;
 
-  @Column({name: 'updated_at'})
-  updatedAt!: number;
+  @UpdateDateColumn({name: 'updated_at', type: 'timestamp'})
+  updatedAt!: Date;
 
   @Column()
   status!: ItemThumbUpStatus;

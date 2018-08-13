@@ -82,17 +82,6 @@ export class ItemController {
     await this.itemService.shiftItem(item, data.afterOrderId);
   }
 
-  @Get('delete/:id')
-  @UseGuards(AuthGuard)
-  async delete(@Param('id') id: number) {
-    let item = await this.itemService.getItemById(id);
-    if (!item) {
-      throw new ResourceNotFoundException('CONVENTION_ITEM_NOT_FOUND');
-    }
-
-    await this.itemService.deleteItem(item);
-  }
-
   @Get(':id')
   async get(@Param('id') id: number) {
     return this.itemService.getItemById(id);
@@ -101,6 +90,17 @@ export class ItemController {
   @Get(':id/versions')
   async getVersions(@Param('id') id: number, @Query('page') page = 1) {
     return this.itemService.getItemVersionsByItemId(id, page);
+  }
+
+  @Get(':id/delete')
+  @UseGuards(AuthGuard)
+  async delete(@Param('id') id: number) {
+    let item = await this.itemService.getItemById(id);
+    if (!item) {
+      throw new ResourceNotFoundException('CONVENTION_ITEM_NOT_FOUND');
+    }
+
+    await this.itemService.deleteItem(item);
   }
 
   @Post('rollback')

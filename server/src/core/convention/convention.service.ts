@@ -111,12 +111,9 @@ export class ConventionService {
   }
 
   async create(conventionLike: DeepPartial<Convention>): Promise<Convention> {
-    let now = Date.now();
-
     let convention = this.conventionRepository.create(conventionLike);
 
     convention.status = ConventionStatus.normal;
-    convention.createdAt = now;
 
     return this.conventionRepository.save(convention);
   }
@@ -126,10 +123,8 @@ export class ConventionService {
   }
 
   async delete(convention: Convention): Promise<Convention> {
-    let now = Date.now();
-
     convention.status = ConventionStatus.deleted;
-    convention.deletedAt = now;
+    convention.deletedAt = new Date();
 
     return this.conventionRepository.save(convention);
   }

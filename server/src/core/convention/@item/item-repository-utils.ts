@@ -27,10 +27,7 @@ export async function createItem(
   itemLike: DeepPartial<Item>,
   itemRepository: Repository<Item>,
 ): Promise<Item> {
-  let now = Date.now();
-
   itemLike.status = ItemStatus.normal;
-  itemLike.createdAt = now;
   itemLike.commentCount = 0;
   itemLike.thumbUpCount = 0;
 
@@ -111,13 +108,9 @@ export async function createItemVersion(
   itemVersionLike: DeepPartial<ItemVersion>,
   itemVersionRepository: Repository<ItemVersion>,
 ) {
-  let now = Date.now();
-
   if (!itemVersionLike.hasOwnProperty('fromId')) {
     itemVersionLike.fromId = 0;
   }
-
-  itemVersionLike.createdAt = now;
 
   itemVersionLike.commentCount = 0;
   itemVersionLike.thumbUpCount = 0;
