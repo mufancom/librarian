@@ -44,6 +44,7 @@ export class ItemService {
         conventionId,
         deleted: ItemStatus.deleted,
       })
+      .orderBy('order_id')
       .getMany();
   }
 

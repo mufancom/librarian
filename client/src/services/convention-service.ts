@@ -5,6 +5,7 @@ import {
   Convention,
   ConventionIndexCategoryNode,
   ConventionIndexNode,
+  ConventionItem,
   ConventionStore,
 } from 'stores/convention-store';
 import {APIService} from './api-service';
@@ -94,6 +95,11 @@ export class ConventionService {
   @action
   async load(id: number) {
     if (this.conventionStore.currentId !== id) {
+      this.getConvention(id)
+        .then(value => {
+          this.conventionStore.currentConvention = value;
+        })
+        .catch();
       this.conventionStore.currentContent = await this.getContent(id);
     }
   }
@@ -108,16 +114,32 @@ export class ConventionService {
   }
 
   @action
+  async getConvention(id: number) {
+    let conventionStore = this.conventionStore.conventionCache;
+
+    if (conventionStore.hasOwnProperty(id)) {
+      return conventionStore[id];
+    }
+
+    let convention = await this.apiService.get<Convention>(`convention/${id}`);
+
+    conventionStore[id] = convention;
+    return convention;
+  }
+
+  @action
   async getContent(id: number) {
-    let cacheStore = this.conventionStore.conventionCache;
+    let cacheStore = this.conventionStore.conventionContentCache;
 
     if (cacheStore.hasOwnProperty(id)) {
       return cacheStore[id];
     }
 
-    let content = await this.apiService.download(`convention/${path}`);
+    let content = await this.apiService.get<ConventionItem[]>(
+      `convention/${id}/items`,
+    );
 
-    cacheStore[path] = content;
+    cacheStore[id] = content;
     return content;
   }
 }

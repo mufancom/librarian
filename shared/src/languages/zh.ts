@@ -1,4 +1,4 @@
-import {Translation} from 'translation';
+import {Translation} from '../translation';
 
 export const zh: Translation = {
   INVALID_ARGUMENTS: '无效参数',

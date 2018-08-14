@@ -1,27 +1,26 @@
 import classNames from 'classnames';
 import React, {Component} from 'react';
 
+import {ConventionItem} from 'stores/convention-store';
 import {styled} from 'theme';
 import {observer} from 'utils/mobx';
 
 const Wrapper = styled.div``;
 
-export interface ConventionBodySectionFooterProps {
+export interface ConventionBodyItemFooterProps {
   className?: string;
-  uuid: string;
+  item: ConventionItem;
 }
 
 @observer
-export class ConventionBodySectionFooter extends Component<
-  ConventionBodySectionFooterProps
+export class ConventionBodyItemFooter extends Component<
+  ConventionBodyItemFooterProps
 > {
   render() {
     let {className} = this.props;
 
     return (
-      <Wrapper
-        className={classNames('convention-body-section-footer', className)}
-      >
+      <Wrapper className={classNames('convention-body-item-footer', className)}>
         convention-body-section-footer
       </Wrapper>
     );

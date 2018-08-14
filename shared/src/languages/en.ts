@@ -1,4 +1,4 @@
-import {Translation} from 'translation';
+import {Translation} from '../translation';
 
 export const en: Translation = {
   INVALID_ARGUMENTS: 'Invalid arguments',

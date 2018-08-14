@@ -5,10 +5,10 @@ import {RouteComponentProps, withRouter} from 'react-router';
 import {ConventionStore} from 'stores/convention-store';
 import {RouterStore} from 'stores/router-store';
 import {styled} from 'theme';
-import {splitIntoSections} from 'utils/markdown';
 import {inject, observer} from 'utils/mobx';
 import {MarkdownStyle} from '../../../common';
-import {ConventionBodySection} from './@convention-body-section';
+import {ConventionBodyItem} from './@convention-body-item';
+import {ConventionBodyTitle} from './@convention-body-title';
 
 const Wrapper = styled(MarkdownStyle)`
   padding-top: 25px;
@@ -31,18 +31,13 @@ export class ConventionBody extends Component<ConventionBodyProps> {
     let {className} = this.props;
 
     return (
-      <Wrapper className={classNames('convention-body', className)}>
-        <div className="markdown-body" />
-        {splitIntoSections(this.conventionStore.currentContent).map(value => {
-          let {source, annotation} = value;
-          return (
-            <ConventionBodySection
-              key={annotation && annotation.uuid ? annotation.uuid : source}
-              section={value}
-            />
-          );
+      <Wrapper
+        className={classNames('convention-body', className, 'markdown-body')}
+      >
+        <ConventionBodyTitle {...this.props} />
+        {this.conventionStore.currentContent.map(value => {
+          return <ConventionBodyItem key={value.id} item={value} />;
         })}
-        <div />
       </Wrapper>
     );
   }

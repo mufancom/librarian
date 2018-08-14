@@ -1,6 +1,6 @@
 import {I18nResolver} from 'i18n-ts';
-import * as languages from '../../../shared/package/languages';
-import {Translation} from '../../../shared/package/translation';
+import * as languages from 'shared/languages';
+import {Translation} from 'shared/translation';
 
 const DEFAULT_LANG = languages.en;
 

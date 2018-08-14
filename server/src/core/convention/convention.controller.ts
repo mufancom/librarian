@@ -27,6 +27,11 @@ export class ConventionController {
 
   @Get(':id')
   async get(@Param('id') id: number) {
+    return this.conventionService.findOneById(id);
+  }
+
+  @Get(':id/items')
+  async getItems(@Param('id') id: number) {
     return this.itemService.getItems(id);
   }
 

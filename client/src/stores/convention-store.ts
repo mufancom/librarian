@@ -11,7 +11,7 @@ export interface Category {
   orderId: number;
   title: string;
   alias?: string;
-  detetedAt?: number;
+  deletedAt?: number;
   status: CategoryStatus;
 }
 
@@ -26,8 +26,8 @@ export interface Convention {
   orderId: number;
   title: string;
   alias?: string;
-  createdAt?: number;
-  deletedAt?: number;
+  createdAt?: Date;
+  deletedAt?: Date;
   status: ConventionStatus;
 }
 
@@ -46,8 +46,25 @@ export type ConventionIndexNode =
   | ConventionIndexCategoryNode
   | ConventionIndexConventionNode;
 
+export interface ConventionItem {
+  id: number;
+  orderId: number;
+  conventionId: number;
+  content: string;
+  versionId: number;
+  commentCount: number;
+  thumbUpCount: number;
+  createdAt: Date;
+  deletedAt?: Date;
+  status: number;
+}
+
 export interface ConventionCache {
-  [key: number]: string;
+  [key: number]: Convention;
+}
+
+export interface ConventionContentCache {
+  [key: number]: ConventionItem[];
 }
 
 export class ConventionStore {
@@ -58,7 +75,13 @@ export class ConventionStore {
   conventionCache: ConventionCache = {};
 
   @observable
-  currentContent = '';
+  currentConvention?: Convention;
+
+  @observable
+  conventionContentCache: ConventionContentCache = {};
+
+  @observable
+  currentContent: ConventionItem[] = [];
 
   @observable
   currentId = 0;
