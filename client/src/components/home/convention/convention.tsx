@@ -64,7 +64,6 @@ export class Convention extends React.Component<ConventionProps> {
               <Content
                 style={{
                   margin: '0 16px 0 300px',
-                  overflow: 'auto',
                   padding: 0,
                 }}
               >

@@ -7,7 +7,7 @@ import {styled} from 'theme';
 import {inject, observer} from 'utils/mobx';
 
 const Wrapper = styled.div`
-  margin-bottom: 2rem;
+  margin-bottom: 2.4rem;
 `;
 
 export interface ConventionBodyTitleProps extends RouteComponentProps<any> {

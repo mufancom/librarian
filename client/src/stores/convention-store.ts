@@ -11,7 +11,7 @@ export interface Category {
   orderId: number;
   title: string;
   alias?: string;
-  deletedAt?: number;
+  deletedAt?: string;
   status: CategoryStatus;
 }
 
@@ -26,8 +26,8 @@ export interface Convention {
   orderId: number;
   title: string;
   alias?: string;
-  createdAt?: Date;
-  deletedAt?: Date;
+  createdAt?: string;
+  deletedAt?: string;
   status: ConventionStatus;
 }
 
@@ -54,8 +54,9 @@ export interface ConventionItem {
   versionId: number;
   commentCount: number;
   thumbUpCount: number;
-  createdAt: Date;
-  deletedAt?: Date;
+  createdAt: string;
+  updatedAt: string;
+  deletedAt?: string;
   status: number;
 }
 

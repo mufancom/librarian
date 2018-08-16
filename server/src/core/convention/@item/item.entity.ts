@@ -3,6 +3,7 @@ import {
   CreateDateColumn,
   Entity,
   PrimaryGeneratedColumn,
+  UpdateDateColumn,
 } from 'typeorm';
 
 export enum ItemStatus {
@@ -35,6 +36,9 @@ export class Item {
 
   @CreateDateColumn({name: 'created_at', type: 'timestamp'})
   createdAt!: Date;
+
+  @UpdateDateColumn({name: 'updated_at', type: 'timestamp'})
+  updatedAt!: Date;
 
   @Column({name: 'deleted_at', type: 'timestamp', nullable: true})
   deletedAt?: Date;

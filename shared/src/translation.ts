@@ -41,4 +41,34 @@ export interface Translation {
   LOGIN_SUCCESS: (username: string) => string;
   LOGOUT_SUCCESS: string;
   PASSWORDS_NOT_CONSISTENT: string;
+
+  /* Timeago.js Date transform */
+  TIMEAGO_JUST_NOW: string;
+  TIMEAGO_A_WHILE: string;
+  TIMEAGO_SECONDS_AGO: string;
+  TIMEAGO_IN_SECONDS: string;
+  TIMEAGO_1_MINUTE_AGO: string;
+  TIMEAGO_IN_1_MINUTE: string;
+  TIMEAGO_MINUTES_AGO: string;
+  TIMEAGO_IN_MINUTES: string;
+  TIMEAGO_1_HOUR_AGO: string;
+  TIMEAGO_IN_1_HOUR: string;
+  TIMEAGO_HOURS_AGO: string;
+  TIMEAGO_IN_HOURS: string;
+  TIMEAGO_1_DAY_AGO: string;
+  TIMEAGO_IN_1_DAY: string;
+  TIMEAGO_DAYS_AGO: string;
+  TIMEAGO_IN_DAYS: string;
+  TIMEAGO_1_WEEK_AGO: string;
+  TIMEAGO_IN_1_WEEK: string;
+  TIMEAGO_WEEKS_AGO: string;
+  TIMEAGO_IN_WEEKS: string;
+  TIMEAGO_1_MONTH_AGO: string;
+  TIMEAGO_IN_1_MONTH: string;
+  TIMEAGO_MONTHS_AGO: string;
+  TIMEAGO_IN_MONTHS: string;
+  TIMEAGO_1_YEAR_AGO: string;
+  TIMEAGO_IN_1_YEAR: string;
+  TIMEAGO_YEARS_AGO: string;
+  TIMEAGO_IN_YEARS: string;
 }
