@@ -9,6 +9,7 @@ import {
 
 import {
   createItemVersion,
+  getItemMaxOrderId,
   insertItem,
   saveItem,
   saveItemVersion,
@@ -118,6 +119,12 @@ export class ItemService {
     item: Item,
     itemRepository: Repository<Item> = this.itemRepository,
   ): Promise<Item> {
+    await shiftItem(
+      item,
+      await getItemMaxOrderId(item.conventionId, itemRepository),
+      itemRepository,
+    );
+
     item.status = ItemStatus.deleted;
     item.deletedAt = new Date();
 

@@ -62,9 +62,6 @@ export class HeaderNav extends Component<HeaderNavProps> {
           <li>
             <HeaderNavLink to="/qa">问答</HeaderNavLink>
           </li>
-          <li>
-            <HeaderNavLink to="/proposal">提议</HeaderNavLink>
-          </li>
         </ul>
       </Wrapper>
     );

@@ -37,9 +37,7 @@ const createDropdownMenu = (logoutOnclick: any) => (
     </Menu.Item>
     <Menu.Divider />
     <Menu.Item>
-      <a href="#" onClick={logoutOnclick}>
-        退出
-      </a>
+      <a onClick={logoutOnclick}>退出</a>
     </Menu.Item>
   </Menu>
 );
@@ -66,7 +64,7 @@ export class HeaderUserLoggedIn extends Component<HeaderUserLoggedInProps> {
     return (
       <Wrapper className={classNames('header-user-logged-in', className)}>
         <Dropdown overlay={createDropdownMenu(this.handleLogoutOnclick)}>
-          <a href="#">
+          <a>
             <HeaderUserIcon icon={this.authStore.avatar} />
             <div className="username-text">{this.authStore.username}</div>
           </a>

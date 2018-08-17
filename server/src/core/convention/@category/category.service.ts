@@ -62,6 +62,12 @@ export class CategoryService {
   }
 
   async shift(category: Category, afterOrderId: number): Promise<Category> {
+    let maxOrderId = await this.getMaxOrderId(category.parentId);
+
+    if (afterOrderId > maxOrderId) {
+      afterOrderId = maxOrderId;
+    }
+
     let {orderId: previousOrderId, parentId} = category;
     let theSmaller = Math.min(previousOrderId, afterOrderId);
     let theLarger = Math.max(previousOrderId, afterOrderId);
@@ -113,10 +119,10 @@ export class CategoryService {
   }
 
   async delete(category: Category): Promise<Category> {
-    let now = Date.now();
+    await this.shift(category, await this.getMaxOrderId(category.parentId));
 
     category.status = CategoryStatus.deleted;
-    category.deletedAt = now;
+    category.deletedAt = new Date();
 
     return this.save(category);
   }

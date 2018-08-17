@@ -40,7 +40,10 @@ interface APIErrorResult {
   };
 }
 
-type APIResult = APISuccessResult | APIErrorResult | APIRedirectionResult;
+export type APIResult =
+  | APISuccessResult
+  | APIErrorResult
+  | APIRedirectionResult;
 
 export type OnProgress = (event: ProgressEvent) => void;
 
@@ -69,7 +72,14 @@ function isKnownI18nMessageKey(key: string): key is keyof Translation {
   return i18n.hasOwnProperty(key);
 }
 
+export type APIMiddleware = (
+  result: APIResult,
+  next: () => void,
+) => Promise<void> | void;
+
 export class APIService {
+  private middlewares: APIMiddleware[] = [];
+
   async call<T>(
     method: string,
     path: string,
@@ -77,20 +87,26 @@ export class APIService {
     {type, onUploadProgress, onDownloadProgress}: RequestOptions = {},
   ): Promise<T> {
     let url = Url.resolve(API_BASE_URL, path);
-
-    let response = await axios({
-      method,
-      url,
-      withCredentials: true,
-      data: body,
-      headers: {
-        'Content-Type': type,
-      },
-      onUploadProgress,
-      onDownloadProgress,
-    });
+    let response;
+    try {
+      response = await axios({
+        method,
+        url,
+        withCredentials: true,
+        data: body,
+        headers: {
+          'Content-Type': type,
+        },
+        onUploadProgress,
+        onDownloadProgress,
+      });
+    } catch (error) {
+      response = {data: {error}};
+    }
 
     let result = response.data as APIResult;
+
+    result = await this.executeMiddlewares(result);
 
     if ('location' in result) {
       window.location.href = result.location;
@@ -143,5 +159,24 @@ export class APIService {
     }
 
     return response.data;
+  }
+
+  addMiddleware(middleware: APIMiddleware) {
+    this.middlewares.push(middleware);
+  }
+
+  private async executeMiddlewares(result: APIResult): Promise<APIResult> {
+    let middlewares = this.middlewares.slice();
+
+    let next = async () => {
+      let middleware = middlewares.pop();
+      if (middleware) {
+        await middleware(result, next);
+      }
+    };
+
+    await next();
+
+    return result;
   }
 }

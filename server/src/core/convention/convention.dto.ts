@@ -6,6 +6,7 @@ export class CreateDTO {
 
   @IsOptional()
   @IsNumber()
+  @Max(-1)
   readonly afterOrderId?: number;
 
   @Length(1, 20)

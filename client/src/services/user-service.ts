@@ -18,7 +18,7 @@ export class UserService {
     private readonly authStore: AuthStore,
   ) {
     // tslint:disable-next-line:no-console
-    this.checkStatus().catch(console.error);
+    this.checkStatus().catch();
   }
 
   @action
@@ -31,6 +31,7 @@ export class UserService {
       this.authStore.id = data.id;
       this.authStore.role = data.role;
       this.authStore.username = data.username;
+      this.authStore.email = data.email;
       this.authStore.avatar = data.avatar ? data.avatar : '';
     } catch (error) {}
   }
@@ -45,6 +46,7 @@ export class UserService {
     this.authStore.id = data.id;
     this.authStore.role = data.role;
     this.authStore.username = data.username;
+    this.authStore.email = data.email;
     this.authStore.avatar = data.avatar ? data.avatar : '';
 
     return data.username;
@@ -62,9 +64,15 @@ export class UserService {
   async logout() {
     await this.apiService.get<any>('auth/logout');
 
+    this.clearCredentials();
+  }
+
+  @action
+  clearCredentials() {
     this.authStore.id = 0;
     this.authStore.role = 0;
     this.authStore.username = '';
+    this.authStore.email = '';
     this.authStore.avatar = '';
   }
 }

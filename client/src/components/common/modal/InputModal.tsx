@@ -72,6 +72,8 @@ export class InputModal extends Component<InputModalProps> {
     if (onOkButtonClick) {
       onOkButtonClick(value);
     }
+
+    this.inputRef.current!.input.value = '';
   };
 
   static Wrapper = Wrapper;

@@ -17,10 +17,6 @@ import {ResizeListener} from '../../../../common';
 const Wrapper = styled.div`
   display: block;
 
-  .fas {
-    display: ;
-  }
-
   @keyframes showTabLine {
     0% {
       opacity: 0;

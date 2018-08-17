@@ -113,6 +113,8 @@ const DownShiftButton = styled(ShiftButton)`
     opacity: 0;
     animation: hideDownShiftButton 0.3s;
     visible: hidden;
+    position: absolute;
+    top: -999999px;
   }
 `;
 

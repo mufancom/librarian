@@ -18,7 +18,7 @@ export class ConventionSideSearch extends Component<ConventionSideSearchProps> {
 
     return (
       <Wrapper className={classNames('convention-side-search', className)}>
-        <Search placeholder="搜索规范..." style={{width: 180}} />
+        <Search placeholder="搜索规范..." style={{width: '96%'}} />
       </Wrapper>
     );
   }

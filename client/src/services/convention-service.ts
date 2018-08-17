@@ -142,4 +142,56 @@ export class ConventionService {
     cacheStore[id] = content;
     return content;
   }
+
+  async createCategory(parentId: number, title: string, afterOrderId?: number) {
+    await this.apiService.post('convention/category/create', {
+      title,
+      parentId,
+      afterOrderId,
+    });
+
+    await this.getIndex();
+  }
+
+  async deleteCategory(id: number) {
+    await this.apiService.get(`convention/category/${id}/delete`);
+
+    await this.getIndex();
+  }
+
+  async shiftCategory(id: number, afterOrderId: number) {
+    await this.apiService.post('convention/category/edit', {
+      id,
+      afterOrderId,
+    });
+
+    await this.getIndex();
+  }
+
+  async createConvention(
+    categoryId: number,
+    title: string,
+    afterOrderId?: number,
+  ) {
+    await this.apiService.post('convention/create', {
+      categoryId,
+      title,
+      afterOrderId,
+    });
+
+    await this.getIndex();
+  }
+
+  async deleteConvention(id: number) {
+    await this.apiService.get(`convention/${id}/delete`);
+
+    await this.getIndex();
+  }
+
+  @action
+  async shiftConvention(id: number, afterOrderId: number) {
+    await this.apiService.post('convention/edit', {id, afterOrderId});
+
+    await this.getIndex();
+  }
 }

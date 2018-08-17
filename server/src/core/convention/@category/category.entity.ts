@@ -22,8 +22,8 @@ export class Category {
   @Column({nullable: true})
   alias?: string;
 
-  @Column({name: 'deleted_at', nullable: true})
-  deletedAt?: number;
+  @Column({name: 'deleted_at', type: 'timestamp', nullable: true})
+  deletedAt?: Date;
 
   @Column()
   status!: CategoryStatus;

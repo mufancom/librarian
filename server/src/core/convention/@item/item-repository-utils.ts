@@ -59,6 +59,12 @@ export async function shiftItem(
   afterOrderId: number,
   itemRepository: Repository<Item>,
 ): Promise<Item> {
+  let maxOrderId = await getItemMaxOrderId(item.conventionId, itemRepository);
+
+  if (afterOrderId > maxOrderId) {
+    afterOrderId = maxOrderId;
+  }
+
   let {orderId: previousOrderId, conventionId} = item;
   let theSmaller = Math.min(previousOrderId, afterOrderId);
   let theLarger = Math.max(previousOrderId, afterOrderId);

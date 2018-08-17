@@ -22,8 +22,8 @@ export class InvalidArgumentsException extends LibrarianHttpException {
 }
 
 export class ValidationException extends LibrarianHttpException {
-  constructor(message: keyof Translation = 'VALIDATION_FAILED') {
-    super('VALIDATION_FAILED', message);
+  constructor(message: string = 'VALIDATION_FAILED') {
+    super('VALIDATION_FAILED', message as any);
   }
 }
 

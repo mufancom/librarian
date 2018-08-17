@@ -1,12 +1,17 @@
+import {message} from 'antd';
 import classNames from 'classnames';
 import {action, observable} from 'mobx';
 import React, {Component} from 'react';
 import {NavLink, RouteComponentProps, withRouter} from 'react-router-dom';
 
+import {fetchErrorMessage} from 'services/api-service';
+import {ConventionService} from 'services/convention-service';
 import {AuthStore} from 'stores/auth-store';
 import {ConventionIndexConventionNode} from 'stores/convention-store';
 import {styled} from 'theme';
 import {inject, observer} from 'utils/mobx';
+
+import {ConventionSideNavDeleteBtn as _ConventionSideNavDeleteBtn} from './@convention-side-nav-delete-btn';
 import {ConventionSideNavShiftBtn} from './@convention-side-nav-shift-btn';
 
 const Wrapper = styled.li`
@@ -35,8 +40,13 @@ const Wrapper = styled.li`
 
 const PositionShiftButton = styled(ConventionSideNavShiftBtn)`
   position: absolute;
-  right: 10px;
+  right: 20px;
   top: 13px;
+`;
+
+const ConventionSideNavDeleteBtn = styled(_ConventionSideNavDeleteBtn)`
+  display: inline !important;
+  margin-left: 5px;
 `;
 
 export interface ConventionSideNavItemProps extends RouteComponentProps<any> {
@@ -50,6 +60,9 @@ export class ConventionSideNavItem extends Component<
 > {
   @inject
   authStore!: AuthStore;
+
+  @inject
+  conventionService!: ConventionService;
 
   @observable
   showShiftButton = false;
@@ -66,9 +79,17 @@ export class ConventionSideNavItem extends Component<
         onMouseEnter={this.onMouseEnter}
         onMouseLeave={this.onMouseLeave}
       >
-        <NavLink to={`/convention/${entry.id}`}>{entry.title}</NavLink>
+        <NavLink to={`/convention/${entry.id}`}>
+          {entry.title}
+          <ConventionSideNavDeleteBtn
+            show={this.showShiftButton && this.authStore.isLoggedIn}
+            onClick={this.onDeleteButtonClick}
+          />
+        </NavLink>
         <PositionShiftButton
           show={this.showShiftButton && this.authStore.isLoggedIn}
+          upOnclick={this.onUpShiftButtonOnclick}
+          downOnclick={this.onDownShiftButtonOnclick}
         />
       </Wrapper>
     );
@@ -83,6 +104,44 @@ export class ConventionSideNavItem extends Component<
   onMouseLeave = () => {
     this.showShiftButton = false;
   };
+
+  onDeleteButtonClick = async () => {
+    let {
+      node: {entry},
+    } = this.props;
+
+    try {
+      await this.conventionService.deleteConvention(entry.id);
+    } catch (error) {
+      let errorMessage = fetchErrorMessage(error);
+
+      message.error(errorMessage);
+    }
+  };
+
+  onUpShiftButtonOnclick = async () => {
+    await this.shiftConvention(-2);
+  };
+
+  onDownShiftButtonOnclick = async () => {
+    await this.shiftConvention(1);
+  };
+
+  async shiftConvention(offset: number) {
+    let {
+      node: {
+        entry: {id, orderId},
+      },
+    } = this.props;
+
+    try {
+      await this.conventionService.shiftConvention(id, orderId + offset);
+    } catch (error) {
+      let errorMessage = fetchErrorMessage(error);
+
+      message.error(errorMessage);
+    }
+  }
 
   static Wrapper = Wrapper;
 }

@@ -22,7 +22,12 @@ export class ConventionService {
   ) {}
 
   async getConventions(): Promise<Convention[]> {
-    return this.conventionRepository.find();
+    return this.conventionRepository
+      .createQueryBuilder()
+      .where('status != :deleted', {
+        deleted: ConventionStatus.deleted,
+      })
+      .getMany();
   }
 
   async findOneById(id: number): Promise<Convention | undefined> {
@@ -72,6 +77,12 @@ export class ConventionService {
     convention: Convention,
     afterOrderId: number,
   ): Promise<Convention> {
+    let maxOrderId = await this.getMaxOrderId(convention.categoryId);
+
+    if (afterOrderId > maxOrderId) {
+      afterOrderId = maxOrderId;
+    }
+
     let {orderId: previousOrderId, categoryId} = convention;
     let theSmaller = Math.min(previousOrderId, afterOrderId);
     let theLarger = Math.max(previousOrderId, afterOrderId);
@@ -123,6 +134,11 @@ export class ConventionService {
   }
 
   async delete(convention: Convention): Promise<Convention> {
+    await this.shift(
+      convention,
+      await this.getMaxOrderId(convention.categoryId),
+    );
+
     convention.status = ConventionStatus.deleted;
     convention.deletedAt = new Date();
 

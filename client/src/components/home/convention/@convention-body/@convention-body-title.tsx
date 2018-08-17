@@ -27,7 +27,7 @@ export class ConventionBodyTitle extends Component<ConventionBodyTitleProps> {
       <Wrapper className={classNames('convention-body-title', className)}>
         <h1>
           {convention ? (
-            convention.title
+            <div>{convention.title}</div>
           ) : (
             <div style={{color: '#bbb'}}>Loading ...</div>
           )}

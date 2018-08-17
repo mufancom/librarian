@@ -56,7 +56,7 @@ export class CategoryController {
 
   @Get(':id/delete')
   @UseGuards(AuthGuard)
-  async delete(@Param() id: number) {
+  async delete(@Param('id') id: number) {
     let category = await this.categoryService.findOneById(id);
 
     if (!category) {
