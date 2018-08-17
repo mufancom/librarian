@@ -1,7 +1,10 @@
+import {Popconfirm, message} from 'antd';
 import classNames from 'classnames';
+import {action, observable} from 'mobx';
 import React, {Component} from 'react';
 
-import {action, observable} from 'mobx';
+import {fetchErrorMessage} from 'services/api-service';
+import {ConventionService} from 'services/convention-service';
 import {AuthStore} from 'stores/auth-store';
 import {ConventionItem} from 'stores/convention-store';
 import {styled} from 'theme';
@@ -9,13 +12,16 @@ import {formatAsTimeAge} from 'utils/date';
 import {mark} from 'utils/markdown';
 import {inject, observer} from 'utils/mobx';
 import {ConventionBodyItemEdit} from './@convention-body-item-edit';
+import {ConventionBodyItemEditor} from './@convention-body-item-editor';
 import {ConventionBodyItemFooter} from './@convention-body-item-footer';
+import {ConventionBodyItemShiftButton} from './@convention-body-item-shift-button';
 
 const Wrapper = styled.div`
   padding-bottom: 1.9rem;
   position: relative;
+  min-height: 250px;
 
-  ${ConventionBodyItemEdit.Wrapper} {
+  ${ConventionBodyItemEditor.Wrapper} {
     position: absolute;
     z-index: 500;
     left: 0;
@@ -27,6 +33,12 @@ const Wrapper = styled.div`
   ${ConventionBodyItemFooter.Wrapper} {
     margin-bottom: 5px;
   }
+
+  ${ConventionBodyItemShiftButton.Wrapper} {
+    position: absolute;
+    top: 5px;
+    right: -24px;
+  }
 `;
 
 const ItemTopToolBar = styled.div`
@@ -35,6 +47,14 @@ const ItemTopToolBar = styled.div`
   right: 10px;
   text-align: right;
   transition: all 0.3s;
+`;
+
+const ItemTopToolBarButton = styled.a`
+  margin-left: 7px;
+
+  &.danger {
+    color: ${props => props.theme.dangerAccent()} !important;
+  }
 `;
 
 const ItemVersionInfo = styled.div`
@@ -54,11 +74,17 @@ export class ConventionBodyItem extends Component<ConventionBodyItemProps> {
   @inject
   authStore!: AuthStore;
 
+  @inject
+  conventionService!: ConventionService;
+
   @observable
   showSidebar = false;
 
   @observable
   editMode = false;
+
+  @observable
+  editLoading = false;
 
   render() {
     let {className, item} = this.props;
@@ -70,7 +96,12 @@ export class ConventionBodyItem extends Component<ConventionBodyItemProps> {
         onMouseLeave={this.conventionOnHoverEnd}
       >
         {this.editMode ? (
-          <ConventionBodyItemEdit item={item} />
+          <ConventionBodyItemEdit
+            item={item}
+            onCancelOnclick={this.onEditCancelClick}
+            onOkClick={this.onEditOkClick}
+            loading={this.editLoading}
+          />
         ) : (
           <ItemTopToolBar style={{opacity: this.showSidebar ? 1 : 0}}>
             <ItemVersionInfo>
@@ -78,7 +109,26 @@ export class ConventionBodyItem extends Component<ConventionBodyItemProps> {
               {item.versionId} ({formatAsTimeAge(item.updatedAt)})
             </ItemVersionInfo>
             {this.authStore.isLoggedIn ? (
-              <a onClick={this.editOnclick}>编辑</a>
+              <div>
+                <ItemTopToolBarButton onClick={this.editOnclick}>
+                  编辑
+                </ItemTopToolBarButton>
+                <Popconfirm
+                  placement="bottomRight"
+                  title="您确定要删除该条目？"
+                  onConfirm={this.deleteOnclick}
+                  okText="确定"
+                  cancelText="取消"
+                >
+                  <ItemTopToolBarButton className="danger">
+                    删除
+                  </ItemTopToolBarButton>
+                </Popconfirm>
+                <ConventionBodyItemShiftButton
+                  upOnclick={this.onUpShiftButtonClick}
+                  downOnclick={this.onDownShiftButtonClick}
+                />
+              </div>
             ) : (
               undefined
             )}
@@ -106,6 +156,71 @@ export class ConventionBodyItem extends Component<ConventionBodyItemProps> {
   editOnclick = () => {
     this.editMode = true;
   };
+
+  @action
+  deleteOnclick = async () => {
+    let {item} = this.props;
+
+    try {
+      await this.conventionService.deleteConventionItem(item);
+
+      message.success('条目删除成功！');
+    } catch (error) {
+      let errorMessage = fetchErrorMessage(error);
+
+      message.error(errorMessage);
+    }
+  };
+
+  @action
+  onEditCancelClick = () => {
+    this.editMode = false;
+  };
+
+  @action
+  onEditOkClick = async (content: string, versionId: number) => {
+    let {item} = this.props;
+
+    this.editLoading = true;
+
+    try {
+      await this.conventionService.editConventionItem(item, versionId, content);
+
+      message.success('条目编辑成功！');
+
+      this.editMode = false;
+    } catch (error) {
+      let errorMessage = fetchErrorMessage(error);
+
+      message.error(errorMessage);
+    }
+
+    this.editLoading = false;
+  };
+
+  @action
+  onUpShiftButtonClick = async () => {
+    await this.shiftCategory(-2);
+  };
+
+  @action
+  onDownShiftButtonClick = async () => {
+    await this.shiftCategory(1);
+  };
+
+  async shiftCategory(offset: number) {
+    let {item} = this.props;
+
+    let {orderId} = item;
+
+    try {
+      await this.conventionService.shiftConventionItem(item, orderId + offset);
+    } catch (error) {
+      let errorMessage = fetchErrorMessage(error);
+
+      message.error(errorMessage);
+    }
+  }
 
   static Wrapper = Wrapper;
 }

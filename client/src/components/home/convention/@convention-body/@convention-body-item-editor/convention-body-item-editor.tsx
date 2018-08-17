@@ -5,17 +5,17 @@ import ReactDOM from 'react-dom';
 import {Icon} from 'react-fa';
 import ReactMde, {ReactMdeTypes} from 'react-mde';
 
-import {ConventionItem} from 'stores/convention-store';
+import {ScrollService} from 'services/scroll-service';
 import {styled} from 'theme';
 import {mark} from 'utils/markdown';
 import {inject, observer} from 'utils/mobx';
+import {ResizeListener} from '../../../../common';
 
 import 'react-mde/lib/styles/css/react-mde-all.css';
-import {ScrollService} from 'services/scroll-service';
-import {ResizeListener} from '../../../../common';
 
 const Wrapper = styled.div`
   display: block;
+  min-height: 300px;
 
   @keyframes showTabLine {
     0% {
@@ -62,6 +62,7 @@ const Wrapper = styled.div`
     bottom: 30px;
     border: none;
     background-color: #fff;
+    border-bottom: 1px solid #f2f2f2;
 
     .mde-header {
       border: none;
@@ -128,19 +129,20 @@ const Wrapper = styled.div`
   }
 `;
 
-export interface ConventionBodyItemEditProps {
+export interface ConventionBodyItemEditorProps {
   className?: string;
-  item: ConventionItem;
+  initialContent: string;
+  onContentChange?(content: string): void;
 }
 
-export interface ConventionBodyItemEditState {
+export interface ConventionBodyItemEditorState {
   mdeState: ReactMdeTypes.MdeState;
 }
 
 @observer
-export class ConventionBodyItemEdit extends Component<
-  ConventionBodyItemEditProps,
-  ConventionBodyItemEditState
+export class ConventionBodyItemEditor extends Component<
+  ConventionBodyItemEditorProps,
+  ConventionBodyItemEditorState
 > {
   @inject
   scrollService!: ScrollService;
@@ -155,13 +157,13 @@ export class ConventionBodyItemEdit extends Component<
 
   listenerId!: number;
 
-  constructor(props: ConventionBodyItemEditProps) {
+  constructor(props: ConventionBodyItemEditorProps) {
     super(props);
 
-    let {item} = this.props;
+    let {initialContent} = this.props;
 
     this.mdeState = {
-      markdown: item.content,
+      markdown: initialContent,
     };
 
     this.wrapperRef = createRef();
@@ -182,7 +184,7 @@ export class ConventionBodyItemEdit extends Component<
     return (
       <Wrapper
         ref={this.wrapperRef}
-        className={classNames('convention-body-item-edit', className)}
+        className={classNames('convention-body-item-editor', className)}
       >
         <ResizeListener onResize={this.onWindowResize} />
         <ReactMde
@@ -203,7 +205,13 @@ export class ConventionBodyItemEdit extends Component<
 
   @action
   onMarkdownInputChange = (mdeState: ReactMdeTypes.MdeState) => {
+    let {onContentChange} = this.props;
+
     this.mdeState = mdeState;
+
+    if (onContentChange) {
+      onContentChange(mdeState.markdown!);
+    }
   };
 
   @action

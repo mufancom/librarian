@@ -65,6 +65,7 @@ export class Convention extends React.Component<ConventionProps> {
                 style={{
                   margin: '0 16px 0 300px',
                   padding: 0,
+                  overflow: 'visible',
                 }}
               >
                 <Switch>
@@ -92,10 +93,10 @@ export class Convention extends React.Component<ConventionProps> {
   }
 
   onRouteChange = (match: any) => {
-    // tslint:disable-next-line:no-console
     let {id} = match.params;
 
-    this.conventionService.load(id).catch();
+    // tslint:disable-next-line:no-console
+    this.conventionService.load(id).catch(console.log);
 
     scrollTo(0, 0);
   };

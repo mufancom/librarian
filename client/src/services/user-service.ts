@@ -18,7 +18,7 @@ export class UserService {
     private readonly authStore: AuthStore,
   ) {
     // tslint:disable-next-line:no-console
-    this.checkStatus().catch();
+    this.checkStatus().catch(console.error);
   }
 
   @action

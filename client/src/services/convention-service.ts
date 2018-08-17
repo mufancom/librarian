@@ -89,7 +89,8 @@ export class ConventionService {
     private apiService: APIService,
     private conventionStore: ConventionStore,
   ) {
-    this.getIndex().catch();
+    // tslint:disable-next-line:no-console
+    this.getIndex().catch(console.error);
   }
 
   @action
@@ -128,10 +129,10 @@ export class ConventionService {
   }
 
   @action
-  async getContent(id: number) {
+  async getContent(id: number, cached: boolean = true) {
     let cacheStore = this.conventionStore.conventionContentCache;
 
-    if (cacheStore.hasOwnProperty(id)) {
+    if (cacheStore.hasOwnProperty(id) && cached) {
       return cacheStore[id];
     }
 
@@ -193,5 +194,60 @@ export class ConventionService {
     await this.apiService.post('convention/edit', {id, afterOrderId});
 
     await this.getIndex();
+  }
+
+  @action
+  async freshCurrentConventionItems(conventionId: number) {
+    this.conventionStore.currentContent = await this.getContent(
+      conventionId,
+      false,
+    );
+  }
+
+  async createConventionItem(conventionId: number, content: string) {
+    await this.apiService.post('convention/item/create', {
+      conventionId,
+      content,
+    });
+
+    await this.freshCurrentConventionItems(conventionId);
+  }
+
+  async editConventionItem(
+    conventionItem: ConventionItem,
+    fromVersionId: number,
+    content: string,
+  ) {
+    let {id, conventionId} = conventionItem;
+
+    await this.apiService.post('convention/item/edit', {
+      id,
+      fromVersionId,
+      content,
+    });
+
+    await this.freshCurrentConventionItems(conventionId);
+  }
+
+  async shiftConventionItem(
+    conventionItem: ConventionItem,
+    afterOrderId: number,
+  ) {
+    let {id, conventionId} = conventionItem;
+
+    await this.apiService.post('convention/item/shift', {
+      id,
+      afterOrderId,
+    });
+
+    await this.freshCurrentConventionItems(conventionId);
+  }
+
+  async deleteConventionItem(conventionItem: ConventionItem) {
+    let {id, conventionId} = conventionItem;
+
+    await this.apiService.get(`convention/item/${id}/delete`);
+
+    await this.freshCurrentConventionItems(conventionId);
   }
 }

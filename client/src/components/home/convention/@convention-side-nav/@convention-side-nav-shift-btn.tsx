@@ -25,9 +25,6 @@ const ShiftButton = styled.a`
   font-size: 8px;
   color: ${props => props.theme.text.placeholder} !important;
 
-  .anticon {
-  }
-
   &:hover {
     color: ${props => props.theme.accent()} !important;
     border-radius: 2px;

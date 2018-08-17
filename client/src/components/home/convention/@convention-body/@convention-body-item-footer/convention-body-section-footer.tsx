@@ -21,7 +21,7 @@ export class ConventionBodyItemFooter extends Component<
 
     return (
       <Wrapper className={classNames('convention-body-item-footer', className)}>
-        convention-body-section-footer
+        &nbsp;
       </Wrapper>
     );
   }
