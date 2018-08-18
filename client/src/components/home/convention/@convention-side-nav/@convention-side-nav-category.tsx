@@ -177,7 +177,11 @@ export class ConventionSideNavCategory extends Component<
             onFinishClick={this.onRenameFinishButtonClick}
           />
           <ConventionSideNavDeleteBtn
-            show={this.showEditButton && this.authStore.isLoggedIn}
+            show={
+              this.showEditButton &&
+              this.authStore.isLoggedIn &&
+              !this.renameMode
+            }
             onClick={this.onDeleteButtonClick}
           />
           <Dropdown

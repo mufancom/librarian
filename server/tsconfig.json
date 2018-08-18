@@ -3,11 +3,14 @@
   "compilerOptions": {
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
+    "moduleResolution": "node",
+    "allowSyntheticDefaultImports": true,
+    "removeComments": true,
 
     "baseUrl": "src",
 
-    "rootDir": "src",
-    "outDir": "bld"
+    "rootDir": "./src",
+    "outDir": "./bld"
   },
   "include": ["src", "types"]
 }

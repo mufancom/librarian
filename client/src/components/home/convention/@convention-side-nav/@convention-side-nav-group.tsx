@@ -128,7 +128,11 @@ export class ConventionSideNavGroup extends Component<
             onFinishClick={this.onRenameFinishButtonClick}
           />
           <ConventionSideNavDeleteBtn
-            show={this.showShiftButton && this.authStore.isLoggedIn}
+            show={
+              this.showShiftButton &&
+              this.authStore.isLoggedIn &&
+              !this.renameMode
+            }
             onClick={this.onDeleteButtonClick}
           />
           <ConventionSideNavShiftBtn
