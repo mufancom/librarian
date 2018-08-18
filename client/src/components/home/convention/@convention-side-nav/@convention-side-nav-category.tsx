@@ -12,7 +12,9 @@ import {ConventionIndexCategoryNode} from 'stores/convention-store';
 import {styled} from 'theme';
 import {collapseToEnd} from 'utils/dom';
 import {inject, observer} from 'utils/mobx';
+
 import {InputModal} from '../../../common/modal';
+
 import {ConventionSideNavGroupWithRouter} from './@convention-side-nav-group';
 import {ConventionSideNavItemWithRouter} from './@convention-side-nav-item';
 import {
@@ -68,7 +70,9 @@ enum MenuOption {
   delete,
 }
 
-const createAddMenuList = (onMenuClick: (index: number) => void) => (
+const createAddMenuList = (
+  onMenuClick: (index: number) => void,
+): JSX.Element => (
   <Menu className="add-menu">
     <Menu.Item key="0">
       <a
@@ -139,7 +143,7 @@ export class ConventionSideNavCategory extends Component<
 
   wrapperRef: React.RefObject<any> = createRef();
 
-  render() {
+  render(): JSX.Element {
     let {className, node} = this.props;
 
     return (
@@ -221,34 +225,34 @@ export class ConventionSideNavCategory extends Component<
     );
   }
 
-  getWrapperDom = () => {
+  getWrapperDom = (): HTMLLIElement => {
     return ReactDOM.findDOMNode(this.wrapperRef.current) as HTMLLIElement;
   };
 
   @action
-  onMouseEnterTitle = () => {
+  onMouseEnterTitle = (): void => {
     this.showEditButton = true;
   };
 
   @action
-  onMouseLeaveTitle = () => {
+  onMouseLeaveTitle = (): void => {
     this.showEditButton = false;
   };
 
   @action
-  setRenameMode = (renameMode: boolean) => {
+  setRenameMode = (renameMode: boolean): void => {
     this.renameMode = renameMode;
   };
 
-  setUpRenameModeCancelBlocker = (blocker: CancelBlocker) => {
+  setUpRenameModeCancelBlocker = (blocker: CancelBlocker): void => {
     this.renameCancelBlocker = blocker;
   };
 
-  onTitleChange = (value: string) => {
+  onTitleChange = (value: string): void => {
     this.categoryTitle = value;
   };
 
-  setTitleOnFocus() {
+  setTitleOnFocus(): void {
     let titleDom = ReactDOM.findDOMNode(
       this.categoryTitleRef.current,
     ) as HTMLDivElement;
@@ -259,7 +263,7 @@ export class ConventionSideNavCategory extends Component<
   }
 
   @action
-  onRenameButtonClick = () => {
+  onRenameButtonClick = (): void => {
     this.renameMode = true;
 
     setTimeout(() => {
@@ -268,7 +272,7 @@ export class ConventionSideNavCategory extends Component<
   };
 
   @action
-  onRenameFinishButtonClick = async () => {
+  onRenameFinishButtonClick = async (): Promise<void> => {
     if (this.renameCancelBlocker) {
       this.renameCancelBlocker();
     }
@@ -293,11 +297,11 @@ export class ConventionSideNavCategory extends Component<
   };
 
   @action
-  inputModelCancelButtonOnClick = () => {
+  inputModelCancelButtonOnClick = (): void => {
     this.inputModalVisible = false;
   };
 
-  addMenuItemOnclick = (index: number) => {
+  addMenuItemOnclick = (index: number): void => {
     switch (index) {
       case MenuOption.addGroup:
         this.addGroupOnclick();
@@ -310,7 +314,7 @@ export class ConventionSideNavCategory extends Component<
   };
 
   @action
-  addGroupOnclick = () => {
+  addGroupOnclick = (): void => {
     this.inputModalVisible = true;
     this.inputModalTitle = '新增子分组';
     this.inputModalPlaceholder = '请输入分组名';
@@ -319,7 +323,7 @@ export class ConventionSideNavCategory extends Component<
   };
 
   @action
-  addGroupModalOkButtonOnclick = async (value: string) => {
+  addGroupModalOkButtonOnclick = async (value: string): Promise<void> => {
     let {
       node: {
         entry: {id},
@@ -342,7 +346,7 @@ export class ConventionSideNavCategory extends Component<
   };
 
   @action
-  addConventionOnclick = () => {
+  addConventionOnclick = (): void => {
     this.inputModalVisible = true;
     this.inputModalTitle = '新增规范';
     this.inputModalPlaceholder = '请输入规范名';
@@ -351,7 +355,7 @@ export class ConventionSideNavCategory extends Component<
   };
 
   @action
-  addConventionModalOkButtonOnclick = async (value: string) => {
+  addConventionModalOkButtonOnclick = async (value: string): Promise<void> => {
     let {
       node: {
         entry: {id},
@@ -373,7 +377,7 @@ export class ConventionSideNavCategory extends Component<
     this.inputModalLoading = false;
   };
 
-  onDeleteButtonClick = async () => {
+  onDeleteButtonClick = async (): Promise<void> => {
     let {
       node: {
         entry: {id},
@@ -389,15 +393,15 @@ export class ConventionSideNavCategory extends Component<
     }
   };
 
-  onUpShiftButtonOnclick = async () => {
+  onUpShiftButtonOnclick = async (): Promise<void> => {
     await this.shiftCategory(-2);
   };
 
-  onDownShiftButtonOnclick = async () => {
+  onDownShiftButtonOnclick = async (): Promise<void> => {
     await this.shiftCategory(1);
   };
 
-  async shiftCategory(offset: number) {
+  async shiftCategory(offset: number): Promise<void> {
     let {
       node: {
         entry: {id, orderId},

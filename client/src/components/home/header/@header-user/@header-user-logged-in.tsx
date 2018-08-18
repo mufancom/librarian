@@ -9,6 +9,7 @@ import {AuthStore} from 'stores/auth-store';
 import {styled} from 'theme';
 import {i18n} from 'utils/lang';
 import {inject, observer} from 'utils/mobx';
+
 import {HeaderUserIcon} from './@header-user-icon';
 
 const Wrapper = styled.div`
@@ -25,7 +26,7 @@ const Wrapper = styled.div`
   }
 `;
 
-const createDropdownMenu = (logoutOnclick: any) => (
+const createDropdownMenu = (logoutOnclick: any): JSX.Element => (
   <Menu
     getPopupContainer={() => document.body}
     style={{
@@ -60,7 +61,7 @@ export class HeaderUserLoggedIn extends Component<HeaderUserLoggedInProps> {
     this.handleLogoutOnclick = this.handleLogoutOnclick.bind(this);
   }
 
-  render() {
+  render(): JSX.Element {
     let {className} = this.props;
 
     return (
@@ -81,11 +82,11 @@ export class HeaderUserLoggedIn extends Component<HeaderUserLoggedInProps> {
     );
   }
 
-  getWrapperDom = () => {
+  getWrapperDom = (): HTMLLIElement => {
     return ReactDOM.findDOMNode(this.wrapperRef.current) as HTMLLIElement;
   };
 
-  async handleLogoutOnclick() {
+  async handleLogoutOnclick(): Promise<void> {
     try {
       await this.userService.logout();
 

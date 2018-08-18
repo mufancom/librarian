@@ -20,7 +20,7 @@ export interface HeaderUserIconProps {
 }
 
 export class HeaderUserIcon extends Component<HeaderUserIconProps> {
-  render() {
+  render(): JSX.Element {
     let {className, icon} = this.props;
 
     return (

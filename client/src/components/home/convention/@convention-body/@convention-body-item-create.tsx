@@ -5,6 +5,7 @@ import React, {Component} from 'react';
 
 import {styled} from 'theme';
 import {observer} from 'utils/mobx';
+
 import {ConventionBodyItemEditor} from './@convention-body-item-editor';
 
 const Wrapper = styled.div`
@@ -46,7 +47,7 @@ export class ConventionBodyItemCreate extends Component<
   @observable
   content: string = '';
 
-  render() {
+  render(): JSX.Element {
     let {className, onCancelClick, show, loading} = this.props;
 
     return (
@@ -84,11 +85,11 @@ export class ConventionBodyItemCreate extends Component<
   }
 
   @action
-  onContentChange = (content: string) => {
+  onContentChange = (content: string): void => {
     this.content = content;
   };
 
-  onInnerOkClick = () => {
+  onInnerOkClick = (): void => {
     let {onOkClick} = this.props;
 
     if (onOkClick) {

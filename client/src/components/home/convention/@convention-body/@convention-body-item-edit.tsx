@@ -7,6 +7,7 @@ import {ConventionItem} from 'stores/convention-store';
 import {styled} from 'theme';
 import {observer} from 'utils/mobx';
 import {getMarkdownTitle} from 'utils/regex';
+
 import {ConventionBodyItemEditor} from './@convention-body-item-editor';
 
 const Wrapper = styled.div`
@@ -46,7 +47,7 @@ export class ConventionBodyItemEdit extends Component<
 
   fromVersionId = this.props.item.versionId;
 
-  render() {
+  render(): JSX.Element {
     let {className, loading, item, onCancelOnclick} = this.props;
 
     return (
@@ -76,13 +77,13 @@ export class ConventionBodyItemEdit extends Component<
   }
 
   @action
-  onContentChange = (content: string) => {
+  onContentChange = (content: string): void => {
     this.content = content;
 
     this.titleHint = getMarkdownTitle(content, '编辑条目');
   };
 
-  onInnerOkClick = () => {
+  onInnerOkClick = (): void => {
     let {onOkClick} = this.props;
 
     if (onOkClick) {

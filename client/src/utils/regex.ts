@@ -1,4 +1,4 @@
-export function filterHTMLTags(html: string) {
+export function filterHTMLTags(html: string): string {
   return html.replace(/<[^>]*>/g, '');
 }
 

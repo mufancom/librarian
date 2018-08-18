@@ -8,13 +8,14 @@ import {
   ConventionItem,
   ConventionStore,
 } from 'stores/convention-store';
+
 import {APIService} from './api-service';
 
 function insertIntoSortedSiblings<T extends ConventionIndexNode>(
   siblings: T[],
   orderId: number,
   node: T,
-) {
+): void {
   let insertIndex = 0;
 
   while (
@@ -94,7 +95,7 @@ export class ConventionService {
   }
 
   @action
-  async load(id: number) {
+  async load(id: number): Promise<void> {
     if (this.conventionStore.currentId !== id) {
       this.getConvention(id)
         .then(value => {
@@ -115,7 +116,7 @@ export class ConventionService {
   }
 
   @action
-  async getConvention(id: number) {
+  async getConvention(id: number): Promise<Convention> {
     let conventionStore = this.conventionStore.conventionCache;
 
     if (conventionStore.hasOwnProperty(id)) {
@@ -129,7 +130,10 @@ export class ConventionService {
   }
 
   @action
-  async getContent(id: number, cached: boolean = true) {
+  async getContent(
+    id: number,
+    cached: boolean = true,
+  ): Promise<ConventionItem[]> {
     let cacheStore = this.conventionStore.conventionContentCache;
 
     if (cacheStore.hasOwnProperty(id) && cached) {
@@ -144,7 +148,11 @@ export class ConventionService {
     return content;
   }
 
-  async createCategory(parentId: number, title: string, afterOrderId?: number) {
+  async createCategory(
+    parentId: number,
+    title: string,
+    afterOrderId?: number,
+  ): Promise<void> {
     await this.apiService.post('convention/category/create', {
       title,
       parentId,
@@ -154,7 +162,7 @@ export class ConventionService {
     await this.getIndex();
   }
 
-  async shiftCategory(id: number, afterOrderId: number) {
+  async shiftCategory(id: number, afterOrderId: number): Promise<void> {
     await this.apiService.post('convention/category/edit', {
       id,
       afterOrderId,
@@ -163,7 +171,7 @@ export class ConventionService {
     await this.getIndex();
   }
 
-  async renameCategory(id: number, title: string) {
+  async renameCategory(id: number, title: string): Promise<void> {
     await this.apiService.post('convention/category/edit', {
       id,
       title,
@@ -172,14 +180,14 @@ export class ConventionService {
     await this.getIndex();
   }
 
-  async deleteCategory(id: number) {
+  async deleteCategory(id: number): Promise<void> {
     await this.apiService.get(`convention/category/${id}/delete`);
 
     await this.getIndex();
   }
 
   @action
-  async freshConvention(id: number) {
+  async freshConvention(id: number): Promise<void> {
     let conventionCache = this.conventionStore.conventionCache;
 
     if (id in conventionCache) {
@@ -201,7 +209,7 @@ export class ConventionService {
     categoryId: number,
     title: string,
     afterOrderId?: number,
-  ) {
+  ): Promise<void> {
     await this.apiService.post('convention/create', {
       categoryId,
       title,
@@ -211,21 +219,21 @@ export class ConventionService {
     await this.getIndex();
   }
 
-  async deleteConvention(id: number) {
+  async deleteConvention(id: number): Promise<void> {
     await this.apiService.get(`convention/${id}/delete`);
 
     await this.getIndex();
   }
 
   @action
-  async shiftConvention(id: number, afterOrderId: number) {
+  async shiftConvention(id: number, afterOrderId: number): Promise<void> {
     await this.apiService.post('convention/edit', {id, afterOrderId});
 
     await this.getIndex();
   }
 
   @action
-  async renameConvention(id: number, title: string) {
+  async renameConvention(id: number, title: string): Promise<void> {
     await this.apiService.post('convention/edit', {id, title});
 
     await this.getIndex();
@@ -234,14 +242,17 @@ export class ConventionService {
   }
 
   @action
-  async freshCurrentConventionItems(conventionId: number) {
+  async freshCurrentConventionItems(conventionId: number): Promise<void> {
     this.conventionStore.currentContent = await this.getContent(
       conventionId,
       false,
     );
   }
 
-  async createConventionItem(conventionId: number, content: string) {
+  async createConventionItem(
+    conventionId: number,
+    content: string,
+  ): Promise<void> {
     await this.apiService.post('convention/item/create', {
       conventionId,
       content,
@@ -254,7 +265,7 @@ export class ConventionService {
     conventionItem: ConventionItem,
     fromVersionId: number,
     content: string,
-  ) {
+  ): Promise<void> {
     let {id, conventionId} = conventionItem;
 
     await this.apiService.post('convention/item/edit', {
@@ -269,7 +280,7 @@ export class ConventionService {
   async shiftConventionItem(
     conventionItem: ConventionItem,
     afterOrderId: number,
-  ) {
+  ): Promise<void> {
     let {id, conventionId} = conventionItem;
 
     await this.apiService.post('convention/item/shift', {
@@ -280,7 +291,7 @@ export class ConventionService {
     await this.freshCurrentConventionItems(conventionId);
   }
 
-  async deleteConventionItem(conventionItem: ConventionItem) {
+  async deleteConventionItem(conventionItem: ConventionItem): Promise<void> {
     let {id, conventionId} = conventionItem;
 
     await this.apiService.get(`convention/item/${id}/delete`);

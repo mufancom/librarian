@@ -60,7 +60,7 @@ export interface ConventionSideNavEditBtnProps {
 export class ConventionSideNavEditBtn extends Component<
   ConventionSideNavEditBtnProps
 > {
-  render() {
+  render(): JSX.Element {
     let {className, show, editMode, editLoading} = this.props;
 
     return (
@@ -88,7 +88,7 @@ export class ConventionSideNavEditBtn extends Component<
     );
   }
 
-  onInnerClick = (e: MouseEvent) => {
+  onInnerClick = (e: MouseEvent): void => {
     e.preventDefault();
 
     let {onClick} = this.props;
@@ -98,7 +98,7 @@ export class ConventionSideNavEditBtn extends Component<
     }
   };
 
-  onInnerFinishClick = (e: MouseEvent) => {
+  onInnerFinishClick = (e: MouseEvent): void => {
     e.preventDefault();
 
     let {onFinishClick} = this.props;

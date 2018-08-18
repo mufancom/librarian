@@ -16,7 +16,7 @@ export interface ConventionBodyItemFooterProps {
 export class ConventionBodyItemFooter extends Component<
   ConventionBodyItemFooterProps
 > {
-  render() {
+  render(): JSX.Element {
     let {className} = this.props;
 
     return (

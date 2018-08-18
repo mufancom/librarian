@@ -12,6 +12,7 @@ import {ConventionIndexConventionNode} from 'stores/convention-store';
 import {styled} from 'theme';
 import {collapseToEnd} from 'utils/dom';
 import {inject, observer} from 'utils/mobx';
+
 import {
   CancelBlocker,
   ConventionSideNavDeleteBtn,
@@ -90,7 +91,7 @@ export class ConventionSideNavItem extends Component<
 
   itemTitleRef: React.RefObject<any> = createRef();
 
-  render() {
+  render(): JSX.Element {
     let {
       className,
       node: {entry},
@@ -138,29 +139,29 @@ export class ConventionSideNavItem extends Component<
   }
 
   @action
-  onMouseEnter = () => {
+  onMouseEnter = (): void => {
     this.showShiftButton = true;
   };
 
   @action
-  onMouseLeave = () => {
+  onMouseLeave = (): void => {
     this.showShiftButton = false;
   };
 
   @action
-  setRenameMode = (renameMode: boolean) => {
+  setRenameMode = (renameMode: boolean): void => {
     this.renameMode = renameMode;
   };
 
-  setUpRenameModeCancelBlocker = (blocker: CancelBlocker) => {
+  setUpRenameModeCancelBlocker = (blocker: CancelBlocker): void => {
     this.renameCancelBlocker = blocker;
   };
 
-  onTitleChange = (value: string) => {
+  onTitleChange = (value: string): void => {
     this.itemTitle = value;
   };
 
-  setTitleOnFocus() {
+  setTitleOnFocus(): void {
     let titleDom = ReactDOM.findDOMNode(
       this.itemTitleRef.current,
     ) as HTMLDivElement;
@@ -171,7 +172,7 @@ export class ConventionSideNavItem extends Component<
   }
 
   @action
-  onRenameButtonClick = () => {
+  onRenameButtonClick = (): void => {
     this.renameMode = true;
 
     setTimeout(() => {
@@ -180,7 +181,7 @@ export class ConventionSideNavItem extends Component<
   };
 
   @action
-  onRenameFinishButtonClick = async () => {
+  onRenameFinishButtonClick = async (): Promise<void> => {
     if (this.renameCancelBlocker) {
       this.renameCancelBlocker();
     }
@@ -204,7 +205,7 @@ export class ConventionSideNavItem extends Component<
     this.renameLoading = false;
   };
 
-  onDeleteButtonClick = async () => {
+  onDeleteButtonClick = async (): Promise<void> => {
     let {
       node: {entry},
     } = this.props;
@@ -218,15 +219,15 @@ export class ConventionSideNavItem extends Component<
     }
   };
 
-  onUpShiftButtonOnclick = async () => {
+  onUpShiftButtonOnclick = async (): Promise<void> => {
     await this.shiftConvention(-2);
   };
 
-  onDownShiftButtonOnclick = async () => {
+  onDownShiftButtonOnclick = async (): Promise<void> => {
     await this.shiftConvention(1);
   };
 
-  async shiftConvention(offset: number) {
+  async shiftConvention(offset: number): Promise<void> {
     let {
       node: {
         entry: {id, orderId},

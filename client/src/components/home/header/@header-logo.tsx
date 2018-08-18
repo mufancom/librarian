@@ -30,7 +30,7 @@ export interface HeaderLogoProps {
 }
 
 export class HeaderLogo extends Component<HeaderLogoProps> {
-  render() {
+  render(): JSX.Element {
     let {className} = this.props;
 
     return (

@@ -13,7 +13,7 @@ export interface ConventionSideSearchProps {
 
 @observer
 export class ConventionSideSearch extends Component<ConventionSideSearchProps> {
-  render() {
+  render(): JSX.Element {
     let {className} = this.props;
 
     return (

@@ -13,7 +13,9 @@ import {ConventionStore} from 'stores/convention-store';
 import {RouterStore} from 'stores/router-store';
 import {styled} from 'theme';
 import {inject, observer} from 'utils/mobx';
+
 import {MarkdownStyle} from '../../../common';
+
 import {ConventionBodyItem} from './@convention-body-item';
 import {ConventionBodyItemCreate} from './@convention-body-item-create';
 import {ConventionBodyTitle} from './@convention-body-title';
@@ -49,7 +51,7 @@ export class ConventionBody extends Component<ConventionBodyProps> {
 
   itemCreateRef: React.RefObject<ConventionBodyItemCreate> = createRef();
 
-  render() {
+  render(): JSX.Element {
     let {className} = this.props;
 
     return (
@@ -75,7 +77,7 @@ export class ConventionBody extends Component<ConventionBodyProps> {
   }
 
   @action
-  onAddConventionButtonClick = () => {
+  onAddConventionButtonClick = (): void => {
     this.showCreateConvention = true;
 
     let createDom = ReactDOM.findDOMNode(
@@ -91,12 +93,12 @@ export class ConventionBody extends Component<ConventionBodyProps> {
   };
 
   @action
-  onCancelClick = () => {
+  onCancelClick = (): void => {
     this.showCreateConvention = false;
   };
 
   @action
-  onOkClick = async (content: string) => {
+  onOkClick = async (content: string): Promise<void> => {
     let {currentConvention} = this.conventionStore;
 
     this.createConventionLoading = true;

@@ -126,7 +126,7 @@ export interface ConventionSideNavShiftBtnProps {
 export class ConventionSideNavShiftBtn extends Component<
   ConventionSideNavShiftBtnProps
 > {
-  render() {
+  render(): JSX.Element {
     let {className, show, upOnclick, downOnclick} = this.props;
 
     return (

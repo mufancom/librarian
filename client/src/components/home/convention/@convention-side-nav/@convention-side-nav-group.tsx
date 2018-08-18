@@ -3,8 +3,8 @@ import classNames from 'classnames';
 import {action, observable} from 'mobx';
 import React, {Component, createRef} from 'react';
 import ReactDOM from 'react-dom';
-
 import {RouteComponentProps, withRouter} from 'react-router';
+
 import {fetchErrorMessage} from 'services/api-service';
 import {ConventionService} from 'services/convention-service';
 import {AuthStore} from 'stores/auth-store';
@@ -15,7 +15,9 @@ import {
 import {styled} from 'theme';
 import {collapseToEnd} from 'utils/dom';
 import {inject, observer} from 'utils/mobx';
+
 import {InputModal} from '../../../common/modal';
+
 import {ConventionSideNavItemWithRouter} from './@convention-side-nav-item';
 import {
   CancelBlocker,
@@ -94,7 +96,7 @@ export class ConventionSideNavGroup extends Component<
 
   leaveTimer: any;
 
-  render() {
+  render(): JSX.Element {
     let {className, node} = this.props;
 
     return (
@@ -164,29 +166,29 @@ export class ConventionSideNavGroup extends Component<
   }
 
   @action
-  onMouseEnterTitle = () => {
+  onMouseEnterTitle = (): void => {
     this.showShiftButton = true;
   };
 
   @action
-  onMouseLeaveTitle = () => {
+  onMouseLeaveTitle = (): void => {
     this.showShiftButton = false;
   };
 
   @action
-  setRenameMode = (renameMode: boolean) => {
+  setRenameMode = (renameMode: boolean): void => {
     this.renameMode = renameMode;
   };
 
-  setUpRenameModeCancelBlocker = (blocker: CancelBlocker) => {
+  setUpRenameModeCancelBlocker = (blocker: CancelBlocker): void => {
     this.renameCancelBlocker = blocker;
   };
 
-  onTitleChange = (value: string) => {
+  onTitleChange = (value: string): void => {
     this.groupTitle = value;
   };
 
-  setTitleOnFocus() {
+  setTitleOnFocus(): void {
     let titleDom = ReactDOM.findDOMNode(
       this.groupTitleRef.current,
     ) as HTMLDivElement;
@@ -197,7 +199,7 @@ export class ConventionSideNavGroup extends Component<
   }
 
   @action
-  onRenameButtonClick = () => {
+  onRenameButtonClick = (): void => {
     this.renameMode = true;
 
     setTimeout(() => {
@@ -206,7 +208,7 @@ export class ConventionSideNavGroup extends Component<
   };
 
   @action
-  onRenameFinishButtonClick = async () => {
+  onRenameFinishButtonClick = async (): Promise<void> => {
     if (this.renameCancelBlocker) {
       this.renameCancelBlocker();
     }
@@ -231,17 +233,17 @@ export class ConventionSideNavGroup extends Component<
   };
 
   @action
-  addButtonOnclick = () => {
+  addButtonOnclick = (): void => {
     this.inputModalVisible = true;
   };
 
   @action
-  inputModelCancelButtonOnClick = () => {
+  inputModelCancelButtonOnClick = (): void => {
     this.inputModalVisible = false;
   };
 
   @action
-  inputModalOkButtonOnclick = async (value: string) => {
+  inputModalOkButtonOnclick = async (value: string): Promise<void> => {
     let {
       node: {
         entry: {id},
@@ -263,7 +265,7 @@ export class ConventionSideNavGroup extends Component<
     this.inputModalLoading = false;
   };
 
-  onDeleteButtonClick = async () => {
+  onDeleteButtonClick = async (): Promise<void> => {
     let {
       node: {
         entry: {id},
@@ -279,15 +281,15 @@ export class ConventionSideNavGroup extends Component<
     }
   };
 
-  onUpShiftButtonClick = async () => {
+  onUpShiftButtonClick = async (): Promise<void> => {
     await this.shiftGroup(-2);
   };
 
-  onDownShiftButtonClick = async () => {
+  onDownShiftButtonClick = async (): Promise<void> => {
     await this.shiftGroup(1);
   };
 
-  async shiftGroup(offset: number) {
+  async shiftGroup(offset: number): Promise<void> {
     let {
       node: {
         entry: {id, orderId},

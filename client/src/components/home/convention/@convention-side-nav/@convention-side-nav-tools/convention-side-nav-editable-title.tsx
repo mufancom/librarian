@@ -49,13 +49,13 @@ export class ConventionSideNavEditableTitle extends Component<
     }
   }
 
-  blockCancel() {
+  blockCancel(): void {
     if (this.renameBlurTimer) {
       clearTimeout(this.renameBlurTimer);
     }
   }
 
-  render() {
+  render(): JSX.Element {
     let {className, renameMode, title} = this.props;
 
     return (
@@ -77,7 +77,7 @@ export class ConventionSideNavEditableTitle extends Component<
     );
   }
 
-  onTitleKeyDown = (event: React.KeyboardEvent) => {
+  onTitleKeyDown = (event: React.KeyboardEvent): void => {
     let {onFinish} = this.props;
 
     if (event.which === 13) {
@@ -91,7 +91,7 @@ export class ConventionSideNavEditableTitle extends Component<
     }
   };
 
-  onTitleClick = (e: React.MouseEvent) => {
+  onTitleClick = (e: React.MouseEvent): void => {
     let {renameMode} = this.props;
 
     if (renameMode) {
@@ -100,7 +100,7 @@ export class ConventionSideNavEditableTitle extends Component<
   };
 
   @action
-  onTitleBlur = () => {
+  onTitleBlur = (): void => {
     let {renameMode} = this.props;
 
     this.renameBlurTimer = setTimeout(() => {
@@ -111,7 +111,7 @@ export class ConventionSideNavEditableTitle extends Component<
   };
 
   @action
-  cancel = () => {
+  cancel = (): void => {
     let {setRenameMode, onCancel} = this.props;
 
     if (setRenameMode) {
@@ -125,7 +125,7 @@ export class ConventionSideNavEditableTitle extends Component<
     }
   };
 
-  onTitleChange = () => {
+  onTitleChange = (): void => {
     let {onChange} = this.props;
 
     let titleDom = ReactDOM.findDOMNode(

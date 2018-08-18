@@ -50,7 +50,7 @@ export interface HeaderNavProps extends RouteComponentProps<any> {
 
 @observer
 export class HeaderNav extends Component<HeaderNavProps> {
-  render() {
+  render(): JSX.Element {
     let {className} = this.props;
 
     return (

@@ -4,7 +4,9 @@ import React, {Component} from 'react';
 
 import {styled} from 'theme';
 import {observer} from 'utils/mobx';
+
 import {Login, Register} from '../../user';
+
 import {HeaderUserIcon} from './@header-user-icon';
 
 const Wrapper = styled.div`
@@ -35,7 +37,7 @@ export class HeaderUserNotLoggedIn extends Component<
   @observable
   userRegisterVisible = false;
 
-  render() {
+  render(): JSX.Element {
     let {className} = this.props;
 
     return (
@@ -62,24 +64,24 @@ export class HeaderUserNotLoggedIn extends Component<
   }
 
   @action
-  loginOnClick() {
+  loginOnClick(): void {
     this.userLoginVisible = true;
     this.userRegisterVisible = false;
   }
 
   @action
-  loginOnCancel() {
+  loginOnCancel(): void {
     this.userLoginVisible = false;
   }
 
   @action
-  registerOnClick() {
+  registerOnClick(): void {
     this.userLoginVisible = false;
     this.userRegisterVisible = true;
   }
 
   @action
-  registerOnCancel() {
+  registerOnCancel(): void {
     this.userRegisterVisible = false;
   }
 

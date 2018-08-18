@@ -11,6 +11,7 @@ import {styled} from 'theme';
 import {formatAsTimeAge} from 'utils/date';
 import {mark} from 'utils/markdown';
 import {inject, observer} from 'utils/mobx';
+
 import {ConventionBodyItemEdit} from './@convention-body-item-edit';
 import {ConventionBodyItemEditor} from './@convention-body-item-editor';
 import {ConventionBodyItemFooter} from './@convention-body-item-footer';
@@ -81,7 +82,7 @@ export class ConventionBodyItem extends Component<ConventionBodyItemProps> {
   @observable
   editLoading = false;
 
-  render() {
+  render(): JSX.Element {
     let {className, item} = this.props;
 
     return (
@@ -141,22 +142,22 @@ export class ConventionBodyItem extends Component<ConventionBodyItemProps> {
   }
 
   @action
-  conventionOnHoverStart = () => {
+  conventionOnHoverStart = (): void => {
     this.showSidebar = true;
   };
 
   @action
-  conventionOnHoverEnd = () => {
+  conventionOnHoverEnd = (): void => {
     this.showSidebar = false;
   };
 
   @action
-  editOnclick = () => {
+  editOnclick = (): void => {
     this.editMode = true;
   };
 
   @action
-  deleteOnclick = async () => {
+  deleteOnclick = async (): Promise<void> => {
     let {item} = this.props;
 
     try {
@@ -171,12 +172,12 @@ export class ConventionBodyItem extends Component<ConventionBodyItemProps> {
   };
 
   @action
-  onEditCancelClick = () => {
+  onEditCancelClick = (): void => {
     this.editMode = false;
   };
 
   @action
-  onEditOkClick = async (content: string, versionId: number) => {
+  onEditOkClick = async (content: string, versionId: number): Promise<void> => {
     let {item} = this.props;
 
     this.editLoading = true;
@@ -197,16 +198,16 @@ export class ConventionBodyItem extends Component<ConventionBodyItemProps> {
   };
 
   @action
-  onUpShiftButtonClick = async () => {
+  onUpShiftButtonClick = async (): Promise<void> => {
     await this.shiftCategory(-2);
   };
 
   @action
-  onDownShiftButtonClick = async () => {
+  onDownShiftButtonClick = async (): Promise<void> => {
     await this.shiftCategory(1);
   };
 
-  async shiftCategory(offset: number) {
+  async shiftCategory(offset: number): Promise<void> {
     let {item} = this.props;
 
     let {orderId} = item;

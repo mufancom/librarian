@@ -44,7 +44,7 @@ export interface ConventionSideNavDeleteBtnProps {
 export class ConventionSideNavDeleteBtn extends Component<
   ConventionSideNavDeleteBtnProps
 > {
-  render() {
+  render(): JSX.Element {
     let {className, show} = this.props;
 
     return (
@@ -67,7 +67,7 @@ export class ConventionSideNavDeleteBtn extends Component<
     );
   }
 
-  onInnerClick = (e: MouseEvent) => {
+  onInnerClick = (e: MouseEvent): void => {
     e.preventDefault();
 
     let {onClick} = this.props;
@@ -77,7 +77,7 @@ export class ConventionSideNavDeleteBtn extends Component<
     }
   };
 
-  onInnerCancel = (e: MouseEvent) => {
+  onInnerCancel = (e: MouseEvent): void => {
     e.preventDefault();
   };
 

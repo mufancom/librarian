@@ -1,6 +1,9 @@
-import axios from 'axios';
 import * as Url from 'url';
+
+import axios from 'axios';
+
 import {i18n} from 'utils/lang';
+
 import {Translation} from '../../../shared/package/translation';
 
 // const API_BASE_URL = 'http://convention.mufan.io:8801/';
@@ -10,7 +13,7 @@ const RESOURCE_BASE_URL = 'http://convention.mufan.io:8801/';
 
 export const API_UNKNOWN_ERROR = '网络错误';
 
-export function fetchErrorMessage(error: any) {
+export function fetchErrorMessage(error: any): string {
   if (error.message) {
     return error.message as string;
   }
@@ -162,14 +165,14 @@ export class APIService {
     return response.data;
   }
 
-  addMiddleware(middleware: APIMiddleware) {
+  addMiddleware(middleware: APIMiddleware): void {
     this.middlewares.push(middleware);
   }
 
   private async executeMiddlewares(result: APIResult): Promise<APIResult> {
     let middlewares = this.middlewares.slice();
 
-    let next = async () => {
+    let next = async (): Promise<void> => {
       let middleware = middlewares.pop();
       if (middleware) {
         await middleware(result, next);

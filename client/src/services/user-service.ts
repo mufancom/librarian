@@ -1,5 +1,7 @@
 import {action} from 'mobx';
+
 import {AuthStore} from 'stores/auth-store';
+
 import {APIService} from './api-service';
 
 interface LoginSuccessData {
@@ -22,7 +24,7 @@ export class UserService {
   }
 
   @action
-  async checkStatus() {
+  async checkStatus(): Promise<void> {
     try {
       const data = await this.apiService.get<CheckStatusSuccessData>(
         'auth/check',
@@ -37,7 +39,7 @@ export class UserService {
   }
 
   @action
-  async login(username: string, password: string) {
+  async login(username: string, password: string): Promise<string> {
     const data = await this.apiService.post<LoginSuccessData>('auth/login', {
       username,
       password,
@@ -52,7 +54,11 @@ export class UserService {
     return data.username;
   }
 
-  async register(username: string, email: string, password: string) {
+  async register(
+    username: string,
+    email: string,
+    password: string,
+  ): Promise<void> {
     await this.apiService.post<any>('user/register', {
       username,
       email,
@@ -61,14 +67,14 @@ export class UserService {
   }
 
   @action
-  async logout() {
+  async logout(): Promise<void> {
     await this.apiService.get<any>('auth/logout');
 
     this.clearCredentials();
   }
 
   @action
-  clearCredentials() {
+  clearCredentials(): void {
     this.authStore.id = 0;
     this.authStore.role = 0;
     this.authStore.username = '';

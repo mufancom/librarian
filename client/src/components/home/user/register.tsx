@@ -49,7 +49,7 @@ export class Register extends Component<RegisterProps> {
     this.passwordRepeatInput = React.createRef();
   }
 
-  render() {
+  render(): JSX.Element {
     let {className, visible, onCancel, onLoginBtnClick} = this.props;
 
     return (
@@ -115,7 +115,7 @@ export class Register extends Component<RegisterProps> {
   }
 
   @action
-  private onRegisterButtonClick = async () => {
+  private onRegisterButtonClick = async (): Promise<void> => {
     this.registerLoading = true;
 
     const username = this.usernameInput.current!.input.value;
@@ -146,7 +146,7 @@ export class Register extends Component<RegisterProps> {
   };
 
   @action
-  private onErrorAlertClose = () => {
+  private onErrorAlertClose = (): void => {
     this.errorAlertVisible = false;
   };
 

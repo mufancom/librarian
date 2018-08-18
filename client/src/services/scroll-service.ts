@@ -9,7 +9,7 @@ export class ScrollService {
     window.addEventListener('scroll', this.onScroll);
   }
 
-  onScroll = (_event: UIEvent) => {
+  onScroll = (_event: UIEvent): void => {
     if (this.timer) {
       clearTimeout(this.timer);
     }

@@ -57,7 +57,7 @@ export interface ConventionBodyItemShiftButtonProps {
 export class ConventionBodyItemShiftButton extends Component<
   ConventionBodyItemShiftButtonProps
 > {
-  render() {
+  render(): JSX.Element {
     let {className, upOnclick, downOnclick} = this.props;
 
     return (

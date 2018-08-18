@@ -42,7 +42,7 @@ export class Login extends Component<LoginProps> {
     this.passwordInput = React.createRef();
   }
 
-  render() {
+  render(): JSX.Element {
     let {className, onCancel, onRegisterBtnClick, visible} = this.props;
 
     return (
@@ -106,7 +106,7 @@ export class Login extends Component<LoginProps> {
   }
 
   @action
-  private onLoginButtonOnclick = async () => {
+  private onLoginButtonOnclick = async (): Promise<void> => {
     this.loginLoading = true;
 
     let username = this.usernameInput.current!.input.value;
@@ -127,7 +127,7 @@ export class Login extends Component<LoginProps> {
   };
 
   @action
-  private onErrorAlertClose = () => {
+  private onErrorAlertClose = (): void => {
     this.errorAlertVisible = false;
   };
 

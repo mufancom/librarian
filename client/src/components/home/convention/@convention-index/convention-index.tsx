@@ -14,7 +14,7 @@ export interface ConventionIndexProps {
 
 @observer
 export class ConventionIndex extends Component<ConventionIndexProps> {
-  render() {
+  render(): JSX.Element {
     let {className} = this.props;
 
     return (

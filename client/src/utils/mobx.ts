@@ -10,7 +10,7 @@ export function inject(target: Component, key: string): any;
 export function inject(target: Component | string, key?: string): any {
   if (typeof target === 'string') {
     let name = target;
-    return (prototype: Component, key: string) =>
+    return (prototype: Component, key: string): any =>
       decorate(prototype, key, name);
   } else if (key) {
     return decorate(target, key, key);

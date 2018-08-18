@@ -15,13 +15,13 @@ interface RouteTrackerProps<T> extends RouteComponentProps<T> {
 }
 
 class RouteTracker<T> extends Component<RouteTrackerProps<T>> {
-  componentWillMount() {
+  componentWillMount(): void {
     let {match, onChange} = this.props;
 
     onChange(match);
   }
 
-  componentWillUpdate(props: RouteTrackerProps<T>) {
+  componentWillUpdate(props: RouteTrackerProps<T>): void {
     let {match, onChange} = props;
     let previousMatch = this.props.match;
 
@@ -30,7 +30,7 @@ class RouteTracker<T> extends Component<RouteTrackerProps<T>> {
     }
   }
 
-  render() {
+  render(): any {
     return this.props.children;
   }
 }
@@ -43,7 +43,7 @@ export interface TrackingRouteProps<T> extends RouteProps {
 
 @observer
 export class TrackingRoute<T> extends Component<TrackingRouteProps<T>> {
-  render() {
+  render(): JSX.Element {
     let {onChange, children, ...props} = this.props;
 
     return (

@@ -1,8 +1,8 @@
 import {Button} from 'antd';
 import classNames from 'classnames';
 import React, {Component} from 'react';
-
 import {RouteComponentProps, withRouter} from 'react-router';
+
 import {AuthStore} from 'stores/auth-store';
 import {ConventionStore} from 'stores/convention-store';
 import {styled} from 'theme';
@@ -47,7 +47,7 @@ export class ConventionBodyTitle extends Component<ConventionBodyTitleProps> {
   @inject
   conventionStore!: ConventionStore;
 
-  render() {
+  render(): JSX.Element {
     let {className, onAddConventionButtonClick} = this.props;
     let convention = this.conventionStore.currentConvention;
 

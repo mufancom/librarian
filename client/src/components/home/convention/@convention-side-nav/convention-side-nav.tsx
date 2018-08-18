@@ -14,7 +14,9 @@ import {
 } from 'stores/convention-store';
 import {styled} from 'theme';
 import {inject, observer} from 'utils/mobx';
+
 import {InputModal} from '../../../common/modal';
+
 import {ConventionSideNavCategoryWithRouter} from './@convention-side-nav-category';
 import {ConventionSideNavAddCategoryButton} from './@convention-side-nav-tools';
 
@@ -87,7 +89,7 @@ export class ConventionSideNav extends React.Component<ConventionSideNavProps> {
   @observable
   inputModalLoading = false;
 
-  render() {
+  render(): JSX.Element {
     let {className} = this.props;
 
     return (
@@ -110,11 +112,11 @@ export class ConventionSideNav extends React.Component<ConventionSideNavProps> {
   }
 
   @action
-  onAddCategoryButtonOnclick = () => {
+  onAddCategoryButtonOnclick = (): void => {
     this.inputModalVisible = true;
   };
 
-  onInputModalOkButtonClick = async (value: string) => {
+  onInputModalOkButtonClick = async (value: string): Promise<void> => {
     this.inputModalLoading = true;
 
     try {
@@ -130,7 +132,7 @@ export class ConventionSideNav extends React.Component<ConventionSideNavProps> {
     this.inputModalLoading = false;
   };
 
-  onInputModelCancelButtonClick = () => {
+  onInputModelCancelButtonClick = (): void => {
     this.inputModalVisible = false;
   };
 }

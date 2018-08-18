@@ -7,7 +7,9 @@ import styled from 'styled-components';
 import {ConventionService} from 'services/convention-service';
 import {RouterStore} from 'stores/router-store';
 import {inject, observer} from 'utils/mobx';
+
 import {RouteTrackerWithRouter} from '../../common/TrackingRoute';
+
 import {ConventionBody} from './@convention-body';
 import {ConventionIndex} from './@convention-index';
 import {ConventionSideNavWithRouter} from './@convention-side-nav';
@@ -34,7 +36,7 @@ export class Convention extends React.Component<ConventionProps> {
   @inject
   conventionService!: ConventionService;
 
-  render() {
+  render(): JSX.Element {
     let {className} = this.props;
 
     return (
@@ -101,7 +103,7 @@ export class Convention extends React.Component<ConventionProps> {
     );
   }
 
-  onRouteChange = (match: any) => {
+  onRouteChange = (match: any): void => {
     let {id} = match.params;
 
     // tslint:disable-next-line:no-console

@@ -1,10 +1,11 @@
 import {Col, Row} from 'antd';
 import classNames from 'classnames';
 import * as React from 'react';
-import {styled} from 'theme';
-
 import {RouteComponentProps, withRouter} from 'react-router';
+
+import {styled} from 'theme';
 import {observer} from 'utils/mobx';
+
 import {HeaderLogo} from './@header-logo';
 import {HeaderNav, HeaderNavWithRouter} from './@header-nav';
 import {HeaderUser} from './@header-user';
@@ -41,7 +42,7 @@ export interface HeaderProps extends RouteComponentProps<any> {
 
 @observer
 export class Header extends React.Component<HeaderProps> {
-  render() {
+  render(): JSX.Element {
     let {className} = this.props;
 
     return (

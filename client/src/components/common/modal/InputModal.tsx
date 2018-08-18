@@ -23,7 +23,7 @@ export interface InputModalProps {
 export class InputModal extends Component<InputModalProps> {
   inputRef: React.RefObject<Input> = createRef();
 
-  render() {
+  render(): JSX.Element {
     let {
       className,
       title,
@@ -65,7 +65,7 @@ export class InputModal extends Component<InputModalProps> {
     );
   }
 
-  onOkClick = () => {
+  onOkClick = (): void => {
     let {onOkButtonClick} = this.props;
     let value = this.inputRef.current!.input.value;
 

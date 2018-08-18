@@ -1,7 +1,8 @@
 import Timeago from 'timeago.js';
+
 import {i18n} from './lang';
 
-let localDict = (_number: number, index: number, _sec: number) => {
+let localDict = (_number: number, index: number, _sec: number): string[] => {
   return [
     [i18n.TIMEAGO_JUST_NOW, i18n.TIMEAGO_A_WHILE],
     [i18n.TIMEAGO_SECONDS_AGO, i18n.TIMEAGO_IN_SECONDS],
@@ -24,6 +25,6 @@ Timeago.register('local', localDict);
 
 const timeago = Timeago();
 
-export function formatAsTimeAge(datetime: string) {
+export function formatAsTimeAge(datetime: string): string {
   return timeago.format(datetime, 'local');
 }

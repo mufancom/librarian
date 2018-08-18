@@ -1,7 +1,7 @@
 import classNames from 'classnames';
 import React, {Component, createRef} from 'react';
-
 import ReactDOM from 'react-dom';
+
 import {styled} from 'theme';
 import {observer} from 'utils/mobx';
 
@@ -24,7 +24,7 @@ export interface ResizeListenerProps {
 export class ResizeListener extends Component<ResizeListenerProps> {
   wrapperRef: React.RefObject<any> = createRef();
 
-  componentDidMount() {
+  componentDidMount(): void {
     let wrapperIframe = ReactDOM.findDOMNode(
       this.wrapperRef.current,
     ) as HTMLIFrameElement;
@@ -32,7 +32,7 @@ export class ResizeListener extends Component<ResizeListenerProps> {
     wrapperIframe.contentWindow!.onresize = this.onResize;
   }
 
-  render() {
+  render(): JSX.Element {
     let {className} = this.props;
 
     return (
@@ -43,7 +43,7 @@ export class ResizeListener extends Component<ResizeListenerProps> {
     );
   }
 
-  onResize = () => {
+  onResize = (): void => {
     let wrapperIframe = ReactDOM.findDOMNode(
       this.wrapperRef.current,
     ) as HTMLIFrameElement;

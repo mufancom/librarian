@@ -4,14 +4,14 @@ import React, {Component, createRef} from 'react';
 import ReactDOM from 'react-dom';
 import {Icon} from 'react-fa';
 import ReactMde, {ReactMdeTypes} from 'react-mde';
+import 'react-mde/lib/styles/css/react-mde-all.css';
 
 import {ScrollService} from 'services/scroll-service';
 import {styled} from 'theme';
 import {mark} from 'utils/markdown';
 import {inject, observer} from 'utils/mobx';
-import {ResizeListener} from '../../../../common';
 
-import 'react-mde/lib/styles/css/react-mde-all.css';
+import {ResizeListener} from '../../../../common';
 
 const Wrapper = styled.div`
   display: block;
@@ -168,16 +168,16 @@ export class ConventionBodyItemEditor extends Component<
     this.wrapperRef = createRef();
   }
 
-  componentDidMount() {
+  componentDidMount(): void {
     this.listenerId = this.scrollService.addListener(this.onWindowScroll);
     this.onWindowResize();
   }
 
-  componentWillUnmount() {
+  componentWillUnmount(): void {
     this.scrollService.removeListener(this.listenerId);
   }
 
-  render() {
+  render(): JSX.Element {
     let {className} = this.props;
 
     return (
@@ -203,7 +203,7 @@ export class ConventionBodyItemEditor extends Component<
   }
 
   @action
-  onMarkdownInputChange = (mdeState: ReactMdeTypes.MdeState) => {
+  onMarkdownInputChange = (mdeState: ReactMdeTypes.MdeState): void => {
     let {onContentChange} = this.props;
 
     this.mdeState = mdeState;
@@ -214,7 +214,7 @@ export class ConventionBodyItemEditor extends Component<
   };
 
   @action
-  onWindowScroll = (_top: number) => {
+  onWindowScroll = (_top: number): void => {
     let wrapperDiv = ReactDOM.findDOMNode(
       this.wrapperRef.current,
     ) as HTMLDivElement;
@@ -228,7 +228,7 @@ export class ConventionBodyItemEditor extends Component<
     }
   };
 
-  onWindowResize = () => {
+  onWindowResize = (): void => {
     let wrapperDiv = ReactDOM.findDOMNode(
       this.wrapperRef.current,
     ) as HTMLDivElement;

@@ -41,7 +41,7 @@ export interface ConventionSideNavAddCategoryButtonProps {
 export class ConventionSideNavAddCategoryButton extends Component<
   ConventionSideNavAddCategoryButtonProps
 > {
-  render() {
+  render(): JSX.Element {
     let {className, show, onClick} = this.props;
 
     return (

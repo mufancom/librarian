@@ -2,9 +2,10 @@ import {Layout} from 'antd';
 import {Provider} from 'mobx-react';
 import * as React from 'react';
 import {Route, Switch} from 'react-router';
-import {styled} from 'theme';
 
 import {conventionStore} from 'stores';
+import {styled} from 'theme';
+
 import {Content as HomeContent} from './content';
 import {ConventionWithRouter} from './convention';
 import {
@@ -41,7 +42,7 @@ const homeStore = {
 };
 
 export class HomeContainer extends React.Component {
-  render() {
+  render(): JSX.Element {
     return (
       <Wrapper>
         <Provider {...homeStore}>
