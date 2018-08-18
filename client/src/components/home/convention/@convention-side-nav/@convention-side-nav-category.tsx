@@ -39,6 +39,7 @@ const Wrapper = styled.li`
 const ConventionCategoryTitle = styled.div`
   margin-top: 30px;
   position: relative;
+  margin-bottom: 7px;
 `;
 
 const ConventionSideNavDeleteBtn = styled(_ConventionSideNavDeleteBtn)`

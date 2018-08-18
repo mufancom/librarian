@@ -64,10 +64,10 @@ export class ConventionBodyItemShiftButton extends Component<
       <Wrapper
         className={classNames('convention-body-item-shift-button', className)}
       >
-        <UpShiftButton onClick={upOnclick}>
+        <UpShiftButton onClick={upOnclick} title="上移">
           <Icon type="up" />
         </UpShiftButton>
-        <DownShiftButton onClick={downOnclick}>
+        <DownShiftButton onClick={downOnclick} title="下移">
           <Icon type="down" />
         </DownShiftButton>
       </Wrapper>

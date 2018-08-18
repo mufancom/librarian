@@ -85,7 +85,8 @@ const Wrapper = styled.div`
         color: #bbb;
         border: none;
         margin-left: -6px;
-        margin-top: 6px;
+        margin-top: 4px;
+        margin-bottom: 4px;
         font-size: 13px;
 
         &:hover,

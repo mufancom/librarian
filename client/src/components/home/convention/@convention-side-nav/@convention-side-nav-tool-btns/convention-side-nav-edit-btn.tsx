@@ -51,6 +51,7 @@ export class ConventionSideNavEditBtn extends Component<
         <EditButton
           className={show ? 'show' : 'hide'}
           onClick={this.onInnerClick}
+          title="重命名"
         >
           <Icon type="edit" />
         </EditButton>

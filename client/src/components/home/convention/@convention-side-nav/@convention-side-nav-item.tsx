@@ -22,7 +22,8 @@ const Wrapper = styled.li`
   position: relative;
   font-size: 14px;
   font-weight: 400;
-  padding-top: 15px;
+  padding-top: 8px;
+  padding-bottom: 8px;
   list-style-type: none;
   display: block;
 
@@ -44,7 +45,7 @@ const Wrapper = styled.li`
 const PositionShiftButton = styled(ConventionSideNavShiftBtn)`
   position: absolute;
   right: 20px;
-  top: 13px;
+  top: 5px;
 `;
 
 const ConventionSideNavEditBtn = styled(_ConventionSideNavEditBtn)`

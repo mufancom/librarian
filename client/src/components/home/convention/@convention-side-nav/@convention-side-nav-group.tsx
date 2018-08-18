@@ -25,11 +25,7 @@ const Wrapper = styled.li`
   color: ${props => props.theme.text.navSecondary};
   font-size: 12.5px;
   font-weight: 300;
-  padding: 5px 0;
-
-  & > div {
-    margin-top: 10px;
-  }
+  padding-top: 12px;
 
   ul {
     padding: 6px 0;
@@ -41,8 +37,8 @@ const GroupTitle = styled.div`
 `;
 
 const ConventionSideNavAddBtn = styled(_ConventionSideNavAddBtn)`
-  margin-top: 5px;
-  margin-bottom: 5px;
+  margin-top: -4px;
+  margin-bottom: 10px;
 `;
 
 const ConventionSideNavDeleteBtn = styled(_ConventionSideNavDeleteBtn)`
@@ -113,7 +109,7 @@ export class ConventionSideNavGroup extends Component<
             downOnclick={this.onDownShiftButtonClick}
           />
         </GroupTitle>
-        <ul>
+        <ul style={{marginTop: '7px'}}>
           {node.children && node.children.length > 0 ? (
             node.children.map(val => (
               <ConventionSideNavItemWithRouter

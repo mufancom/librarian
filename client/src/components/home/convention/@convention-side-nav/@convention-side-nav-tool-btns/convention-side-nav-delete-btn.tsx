@@ -56,7 +56,7 @@ export class ConventionSideNavDeleteBtn extends Component<
           onCancel={this.onInnerCancel}
           placement="right"
         >
-          <DeleteButton className={show ? 'show' : 'hide'}>
+          <DeleteButton className={show ? 'show' : 'hide'} title="删除">
             <Icon type="close" />
           </DeleteButton>
         </Popconfirm>

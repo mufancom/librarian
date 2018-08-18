@@ -38,7 +38,7 @@ const Wrapper = styled.div`
   }
 
   ${ConventionSideNavAddCategoryButton.Wrapper} {
-    margin-top: 35px;
+    margin-top: 30px;
     margin-left: 30px;
   }
 `;

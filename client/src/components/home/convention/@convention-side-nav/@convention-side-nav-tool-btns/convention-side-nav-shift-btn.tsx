@@ -133,12 +133,17 @@ export class ConventionSideNavShiftBtn extends Component<
       <Wrapper
         className={classNames('convention-side-nav-shift-btn', className)}
       >
-        <UpShiftButton className={show ? 'show' : 'hide'} onClick={upOnclick}>
+        <UpShiftButton
+          className={show ? 'show' : 'hide'}
+          onClick={upOnclick}
+          title="上移"
+        >
           <Icon type="up" />
         </UpShiftButton>
         <DownShiftButton
           className={show ? 'show' : 'hide'}
           onClick={downOnclick}
+          title="下移"
         >
           <Icon type="down" />
         </DownShiftButton>
