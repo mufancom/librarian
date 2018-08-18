@@ -5,7 +5,10 @@ import React, {Component, MouseEvent} from 'react';
 import {styled} from 'theme';
 import {observer} from 'utils/mobx';
 
-const Wrapper = styled.div``;
+const Wrapper = styled.div`
+  display: inline !important;
+  margin-left: 5px;
+`;
 
 const DeleteButton = styled.div`
   display: inline !important;

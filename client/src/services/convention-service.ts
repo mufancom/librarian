@@ -154,12 +154,6 @@ export class ConventionService {
     await this.getIndex();
   }
 
-  async deleteCategory(id: number) {
-    await this.apiService.get(`convention/category/${id}/delete`);
-
-    await this.getIndex();
-  }
-
   async shiftCategory(id: number, afterOrderId: number) {
     await this.apiService.post('convention/category/edit', {
       id,
@@ -167,6 +161,40 @@ export class ConventionService {
     });
 
     await this.getIndex();
+  }
+
+  async renameCategory(id: number, title: string) {
+    await this.apiService.post('convention/category/edit', {
+      id,
+      title,
+    });
+
+    await this.getIndex();
+  }
+
+  async deleteCategory(id: number) {
+    await this.apiService.get(`convention/category/${id}/delete`);
+
+    await this.getIndex();
+  }
+
+  @action
+  async freshConvention(id: number) {
+    let conventionCache = this.conventionStore.conventionCache;
+
+    if (id in conventionCache) {
+      let convention = await this.apiService.get<Convention>(
+        `convention/${id}`,
+      );
+
+      conventionCache[id] = convention;
+
+      let current = this.conventionStore.currentConvention;
+
+      if (current && current.id === id) {
+        this.conventionStore.currentConvention = convention;
+      }
+    }
   }
 
   async createConvention(
@@ -194,6 +222,15 @@ export class ConventionService {
     await this.apiService.post('convention/edit', {id, afterOrderId});
 
     await this.getIndex();
+  }
+
+  @action
+  async renameConvention(id: number, title: string) {
+    await this.apiService.post('convention/edit', {id, title});
+
+    await this.getIndex();
+
+    await this.freshConvention(id);
   }
 
   @action

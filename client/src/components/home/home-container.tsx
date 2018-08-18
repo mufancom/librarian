@@ -27,7 +27,9 @@ const Wrapper = styled.div`
   ${HomeHeader.Wrapper} {
     position: fixed;
     height: 90px;
-    width: 100%;
+    left: 0;
+    right: -20px;
+    padding: 0 20px 0 10px;
     z-index: 999;
     display: block;
     background: ${props => props.theme.light};

@@ -1,7 +1,8 @@
 import {message} from 'antd';
 import classNames from 'classnames';
 import {action, observable} from 'mobx';
-import React, {Component} from 'react';
+import React, {Component, createRef} from 'react';
+import ReactDOM from 'react-dom';
 
 import {RouteComponentProps, withRouter} from 'react-router';
 import {fetchErrorMessage} from 'services/api-service';
@@ -12,14 +13,18 @@ import {
   ConventionIndexConventionNode,
 } from 'stores/convention-store';
 import {styled} from 'theme';
+import {collapseToEnd} from 'utils/dom';
 import {inject, observer} from 'utils/mobx';
 import {InputModal} from '../../../common/modal';
 import {ConventionSideNavItemWithRouter} from './@convention-side-nav-item';
 import {
-  ConventionSideNavAddBtn as _ConventionSideNavAddBtn,
-  ConventionSideNavDeleteBtn as _ConventionSideNavDeleteBtn,
-} from './@convention-side-nav-tool-btns';
-import {ConventionSideNavShiftBtn} from './@convention-side-nav-tool-btns/convention-side-nav-shift-btn';
+  CancelBlocker,
+  ConventionSideNavAddBtn,
+  ConventionSideNavDeleteBtn,
+  ConventionSideNavEditBtn,
+  ConventionSideNavEditableTitle,
+} from './@convention-side-nav-tools';
+import {ConventionSideNavShiftBtn} from './@convention-side-nav-tools/convention-side-nav-shift-btn';
 
 const Wrapper = styled.li`
   color: ${props => props.theme.text.navSecondary};
@@ -30,26 +35,21 @@ const Wrapper = styled.li`
   ul {
     padding: 6px 0;
   }
+
+  ${ConventionSideNavAddBtn.Wrapper} {
+    margin-top: -4px;
+    margin-bottom: 10px;
+  }
+
+  ${ConventionSideNavShiftBtn.Wrapper} {
+    position: absolute;
+    right: 10px;
+    top: -3px;
+  }
 `;
 
 const GroupTitle = styled.div`
   position: relative;
-`;
-
-const ConventionSideNavAddBtn = styled(_ConventionSideNavAddBtn)`
-  margin-top: -4px;
-  margin-bottom: 10px;
-`;
-
-const ConventionSideNavDeleteBtn = styled(_ConventionSideNavDeleteBtn)`
-  display: inline !important;
-  margin-left: 5px;
-`;
-
-const PositionShiftButton = styled(ConventionSideNavShiftBtn)`
-  position: absolute;
-  right: 10px;
-  top: -3px;
 `;
 
 export interface ConventionSideNavGroupProps extends RouteComponentProps<any> {
@@ -79,6 +79,19 @@ export class ConventionSideNavGroup extends Component<
   @observable
   inputModalLoading = false;
 
+  @observable
+  renameMode = false;
+
+  @observable
+  renameLoading = false;
+
+  @observable
+  groupTitle = this.props.node.entry.title;
+
+  groupTitleRef: React.RefObject<any> = createRef();
+
+  renameCancelBlocker?: CancelBlocker;
+
   leaveTimer: any;
 
   render() {
@@ -98,12 +111,27 @@ export class ConventionSideNavGroup extends Component<
           onMouseEnter={this.onMouseEnterTitle}
           onMouseLeave={this.onMouseLeaveTitle}
         >
-          {node.entry.title}
+          <ConventionSideNavEditableTitle
+            renameMode={this.renameMode}
+            setRenameMode={this.setRenameMode}
+            getRenameModeCancelBlocker={this.setUpRenameModeCancelBlocker}
+            onChange={this.onTitleChange}
+            onFinish={this.onRenameFinishButtonClick}
+            title={node.entry.title}
+            ref={this.groupTitleRef}
+          />
+          <ConventionSideNavEditBtn
+            show={this.showShiftButton && this.authStore.isLoggedIn}
+            editMode={this.renameMode}
+            editLoading={this.renameLoading}
+            onClick={this.onRenameButtonClick}
+            onFinishClick={this.onRenameFinishButtonClick}
+          />
           <ConventionSideNavDeleteBtn
             show={this.showShiftButton && this.authStore.isLoggedIn}
             onClick={this.onDeleteButtonClick}
           />
-          <PositionShiftButton
+          <ConventionSideNavShiftBtn
             show={this.showShiftButton && this.authStore.isLoggedIn}
             upOnclick={this.onUpShiftButtonClick}
             downOnclick={this.onDownShiftButtonClick}
@@ -139,6 +167,63 @@ export class ConventionSideNavGroup extends Component<
   @action
   onMouseLeaveTitle = () => {
     this.showShiftButton = false;
+  };
+
+  @action
+  setRenameMode = (renameMode: boolean) => {
+    this.renameMode = renameMode;
+  };
+
+  setUpRenameModeCancelBlocker = (blocker: CancelBlocker) => {
+    this.renameCancelBlocker = blocker;
+  };
+
+  onTitleChange = (value: string) => {
+    this.groupTitle = value;
+  };
+
+  setTitleOnFocus() {
+    let titleDom = ReactDOM.findDOMNode(
+      this.groupTitleRef.current,
+    ) as HTMLDivElement;
+
+    titleDom.focus();
+
+    collapseToEnd(titleDom);
+  }
+
+  @action
+  onRenameButtonClick = () => {
+    this.renameMode = true;
+
+    setTimeout(() => {
+      this.setTitleOnFocus();
+    }, 100);
+  };
+
+  @action
+  onRenameFinishButtonClick = async () => {
+    if (this.renameCancelBlocker) {
+      this.renameCancelBlocker();
+    }
+
+    this.renameLoading = true;
+
+    let {
+      node: {entry},
+    } = this.props;
+
+    try {
+      await this.conventionService.renameCategory(entry.id, this.groupTitle);
+
+      this.renameMode = false;
+    } catch (error) {
+      let errorMessage = fetchErrorMessage(error);
+
+      message.error(errorMessage);
+    }
+
+    this.renameLoading = false;
   };
 
   @action
