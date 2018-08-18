@@ -15,8 +15,8 @@ import {
 import {styled} from 'theme';
 import {inject, observer} from 'utils/mobx';
 import {InputModal} from '../../../common/modal';
-import {ConventionSideNavAddCategoryButton} from './@convention-side-nav-add-category-btn';
 import {ConventionSideNavCategoryWithRouter} from './@convention-side-nav-category';
+import {ConventionSideNavAddCategoryButton} from './@convention-side-nav-tool-btns';
 
 const Wrapper = styled.div`
   margin-bottom: 40px;

@@ -11,8 +11,11 @@ import {ConventionIndexConventionNode} from 'stores/convention-store';
 import {styled} from 'theme';
 import {inject, observer} from 'utils/mobx';
 
-import {ConventionSideNavDeleteBtn as _ConventionSideNavDeleteBtn} from './@convention-side-nav-delete-btn';
-import {ConventionSideNavShiftBtn} from './@convention-side-nav-shift-btn';
+import {
+  ConventionSideNavDeleteBtn as _ConventionSideNavDeleteBtn,
+  ConventionSideNavEditBtn as _ConventionSideNavEditBtn,
+} from './@convention-side-nav-tool-btns';
+import {ConventionSideNavShiftBtn} from './@convention-side-nav-tool-btns/convention-side-nav-shift-btn';
 
 const Wrapper = styled.li`
   color: ${props => props.theme.text.navRegular};
@@ -44,9 +47,19 @@ const PositionShiftButton = styled(ConventionSideNavShiftBtn)`
   top: 13px;
 `;
 
+const ConventionSideNavEditBtn = styled(_ConventionSideNavEditBtn)`
+  display: inline !important;
+  margin-left: 5px;
+`;
+
 const ConventionSideNavDeleteBtn = styled(_ConventionSideNavDeleteBtn)`
   display: inline !important;
   margin-left: 5px;
+`;
+
+const ItemTitle = styled.div`
+  display: inline;
+  cursor: text;
 `;
 
 export interface ConventionSideNavItemProps extends RouteComponentProps<any> {
@@ -80,7 +93,10 @@ export class ConventionSideNavItem extends Component<
         onMouseLeave={this.onMouseLeave}
       >
         <NavLink to={`/convention/${entry.id}`}>
-          {entry.title}
+          <ItemTitle contentEditable={true}>{entry.title}</ItemTitle>
+          <ConventionSideNavEditBtn
+            show={this.showShiftButton && this.authStore.isLoggedIn}
+          />
           <ConventionSideNavDeleteBtn
             show={this.showShiftButton && this.authStore.isLoggedIn}
             onClick={this.onDeleteButtonClick}

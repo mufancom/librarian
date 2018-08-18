@@ -14,10 +14,12 @@ import {
 import {styled} from 'theme';
 import {inject, observer} from 'utils/mobx';
 import {InputModal} from '../../../common/modal';
-import {ConventionSideNavAddBtn as _ConventionSideNavAddBtn} from './@convention-side-nav-add-btn';
-import {ConventionSideNavDeleteBtn as _ConventionSideNavDeleteBtn} from './@convention-side-nav-delete-btn';
 import {ConventionSideNavItemWithRouter} from './@convention-side-nav-item';
-import {ConventionSideNavShiftBtn} from './@convention-side-nav-shift-btn';
+import {
+  ConventionSideNavAddBtn as _ConventionSideNavAddBtn,
+  ConventionSideNavDeleteBtn as _ConventionSideNavDeleteBtn,
+} from './@convention-side-nav-tool-btns';
+import {ConventionSideNavShiftBtn} from './@convention-side-nav-tool-btns/convention-side-nav-shift-btn';
 
 const Wrapper = styled.li`
   color: ${props => props.theme.text.navSecondary};
