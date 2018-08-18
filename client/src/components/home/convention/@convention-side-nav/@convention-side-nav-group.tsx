@@ -40,16 +40,16 @@ const Wrapper = styled.li`
     margin-top: -4px;
     margin-bottom: 10px;
   }
-
-  ${ConventionSideNavShiftBtn.Wrapper} {
-    position: absolute;
-    right: 10px;
-    top: -3px;
-  }
 `;
 
 const GroupTitle = styled.div`
   position: relative;
+
+  & > ${ConventionSideNavShiftBtn.Wrapper} {
+    position: absolute;
+    right: 10px;
+    top: 0;
+  }
 `;
 
 export interface ConventionSideNavGroupProps extends RouteComponentProps<any> {

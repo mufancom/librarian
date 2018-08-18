@@ -36,17 +36,11 @@ const Wrapper = styled.li`
 
   .add-menu {
     margin-right: -22px;
-    margin-top: 7px;
+    margin-top: 10px;
   }
 
   ${ConventionSideNavEditBtn.Wrapper}, ${ConventionSideNavDeleteBtn.Wrapper} {
     font-size: 13px;
-  }
-
-  ${ConventionSideNavShiftBtn.Wrapper} {
-    position: absolute;
-    right: 36px;
-    top: 1px;
   }
 `;
 
@@ -54,6 +48,12 @@ const ConventionCategoryTitle = styled.div`
   margin-top: 30px;
   position: relative;
   margin-bottom: 7px;
+
+  & > ${ConventionSideNavShiftBtn.Wrapper} {
+    position: absolute;
+    right: 36px;
+    top: 4px;
+  }
 `;
 
 const ConventionSideNavAddBtn = styled(_ConventionSideNavAddBtn)`

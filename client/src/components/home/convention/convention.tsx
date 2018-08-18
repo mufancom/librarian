@@ -9,6 +9,7 @@ import {RouterStore} from 'stores/router-store';
 import {inject, observer} from 'utils/mobx';
 import {RouteTrackerWithRouter} from '../../common/TrackingRoute';
 import {ConventionBody} from './@convention-body';
+import {ConventionIndex} from './@convention-index';
 import {ConventionSideNavWithRouter} from './@convention-side-nav';
 import {ConventionSideSearch} from './@convention-side-search';
 
@@ -70,7 +71,7 @@ export class Convention extends React.Component<ConventionProps> {
               >
                 <Switch>
                   <Route
-                    path="/convention/:id"
+                    path="/convention/:id(\d+)"
                     component={(props: any) => (
                       <RouteTrackerWithRouter
                         {...props}
@@ -80,8 +81,16 @@ export class Convention extends React.Component<ConventionProps> {
                       </RouteTrackerWithRouter>
                     )}
                   />
+                  <Route
+                    exact={true}
+                    path="/convention/"
+                    component={ConventionIndex}
+                  />
                   <Route>
-                    <div>Miss at {this.routerStore.location.pathname}</div>
+                    <div>
+                      Miss at {this.routerStore.location.pathname} <br />
+                      (TODO: 404 {'>_<'})
+                    </div>
                   </Route>
                 </Switch>
               </Content>

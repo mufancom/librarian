@@ -1,6 +1,7 @@
 import {Dropdown, Menu, message} from 'antd';
 import classNames from 'classnames';
-import React, {Component} from 'react';
+import React, {Component, createRef} from 'react';
+import ReactDOM from 'react-dom';
 
 import {fetchErrorMessage} from 'services/api-service';
 import {UserService} from 'services/user-service';
@@ -28,8 +29,7 @@ const createDropdownMenu = (logoutOnclick: any) => (
   <Menu
     getPopupContainer={() => document.body}
     style={{
-      position: 'relative',
-      marginTop: '-20px',
+      marginTop: '-30px',
     }}
   >
     <Menu.Item>
@@ -53,6 +53,8 @@ export class HeaderUserLoggedIn extends Component<HeaderUserLoggedInProps> {
   @inject
   userService!: UserService;
 
+  wrapperRef: React.RefObject<any> = createRef();
+
   constructor(props: HeaderUserLoggedInProps) {
     super(props);
     this.handleLogoutOnclick = this.handleLogoutOnclick.bind(this);
@@ -62,8 +64,14 @@ export class HeaderUserLoggedIn extends Component<HeaderUserLoggedInProps> {
     let {className} = this.props;
 
     return (
-      <Wrapper className={classNames('header-user-logged-in', className)}>
-        <Dropdown overlay={createDropdownMenu(this.handleLogoutOnclick)}>
+      <Wrapper
+        className={classNames('header-user-logged-in', className)}
+        ref={this.wrapperRef}
+      >
+        <Dropdown
+          overlay={createDropdownMenu(this.handleLogoutOnclick)}
+          getPopupContainer={this.getWrapperDom}
+        >
           <a>
             <HeaderUserIcon icon={this.authStore.avatar} />
             <div className="username-text">{this.authStore.username}</div>
@@ -72,6 +80,10 @@ export class HeaderUserLoggedIn extends Component<HeaderUserLoggedInProps> {
       </Wrapper>
     );
   }
+
+  getWrapperDom = () => {
+    return ReactDOM.findDOMNode(this.wrapperRef.current) as HTMLLIElement;
+  };
 
   async handleLogoutOnclick() {
     try {

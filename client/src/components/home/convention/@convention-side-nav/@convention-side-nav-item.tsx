@@ -16,7 +16,7 @@ import {
   CancelBlocker,
   ConventionSideNavDeleteBtn,
   ConventionSideNavEditBtn,
-  ConventionSideNavEditableTitle as _ConventionSideNavEditableTitle,
+  ConventionSideNavEditableTitle,
 } from './@convention-side-nav-tools';
 import {ConventionSideNavShiftBtn} from './@convention-side-nav-tools/convention-side-nav-shift-btn';
 
@@ -43,17 +43,17 @@ const Wrapper = styled.li`
       color: ${props => props.theme.accent()};
     }
   }
-`;
 
-const PositionShiftButton = styled(ConventionSideNavShiftBtn)`
-  position: absolute;
-  right: 20px;
-  top: 5px;
-`;
+  & > ${ConventionSideNavShiftBtn.Wrapper} {
+    position: absolute;
+    right: 20px;
+    top: 8px;
+  }
 
-const ConventionSideNavEditableTitle = styled(_ConventionSideNavEditableTitle)`
-  &.rename-mode {
-    color: ${props => props.theme.text.regular};
+  ${ConventionSideNavEditableTitle.Wrapper} {
+    &.rename-mode {
+      color: ${props => props.theme.text.regular};
+    }
   }
 `;
 
@@ -128,7 +128,7 @@ export class ConventionSideNavItem extends Component<
             onClick={this.onDeleteButtonClick}
           />
         </NavLink>
-        <PositionShiftButton
+        <ConventionSideNavShiftBtn
           show={this.showShiftButton && this.authStore.isLoggedIn}
           upOnclick={this.onUpShiftButtonOnclick}
           downOnclick={this.onDownShiftButtonOnclick}
