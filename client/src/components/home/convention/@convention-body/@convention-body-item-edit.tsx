@@ -6,13 +6,19 @@ import React, {Component} from 'react';
 import {ConventionItem} from 'stores/convention-store';
 import {styled} from 'theme';
 import {observer} from 'utils/mobx';
+import {getMarkdownTitle} from 'utils/regex';
 import {ConventionBodyItemEditor} from './@convention-body-item-editor';
 
-const Wrapper = styled.div``;
+const Wrapper = styled.div`
+  ${ConventionBodyItemEditor.Wrapper} {
+    margin-top: 10px;
+  }
+`;
 
 const EditConventionHead = styled.div`
   font-size: 20px;
   position: relative;
+  top: -5px;
 `;
 
 const EditConventionHeadOperations = styled.div`
@@ -35,6 +41,9 @@ export class ConventionBodyItemEdit extends Component<
   @observable
   content = this.props.item.content;
 
+  @observable
+  titleHint = getMarkdownTitle(this.props.item.content, '编辑条目');
+
   fromVersionId = this.props.item.versionId;
 
   render() {
@@ -43,6 +52,8 @@ export class ConventionBodyItemEdit extends Component<
     return (
       <Wrapper className={classNames('convention-body-item-edit', className)}>
         <EditConventionHead>
+          {this.titleHint}
+          &nbsp;
           <EditConventionHeadOperations>
             <Button style={{marginRight: '10px'}} onClick={onCancelOnclick}>
               取消
@@ -67,6 +78,8 @@ export class ConventionBodyItemEdit extends Component<
   @action
   onContentChange = (content: string) => {
     this.content = content;
+
+    this.titleHint = getMarkdownTitle(content, '编辑条目');
   };
 
   onInnerOkClick = () => {

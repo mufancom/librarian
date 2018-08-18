@@ -16,6 +16,7 @@ import 'react-mde/lib/styles/css/react-mde-all.css';
 const Wrapper = styled.div`
   display: block;
   min-height: 300px;
+  margin-bottom: 20px;
 
   @keyframes showTabLine {
     0% {
@@ -55,11 +56,9 @@ const Wrapper = styled.div`
   }
 
   .react-mde {
-    position: absolute;
     top: 0;
     left: 0;
     right: 0;
-    bottom: 30px;
     border: none;
     background-color: #fff;
     border-bottom: 1px solid #f2f2f2;

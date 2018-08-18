@@ -19,14 +19,10 @@ import {ConventionBodyItemShiftButton} from './@convention-body-item-shift-butto
 const Wrapper = styled.div`
   padding-bottom: 1.9rem;
   position: relative;
-  min-height: 250px;
 
   ${ConventionBodyItemEditor.Wrapper} {
-    position: absolute;
-    z-index: 500;
     left: 0;
     right: 0;
-    top: 46px;
     bottom: 0;
   }
 
@@ -42,7 +38,6 @@ const Wrapper = styled.div`
 `;
 
 const ItemTopToolBar = styled.div`
-  margin-top: 3px;
   position: absolute;
   right: 10px;
   text-align: right;
@@ -103,41 +98,44 @@ export class ConventionBodyItem extends Component<ConventionBodyItemProps> {
             loading={this.editLoading}
           />
         ) : (
-          <ItemTopToolBar style={{opacity: this.showSidebar ? 1 : 0}}>
-            <ItemVersionInfo>
-              版本ID:&nbsp;
-              {item.versionId} ({formatAsTimeAge(item.updatedAt)})
-            </ItemVersionInfo>
-            {this.authStore.isLoggedIn ? (
-              <div>
-                <ItemTopToolBarButton onClick={this.editOnclick}>
-                  编辑
-                </ItemTopToolBarButton>
-                <Popconfirm
-                  placement="bottomRight"
-                  title="您确定要删除该条目？"
-                  onConfirm={this.deleteOnclick}
-                  okText="确定"
-                  cancelText="取消"
-                >
-                  <ItemTopToolBarButton className="danger">
-                    删除
+          <div>
+            <ItemTopToolBar style={{opacity: this.showSidebar ? 1 : 0}}>
+              <ItemVersionInfo>
+                版本ID:&nbsp;
+                {item.versionId} ({formatAsTimeAge(item.updatedAt)})
+              </ItemVersionInfo>
+              {this.authStore.isLoggedIn ? (
+                <div>
+                  <ItemTopToolBarButton onClick={this.editOnclick}>
+                    编辑
                   </ItemTopToolBarButton>
-                </Popconfirm>
-                <ConventionBodyItemShiftButton
-                  upOnclick={this.onUpShiftButtonClick}
-                  downOnclick={this.onDownShiftButtonClick}
-                />
-              </div>
-            ) : (
-              undefined
-            )}
-          </ItemTopToolBar>
+                  <Popconfirm
+                    placement="bottomRight"
+                    title="您确定要删除该条目？"
+                    onConfirm={this.deleteOnclick}
+                    okText="确定"
+                    cancelText="取消"
+                  >
+                    <ItemTopToolBarButton className="danger">
+                      删除
+                    </ItemTopToolBarButton>
+                  </Popconfirm>
+                  <ConventionBodyItemShiftButton
+                    upOnclick={this.onUpShiftButtonClick}
+                    downOnclick={this.onDownShiftButtonClick}
+                  />
+                </div>
+              ) : (
+                undefined
+              )}
+            </ItemTopToolBar>
+
+            <ItemRenderContent
+              dangerouslySetInnerHTML={{__html: mark(item.content)}}
+            />
+            <ConventionBodyItemFooter item={item} />
+          </div>
         )}
-        <ItemRenderContent
-          dangerouslySetInnerHTML={{__html: mark(item.content)}}
-        />
-        <ConventionBodyItemFooter item={item} />
       </Wrapper>
     );
   }
