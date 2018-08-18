@@ -12,8 +12,6 @@ export function getMarkdownTitle(
 
   let result = markdown.match(/^\s*#+ +(.+)/);
 
-  // tslint:disable-next-line:no-console
-  console.log(markdown, result);
   if (result && result.length === 2) {
     return result[1].trim();
   }
