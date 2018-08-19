@@ -8,6 +8,10 @@ export const zh: Translation = {
   PASSWORD_LENGTH_EXCEPTION: '密码长度应为8-48位',
   INVALID_EMAIL_EXCEPTION: '请输入有效的邮箱地址',
   INVALID_PAGE_NUMBER: '请提交有效的页数',
+  EMAIL_ISEMAIL_EXCEPTION: '请输入有效的邮箱地址',
+  AFTER_ORDER_ID_MIN_EXCEPTION: '已经到顶啦',
+  TITLE_LENGTH_EXCEPTION: '标题应为1-20位',
+  CONTENT_MINLENGTH_EXCEPTION: '内容不能为空',
 
   AUTHENTICATION_FAILED: '授权失败',
   USERNAME_PASSWORD_MISMATCH: '用户名或密码错误',

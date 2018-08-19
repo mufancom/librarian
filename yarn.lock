@@ -16,18 +16,18 @@
     esutils "^2.0.2"
     js-tokens "^3.0.0"
 
+"@magicspace/configs@^0.1.17":
+  version "0.1.17"
+  resolved "https://registry.npmjs.org/@magicspace/configs/-/configs-0.1.17.tgz#abce9cf990471c3d155c1f4a53c6cc7e8bf8e4a6"
+  dependencies:
+    "@magicspace/tslint-rules" "^0.1.12"
+    tslint-config-prettier "^1.10.0"
+
 "@magicspace/configs@^0.1.4":
   version "0.1.4"
   resolved "http://registry.npm.taobao.org/@magicspace/configs/download/@magicspace/configs-0.1.4.tgz#9a0654d5039a6864cbca79857f14aad68d3c4a06"
   dependencies:
     "@magicspace/tslint-rules" "^0.1.1"
-    tslint-config-prettier "^1.10.0"
-
-"@magicspace/configs@^0.1.5":
-  version "0.1.5"
-  resolved "http://registry.npm.taobao.org/@magicspace/configs/download/@magicspace/configs-0.1.5.tgz#9d253ad86ea287bbad7f77c5ebfaf7c205f1c2ac"
-  dependencies:
-    "@magicspace/tslint-rules" "^0.1.2"
     tslint-config-prettier "^1.10.0"
 
 "@magicspace/tslint-rules@^0.1.1":
@@ -38,9 +38,9 @@
     resolve "^1.8.1"
     tsutils "^2.28.0"
 
-"@magicspace/tslint-rules@^0.1.2":
-  version "0.1.2"
-  resolved "http://registry.npm.taobao.org/@magicspace/tslint-rules/download/@magicspace/tslint-rules-0.1.2.tgz#36a13780e7d704451ae24c5b138874dc80d33dcd"
+"@magicspace/tslint-rules@^0.1.12":
+  version "0.1.12"
+  resolved "https://registry.npmjs.org/@magicspace/tslint-rules/-/tslint-rules-0.1.12.tgz#fcfddf07fda22451f5cf6d8e7e2380e15fdc9855"
   dependencies:
     lodash "^4.17.10"
     resolve "^1.8.1"

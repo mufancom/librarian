@@ -1,5 +1,5 @@
 {
-  "extends": "@magicspace/configs/tslint-prettier",
+  "extends": "vts/tslint-prettier",
   "rules": {
     "no-implicit-dependencies": [
       true,

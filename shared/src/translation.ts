@@ -8,6 +8,10 @@ export interface Translation {
   PASSWORD_LENGTH_EXCEPTION: string;
   INVALID_EMAIL_EXCEPTION: string;
   INVALID_PAGE_NUMBER: string;
+  EMAIL_ISEMAIL_EXCEPTION: string;
+  AFTER_ORDER_ID_MIN_EXCEPTION: string;
+  TITLE_LENGTH_EXCEPTION: string;
+  CONTENT_MINLENGTH_EXCEPTION: string;
 
   /* Authentication failed */
   AUTHENTICATION_FAILED: string;

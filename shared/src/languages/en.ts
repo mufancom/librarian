@@ -8,6 +8,10 @@ export const en: Translation = {
   PASSWORD_LENGTH_EXCEPTION: 'Password should be 8-48 characters long',
   INVALID_EMAIL_EXCEPTION: 'Please enter a valid email address',
   INVALID_PAGE_NUMBER: 'Please submit a valid page number',
+  EMAIL_ISEMAIL_EXCEPTION: 'Please enter a valid email address',
+  AFTER_ORDER_ID_MIN_EXCEPTION: "It's already at the top",
+  TITLE_LENGTH_EXCEPTION: 'Title should be 1-20 characters long',
+  CONTENT_MINLENGTH_EXCEPTION: 'Content should not be empty',
 
   AUTHENTICATION_FAILED: 'Authentication failed',
   USERNAME_PASSWORD_MISMATCH: 'Username and password mismatch',
