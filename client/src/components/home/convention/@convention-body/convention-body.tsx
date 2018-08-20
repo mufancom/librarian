@@ -21,7 +21,6 @@ import {ConventionBodyItemCreate} from './@convention-body-item-create';
 import {ConventionBodyTitle} from './@convention-body-title';
 
 const Wrapper = styled(MarkdownStyle)`
-  padding-top: 25px;
   padding-bottom: 20px;
 `;
 

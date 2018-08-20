@@ -12,10 +12,10 @@ import {RouteTrackerWithRouter} from '../../common/TrackingRoute';
 
 import {ConventionBody} from './@convention-body';
 import {ConventionIndex} from './@convention-index';
-import {ConventionSideNavWithRouter} from './@convention-side-nav';
 import {ConventionSideSearch} from './@convention-side-search';
+import {ConventionSiderLayoutWithRouter} from './@convention-sider-layout';
 
-const {Content, Sider} = Layout;
+const {Content} = Layout;
 
 const Wrapper = styled.div`
   ${ConventionSideSearch.Wrapper} {
@@ -51,19 +51,7 @@ export class Convention extends React.Component<ConventionProps> {
             className="header-nav"
           >
             <Layout>
-              <Sider
-                style={{
-                  overflow: 'auto',
-                  top: '88px',
-                  bottom: 0,
-                  position: 'fixed',
-                  backgroundColor: 'transparent',
-                }}
-                width={230}
-              >
-                <ConventionSideSearch />
-                <ConventionSideNavWithRouter />
-              </Sider>
+              <ConventionSiderLayoutWithRouter />
               <Content
                 style={{
                   margin: '0 16px 0 300px',

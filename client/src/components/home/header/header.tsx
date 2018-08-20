@@ -54,7 +54,7 @@ export class Header extends React.Component<HeaderProps> {
             md={{span: 20, offset: 2}}
             lg={{span: 18, offset: 3}}
             xl={{span: 16, offset: 4}}
-            className="header-nav"
+            className="header-nav header-nav-with-hint-bar"
           >
             <HeaderLogo />
             <MenuWrapper>
