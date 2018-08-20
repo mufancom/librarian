@@ -8,7 +8,8 @@ import {observer} from 'utils/mobx';
 import {filterHTMLTags} from 'utils/regex';
 
 const Wrapper = styled.div`
-  display: inline;
+  display: inline-block;
+  word-break: break-all;
 
   &.rename-mode {
     cursor: text;

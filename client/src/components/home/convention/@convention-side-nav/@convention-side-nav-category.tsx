@@ -41,6 +41,11 @@ const Wrapper = styled.li`
     margin-top: 10px;
   }
 
+  ${ConventionSideNavEditableTitle.Wrapper} {
+    display: inline-block;
+    max-width: 130px;
+  }
+
   ${ConventionSideNavEditBtn.Wrapper}, ${ConventionSideNavDeleteBtn.Wrapper} {
     font-size: 13px;
   }
@@ -55,6 +60,10 @@ const ConventionCategoryTitle = styled.div`
     position: absolute;
     right: 36px;
     top: 4px;
+  }
+
+  & > ${ConventionSideNavEditableTitle.Wrapper} {
+    max-width: 110px;
   }
 `;
 
