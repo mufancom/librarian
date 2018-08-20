@@ -6,7 +6,7 @@ import {Icon} from 'react-fa';
 import ReactMde, {ReactMdeTypes} from 'react-mde';
 import 'react-mde/lib/styles/css/react-mde-all.css';
 
-import {ScrollService} from 'services/scroll-service';
+import {Direction, ScrollService} from 'services/scroll-service';
 import {styled} from 'theme';
 import {mark} from 'utils/markdown';
 import {inject, observer} from 'utils/mobx';
@@ -117,8 +117,17 @@ const Wrapper = styled.div`
         position: fixed;
         top: 90px;
         height: 44px;
+        transition: all 0.3s;
         animation: showToolbar 0.3s ease-in-out;
         background-color: rgba(245, 245, 245, 0.96);
+      }
+
+      &.pull-up {
+        .mde-header {
+          top: 2px;
+          transition: all 0.3s;
+          animation: showToolbar 0.3s;
+        }
       }
 
       .mde-text {
@@ -150,7 +159,12 @@ export class ConventionBodyItemEditor extends Component<
   mdeState: ReactMdeTypes.MdeState;
 
   @observable
-  fixedToolBar: boolean = false;
+  fixedToolBar = false;
+
+  @observable
+  pullUp = false;
+
+  pullUpTimer: any;
 
   wrapperRef: React.RefObject<any>;
 
@@ -189,7 +203,7 @@ export class ConventionBodyItemEditor extends Component<
         <ReactMde
           className={`react-mde ${
             this.fixedToolBar ? 'with-fixed-toolbar' : 'without-fixed-toolbar'
-          }`}
+          }${this.pullUp ? ' pull-up' : ''}`}
           buttonContentOptions={{
             iconProvider: this.iconProvider,
           }}
@@ -214,7 +228,11 @@ export class ConventionBodyItemEditor extends Component<
   };
 
   @action
-  onWindowScroll = (_top: number): void => {
+  onWindowScroll = (
+    _top: number,
+    direction: Direction,
+    lastingLength: number,
+  ): void => {
     let wrapperDiv = ReactDOM.findDOMNode(
       this.wrapperRef.current,
     ) as HTMLDivElement;
@@ -226,7 +244,18 @@ export class ConventionBodyItemEditor extends Component<
     } else {
       this.fixedToolBar = false;
     }
+
+    if (direction === Direction.down && lastingLength > 100) {
+      this.setPullUp(true);
+    } else if (direction === Direction.up) {
+      this.setPullUp(false);
+    }
   };
+
+  @action
+  setPullUp(pullUp: boolean): void {
+    this.pullUp = pullUp;
+  }
 
   onWindowResize = (): void => {
     let wrapperDiv = ReactDOM.findDOMNode(

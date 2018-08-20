@@ -102,8 +102,9 @@ export class HeaderLayout extends Component<HeaderLayoutProps> {
   @action
   setHeaderHidden(hide: boolean): void {
     if (!this.hideTimer) {
-      setTimeout(() => {
+      this.hideTimer = setTimeout(() => {
         this.hideHeader = hide;
+        this.hideTimer = undefined;
       }, 100);
     }
   }
