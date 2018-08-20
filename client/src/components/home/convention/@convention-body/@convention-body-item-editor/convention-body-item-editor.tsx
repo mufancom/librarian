@@ -105,12 +105,6 @@ const Wrapper = styled.div`
       }
     }
 
-    &.without-fixed-toolbar {
-      .mde-header {
-        animation: hideToolbar 0.3s ease-in-out;
-      }
-    }
-
     &.with-fixed-toolbar {
       .mde-header {
         box-shadow: 0 2px 4px rgba(57, 70, 78, 0.1);
@@ -118,8 +112,8 @@ const Wrapper = styled.div`
         top: 90px;
         height: 44px;
         transition: all 0.3s;
-        animation: showToolbar 0.3s ease-in-out;
         background-color: rgba(245, 245, 245, 0.96);
+        z-index: 100;
       }
 
       &.pull-up {

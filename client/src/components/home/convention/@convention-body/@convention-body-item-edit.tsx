@@ -20,6 +20,8 @@ const EditConventionHead = styled.div`
   font-size: 20px;
   position: relative;
   top: -5px;
+  z-index: 120;
+  background-color: #fff;
 `;
 
 const EditConventionHeadOperations = styled.div`
