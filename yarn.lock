@@ -23,21 +23,6 @@
     "@magicspace/tslint-rules" "^0.1.12"
     tslint-config-prettier "^1.10.0"
 
-"@magicspace/configs@^0.1.4":
-  version "0.1.4"
-  resolved "http://registry.npm.taobao.org/@magicspace/configs/download/@magicspace/configs-0.1.4.tgz#9a0654d5039a6864cbca79857f14aad68d3c4a06"
-  dependencies:
-    "@magicspace/tslint-rules" "^0.1.1"
-    tslint-config-prettier "^1.10.0"
-
-"@magicspace/tslint-rules@^0.1.1":
-  version "0.1.1"
-  resolved "http://registry.npm.taobao.org/@magicspace/tslint-rules/download/@magicspace/tslint-rules-0.1.1.tgz#815826666d92b2222427a9df15863513271d9f8c"
-  dependencies:
-    lodash "^4.17.10"
-    resolve "^1.8.1"
-    tsutils "^2.28.0"
-
 "@magicspace/tslint-rules@^0.1.12":
   version "0.1.12"
   resolved "https://registry.npmjs.org/@magicspace/tslint-rules/-/tslint-rules-0.1.12.tgz#fcfddf07fda22451f5cf6d8e7e2380e15fdc9855"
@@ -5765,9 +5750,9 @@ map-visit@^1.0.0:
   dependencies:
     object-visit "^1.0.0"
 
-marked@^0.4.0:
-  version "0.4.0"
-  resolved "http://registry.npm.taobao.org/marked/download/marked-0.4.0.tgz#9ad2c2a7a1791f10a852e0112f77b571dce10c66"
+marked@^0.5.0:
+  version "0.5.0"
+  resolved "https://registry.npmjs.org/marked/-/marked-0.5.0.tgz#9e590bad31584a48ff405b33ab1c0dd25172288e"
 
 math-expression-evaluator@^1.2.14:
   version "1.2.17"

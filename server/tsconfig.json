@@ -1,11 +1,12 @@
 {
-  "extends": "../node_modules/vts/tsconfig.json",
+  "extends": "../node_modules/@magicspace/configs/tsconfig.json",
   "compilerOptions": {
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
-    "moduleResolution": "node",
     "allowSyntheticDefaultImports": true,
     "removeComments": true,
+    "types": ["node"],
+    "skipLibCheck": true,
 
     "baseUrl": "src",
 
