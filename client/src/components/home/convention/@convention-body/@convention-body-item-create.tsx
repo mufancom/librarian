@@ -3,10 +3,16 @@ import classNames from 'classnames';
 import {action, observable} from 'mobx';
 import React, {Component} from 'react';
 
+import {ConventionService} from 'services/convention-service';
+import {ConventionStore} from 'stores/convention-store';
 import {styled} from 'theme';
-import {observer} from 'utils/mobx';
+import {prettify} from 'utils/markdown';
+import {inject, observer} from 'utils/mobx';
 
 import {ConventionBodyItemEditor} from './@convention-body-item-editor';
+import {ConventionBodyItemDraftHint} from './@convention-body-item-editor/convention-body-item-draft-hint';
+
+const AUTO_SAVE_INTERVAL = 10000;
 
 const Wrapper = styled.div`
   position: relative;
@@ -44,11 +50,32 @@ export interface ConventionBodyItemCreateProps {
 export class ConventionBodyItemCreate extends Component<
   ConventionBodyItemCreateProps
 > {
+  @inject
+  conventionStore!: ConventionStore;
+
+  @inject
+  conventionService!: ConventionService;
+
   @observable
   content: string = '';
 
+  @observable
+  initialContent: string = '';
+
+  editorKey = 0;
+
+  authSaveTimer: any;
+
+  componentWillUnmount(): void {
+    if (this.authSaveTimer) {
+      clearTimeout(this.authSaveTimer);
+    }
+  }
+
   render(): JSX.Element {
     let {className, onCancelClick, show, loading} = this.props;
+
+    let {newItemDraft} = this.conventionStore;
 
     return (
       <Wrapper
@@ -60,6 +87,15 @@ export class ConventionBodyItemCreate extends Component<
             <AddConventionHead>
               添加条目
               <AddConventionHeadOperations>
+                {newItemDraft ? (
+                  <ConventionBodyItemDraftHint
+                    savedAt={newItemDraft.savedAt}
+                    restoreOnclick={this.onRestoreButtonClick}
+                  />
+                ) : (
+                  undefined
+                )}
+
                 <Button style={{marginRight: '10px'}} onClick={onCancelClick}>
                   取消
                 </Button>
@@ -73,8 +109,10 @@ export class ConventionBodyItemCreate extends Component<
               </AddConventionHeadOperations>
             </AddConventionHead>
             <ConventionBodyItemEditor
-              initialContent=""
+              key={this.editorKey}
+              initialContent={this.initialContent}
               onContentChange={this.onContentChange}
+              onSaveKeyDown={this.onSaveKeyDown}
             />
           </div>
         ) : (
@@ -87,7 +125,31 @@ export class ConventionBodyItemCreate extends Component<
   @action
   onContentChange = (content: string): void => {
     this.content = content;
+
+    if (this.content.length !== 0) {
+      if (this.authSaveTimer) {
+        clearTimeout(this.authSaveTimer);
+      }
+
+      this.authSaveTimer = setTimeout(this.onAutoSave, AUTO_SAVE_INTERVAL);
+    }
   };
+
+  @action
+  onRestoreButtonClick = (): void => {
+    let {newItemDraft} = this.conventionStore;
+
+    if (newItemDraft) {
+      this.setContent(newItemDraft.content);
+    }
+  };
+
+  @action
+  setContent(content: string): void {
+    this.initialContent = content;
+
+    this.editorKey++;
+  }
 
   onInnerOkClick = (): void => {
     let {onOkClick} = this.props;
@@ -95,6 +157,18 @@ export class ConventionBodyItemCreate extends Component<
     if (onOkClick) {
       onOkClick(this.content);
     }
+  };
+
+  onSaveKeyDown = (): void => {
+    this.setContent(prettify(this.content));
+  };
+
+  onAutoSave = (): void => {
+    this.save();
+  };
+
+  save = (): void => {
+    this.conventionService.saveNewConventionItemDraft(this.content);
   };
 
   static Wrapper = Wrapper;

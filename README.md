@@ -1,1 +1,5 @@
 # Librarian
+
+```js
+function a() {}
+```

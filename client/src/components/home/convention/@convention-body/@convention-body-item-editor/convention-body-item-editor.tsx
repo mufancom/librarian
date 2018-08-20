@@ -135,6 +135,7 @@ export interface ConventionBodyItemEditorProps {
   className?: string;
   initialContent: string;
   onContentChange?(content: string): void;
+  onSaveKeyDown?(): void;
 }
 
 export interface ConventionBodyItemEditorState {
@@ -164,6 +165,8 @@ export class ConventionBodyItemEditor extends Component<
 
   listenerId!: number;
 
+  mdeKey = 0;
+
   constructor(props: ConventionBodyItemEditorProps) {
     super(props);
 
@@ -192,6 +195,7 @@ export class ConventionBodyItemEditor extends Component<
       <Wrapper
         ref={this.wrapperRef}
         className={classNames('convention-body-item-editor', className)}
+        onKeyDown={this.onKeyDown}
       >
         <ResizeListener onResize={this.onWindowResize} />
         <ReactMde
@@ -205,6 +209,7 @@ export class ConventionBodyItemEditor extends Component<
           onChange={this.onMarkdownInputChange}
           editorState={this.mdeState}
           generateMarkdownPreview={markdown => Promise.resolve(mark(markdown))}
+          key={this.mdeKey}
         />
       </Wrapper>
     );
@@ -264,6 +269,21 @@ export class ConventionBodyItemEditor extends Component<
 
     // tslint:disable-next-line:prefer-template
     headerDiv.style.width = width - 1 + 'px';
+  };
+
+  @action
+  onKeyDown = (event: React.KeyboardEvent): void => {
+    let keyCode = event.keyCode || event.which || event.charCode;
+    let ctrlKey = event.ctrlKey || event.metaKey;
+    if (ctrlKey && keyCode === 83) {
+      event.preventDefault();
+
+      let {onSaveKeyDown} = this.props;
+
+      if (onSaveKeyDown) {
+        onSaveKeyDown();
+      }
+    }
   };
 
   iconProvider = (name: string): React.ReactNode => {

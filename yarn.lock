@@ -23,9 +23,24 @@
     "@magicspace/tslint-rules" "^0.1.12"
     tslint-config-prettier "^1.10.0"
 
+"@magicspace/configs@^0.1.19":
+  version "0.1.19"
+  resolved "https://registry.npmjs.org/@magicspace/configs/-/configs-0.1.19.tgz#1dc18435406b6399a48412d40d45c9009f10c938"
+  dependencies:
+    "@magicspace/tslint-rules" "^0.1.14"
+    tslint-config-prettier "^1.10.0"
+
 "@magicspace/tslint-rules@^0.1.12":
   version "0.1.12"
   resolved "https://registry.npmjs.org/@magicspace/tslint-rules/-/tslint-rules-0.1.12.tgz#fcfddf07fda22451f5cf6d8e7e2380e15fdc9855"
+  dependencies:
+    lodash "^4.17.10"
+    resolve "^1.8.1"
+    tsutils "^2.28.0"
+
+"@magicspace/tslint-rules@^0.1.14":
+  version "0.1.14"
+  resolved "https://registry.npmjs.org/@magicspace/tslint-rules/-/tslint-rules-0.1.14.tgz#13aa1b3fef96b7efd199140b2c6f36ecd2195227"
   dependencies:
     lodash "^4.17.10"
     resolve "^1.8.1"
@@ -181,6 +196,10 @@
 "@types/node@^9.3.0":
   version "9.6.24"
   resolved "http://registry.npm.taobao.org/@types/node/download/@types/node-9.6.24.tgz#c1bccb30f30871718b220b34290ccf53e7ee9317"
+
+"@types/prettier@^1.13.2":
+  version "1.13.2"
+  resolved "https://registry.npmjs.org/@types/prettier/-/prettier-1.13.2.tgz#ffe96278e712a8d4e467e367a338b05e22872646"
 
 "@types/range-parser@*":
   version "1.2.2"
@@ -7323,6 +7342,10 @@ preserve@^0.2.0:
 prettier@^1.13.7:
   version "1.14.0"
   resolved "http://registry.npm.taobao.org/prettier/download/prettier-1.14.0.tgz#847c235522035fd988100f1f43cf20a7d24f9372"
+
+prettier@^1.14.2:
+  version "1.14.2"
+  resolved "https://registry.npmjs.org/prettier/-/prettier-1.14.2.tgz#0ac1c6e1a90baa22a62925f41963c841983282f9"
 
 pretty-bytes@^4.0.2:
   version "4.0.2"

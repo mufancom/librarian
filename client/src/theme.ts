@@ -21,7 +21,9 @@ const safeAccent = new Color('#5fc300');
 
 const gray = new Color('#909399');
 
-function createLightnessModifier(color: Color) {
+type LightnessModifier = (lightness?: number) => string;
+
+function createLightnessModifier(color: Color): LightnessModifier {
   return (lightness = 0): string => {
     let modified =
       lightness >= 0

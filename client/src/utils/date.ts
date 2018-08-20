@@ -25,6 +25,34 @@ Timeago.register('local', localDict);
 
 const timeago = Timeago();
 
-export function formatAsTimeAge(datetime: string): string {
+type TDate = Date | string | number;
+
+export function formatAsTimeAgo(datetime: TDate): string {
   return timeago.format(datetime, 'local');
+}
+
+export function formatWhenTimeAgo(date: Date, before: Date): string {
+  if (before.getTime() > date.getTime()) {
+    return formatAsTimeAgo(date);
+  }
+
+  function fillZero(num: number): string {
+    return num < 10 ? `0${num}` : num.toString();
+  }
+
+  let hour = fillZero(date.getHours());
+  let minute = fillZero(date.getMinutes());
+  let second = fillZero(date.getSeconds());
+
+  return `${hour}:${minute}:${second}`;
+}
+
+export function formatWhenDayAgo(dateString: string): string {
+  let now = new Date();
+
+  now.setHours(0, 0, 0, 0);
+
+  let date = new Date(dateString);
+
+  return formatWhenTimeAgo(date, now);
 }

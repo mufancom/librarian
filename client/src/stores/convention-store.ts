@@ -60,6 +60,15 @@ export interface ConventionItem {
   status: number;
 }
 
+export interface ItemDraft {
+  content: string;
+  savedAt: string;
+}
+
+export interface EditItemDraftDict {
+  [key: number]: ItemDraft;
+}
+
 export interface ConventionCache {
   [key: number]: Convention;
 }
@@ -83,6 +92,12 @@ export class ConventionStore {
 
   @observable
   currentContent: ConventionItem[] = [];
+
+  @observable
+  newItemDraft?: ItemDraft;
+
+  @observable
+  editItemDraftDict: EditItemDraftDict = {};
 
   @observable
   currentId = 0;

@@ -8,7 +8,7 @@ import {ConventionService} from 'services/convention-service';
 import {AuthStore} from 'stores/auth-store';
 import {ConventionItem} from 'stores/convention-store';
 import {styled} from 'theme';
-import {formatAsTimeAge} from 'utils/date';
+import {formatAsTimeAgo} from 'utils/date';
 import {mark} from 'utils/markdown';
 import {inject, observer} from 'utils/mobx';
 
@@ -103,7 +103,7 @@ export class ConventionBodyItem extends Component<ConventionBodyItemProps> {
             <ItemTopToolBar style={{opacity: this.showSidebar ? 1 : 0}}>
               <ItemVersionInfo>
                 版本ID:&nbsp;
-                {item.versionId} ({formatAsTimeAge(item.updatedAt)})
+                {item.versionId} ({formatAsTimeAgo(item.updatedAt)})
               </ItemVersionInfo>
               {this.authStore.isLoggedIn ? (
                 <div>
