@@ -40,6 +40,7 @@ function buildIndexTree(
 
   let result: ConventionIndexNode[] = [];
 
+  // create mapping for categories
   for (let category of categories) {
     let node: ConventionIndexCategoryNode = {
       type: 'category',

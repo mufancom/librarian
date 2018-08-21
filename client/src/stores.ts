@@ -1,4 +1,3 @@
-import {autorun} from 'mobx';
 import {RouterStore} from 'mobx-react-router';
 
 import {AuthStore} from 'stores/auth-store';
@@ -9,8 +8,3 @@ export const routerStore = new RouterStore();
 export const authStore = new AuthStore();
 
 export const conventionStore = new ConventionStore();
-
-autorun(() => {
-  // tslint:disable-next-line:no-console
-  console.log(authStore.username);
-});

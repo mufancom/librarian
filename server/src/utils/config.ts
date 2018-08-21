@@ -41,6 +41,7 @@ export class ConfigService<T extends object> {
 
 export interface ServerConfig {
   port: number;
+  enableCors: boolean;
   corsOrigin: string;
 }
 

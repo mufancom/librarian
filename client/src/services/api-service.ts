@@ -6,10 +6,10 @@ import {i18n} from 'utils/lang';
 
 import {Translation} from '../../../shared/package/translation';
 
-// const API_BASE_URL = 'http://convention.mufan.io:8801/';
-const API_BASE_URL = 'http://localhost:3002/';
+const API_BASE_URL = 'https://librarian.mufan.io/api/';
+// const API_BASE_URL = 'http://localhost:3002/';
 
-const RESOURCE_BASE_URL = 'http://convention.mufan.io:8801/';
+const RESOURCE_BASE_URL = 'https://librarian.mufan.io/api/';
 
 export const API_UNKNOWN_ERROR = '网络错误';
 

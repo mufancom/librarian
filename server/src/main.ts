@@ -15,7 +15,12 @@ ExpressSessionMiddleware.configure(Config.session.get());
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
-  app.enableCors({origin: Config.server.get('corsOrigin'), credentials: true});
+  if (Config.server.get('enableCors')) {
+    app.enableCors({
+      origin: Config.server.get('corsOrigin'),
+      credentials: true,
+    });
+  }
 
   app.use(new ExpressSessionMiddleware().resolve());
 
