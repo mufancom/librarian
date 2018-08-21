@@ -1,10 +1,10 @@
 import {Button} from 'antd';
 import classNames from 'classnames';
 import {action, observable} from 'mobx';
-import React, {Component} from 'react';
+import React, {Component, createRef} from 'react';
 
 import {ConventionService} from 'services/convention-service';
-import {ConventionStore} from 'stores/convention-store';
+import {ConventionStore, ItemDraft} from 'stores/convention-store';
 import {styled} from 'theme';
 import {inject, observer} from 'utils/mobx';
 
@@ -61,20 +61,22 @@ export class ConventionBodyItemCreate extends Component<
   @observable
   initialContent: string = '';
 
-  editorKey = 0;
+  editorRef: React.RefObject<any> = createRef();
 
-  authSaveTimer: any;
+  autoSaveTimer: any;
+
+  autoSaveLastTime = 0;
 
   componentWillUnmount(): void {
-    if (this.authSaveTimer) {
-      clearTimeout(this.authSaveTimer);
+    if (this.autoSaveTimer) {
+      clearTimeout(this.autoSaveTimer);
     }
   }
 
   render(): JSX.Element {
     let {className, onCancelClick, show, loading} = this.props;
 
-    let {newItemDraft} = this.conventionStore;
+    let newItemDraft = this.getCurrentDraft();
 
     return (
       <Wrapper
@@ -108,7 +110,7 @@ export class ConventionBodyItemCreate extends Component<
               </AddConventionHeadOperations>
             </AddConventionHead>
             <ConventionBodyItemEditor
-              key={this.editorKey}
+              ref={this.editorRef}
               initialContent={this.initialContent}
               onContentChange={this.onContentChange}
               onSaveKeyDown={this.onSaveKeyDown}
@@ -126,17 +128,17 @@ export class ConventionBodyItemCreate extends Component<
     this.content = content;
 
     if (this.content.length !== 0) {
-      if (this.authSaveTimer) {
-        clearTimeout(this.authSaveTimer);
+      if (this.autoSaveTimer) {
+        clearTimeout(this.autoSaveTimer);
       }
 
-      this.authSaveTimer = setTimeout(this.onAutoSave, AUTO_SAVE_INTERVAL);
+      this.autoSaveTimer = setTimeout(this.onAutoSave, 1000);
     }
   };
 
   @action
   onRestoreButtonClick = (): void => {
-    let {newItemDraft} = this.conventionStore;
+    let newItemDraft = this.getCurrentDraft();
 
     if (newItemDraft) {
       this.setContent(newItemDraft.content);
@@ -145,9 +147,13 @@ export class ConventionBodyItemCreate extends Component<
 
   @action
   setContent(content: string): void {
-    this.initialContent = content;
+    let editorInjector = this.editorRef.current;
 
-    this.editorKey++;
+    if (editorInjector) {
+      let editor = editorInjector.wrappedInstance as ConventionBodyItemEditor;
+
+      editor.setContent(content);
+    }
   }
 
   onInnerOkClick = (): void => {
@@ -158,14 +164,41 @@ export class ConventionBodyItemCreate extends Component<
     }
   };
 
-  onSaveKeyDown = (): void => {};
-
-  onAutoSave = (): void => {
+  onSaveKeyDown = (): void => {
     this.save();
   };
 
+  onAutoSave = (): void => {
+    let now = Date.now();
+
+    if (now - this.autoSaveLastTime > AUTO_SAVE_INTERVAL) {
+      this.save();
+      this.autoSaveLastTime = now;
+    }
+  };
+
+  getCurrentDraft = (): ItemDraft | undefined => {
+    let {currentConvention} = this.conventionStore;
+
+    if (currentConvention) {
+      let {id} = currentConvention;
+
+      return this.conventionService.getNewConventionItemDraft(id);
+    }
+
+    return undefined;
+  };
+
   save = (): void => {
-    this.conventionService.saveNewConventionItemDraft(this.content);
+    let {currentConvention} = this.conventionStore;
+
+    if (currentConvention) {
+      let {id} = currentConvention;
+
+      this.conventionService.saveNewConventionItemDraft(id, this.content);
+
+      this.forceUpdate();
+    }
   };
 
   static Wrapper = Wrapper;

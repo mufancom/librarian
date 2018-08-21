@@ -6,7 +6,11 @@ import {Icon} from 'react-fa';
 import ReactMde, {DraftUtil, ReactMdeTypes} from 'react-mde';
 import 'react-mde/lib/styles/css/react-mde-all.css';
 
-import {MarkdownState, MdeState} from 'react-mde/lib/definitions/types';
+import {
+  MarkdownState,
+  MdeState,
+  TextSelection,
+} from 'react-mde/lib/definitions/types';
 import {Direction, ScrollService} from 'services/scroll-service';
 import {styled} from 'theme';
 import {mark, prettifyWithCursor} from 'utils/markdown';
@@ -235,18 +239,20 @@ export class ConventionBodyItemEditor extends Component<
       this.wrapperRef.current,
     ) as HTMLDivElement;
 
-    let {top, bottom} = wrapperDiv.getBoundingClientRect();
-
-    if (top < 90 && bottom > 90 + 50) {
-      this.fixedToolBar = true;
-    } else {
-      this.fixedToolBar = false;
-    }
-
     if (direction === Direction.down && lastingLength > 100) {
       this.setPullUp(true);
     } else if (direction === Direction.up) {
       this.setPullUp(false);
+    }
+
+    let {top, bottom} = wrapperDiv.getBoundingClientRect();
+
+    const headerHeight = 90;
+
+    if (top < headerHeight && bottom > (this.pullUp ? 0 : headerHeight) + 50) {
+      this.fixedToolBar = true;
+    } else {
+      this.fixedToolBar = false;
     }
   };
 
@@ -333,6 +339,36 @@ export class ConventionBodyItemEditor extends Component<
       this.mdeState = newMdeState;
     }
   };
+
+  setContent(content: string): void {
+    let mdeState = this.mdeState;
+
+    let {draftEditorState} = mdeState;
+
+    if (draftEditorState) {
+      let selection: TextSelection = {
+        start: content.length,
+        end: content.length,
+      };
+
+      let newMarkdownState: MarkdownState = {
+        text: content,
+        selection,
+      };
+
+      let newEditorState = DraftUtil.buildNewDraftState(
+        draftEditorState,
+        newMarkdownState,
+      );
+
+      let newMdeState: MdeState = {
+        markdown: content,
+        draftEditorState: newEditorState,
+      };
+
+      this.mdeState = newMdeState;
+    }
+  }
 
   iconProvider = (name: string): React.ReactNode => {
     switch (name) {

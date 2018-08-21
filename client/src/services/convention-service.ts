@@ -9,6 +9,7 @@ import {
   ConventionStore,
   EditItemDraftDict,
   ItemDraft,
+  NewItemDraftDict,
 } from 'stores/convention-store';
 import {prettify} from 'utils/markdown';
 
@@ -93,7 +94,7 @@ export class ConventionService {
     private apiService: APIService,
     private conventionStore: ConventionStore,
   ) {
-    this.getNewItemDraftStore();
+    this.getNewItemDraftDict();
     this.getItemDraftDict();
 
     // tslint:disable-next-line:no-console
@@ -342,29 +343,35 @@ export class ConventionService {
   }
 
   @action
-  getNewConventionItemDraft(): void {
-    let draftString = localStorage.getItem('draft_new_contention_item');
+  getNewConventionItemDraft(conventionId: number): ItemDraft | undefined {
+    let {newItemDraftDict} = this.conventionStore;
 
-    if (draftString) {
-      let draft = JSON.parse(draftString) as ItemDraft;
-
-      this.conventionStore.newItemDraft = draft;
+    if (conventionId in newItemDraftDict) {
+      return newItemDraftDict[conventionId];
     }
+
+    return undefined;
   }
 
   @action
-  saveNewConventionItemDraft(content: string): void {
+  saveNewConventionItemDraft(conventionId: number, content: string): void {
     let savedAt = new Date().toString();
 
-    this.conventionStore.newItemDraft = {content, savedAt} as ItemDraft;
+    let draft = {content, savedAt} as ItemDraft;
 
-    this.storeNewItemDraft();
+    this.conventionStore.newItemDraftDict[conventionId] = draft;
+
+    this.storeNewItemDraftDict();
   }
 
-  deleteNewConventionItemDraft(): void {
-    this.conventionStore.newItemDraft = undefined;
+  deleteNewConventionItemDraft(conventionId: number): void {
+    let {newItemDraftDict} = this.conventionStore;
 
-    this.storeNewItemDraft();
+    if (conventionId in newItemDraftDict) {
+      delete newItemDraftDict[conventionId];
+
+      this.storeNewItemDraftDict();
+    }
   }
 
   @action
@@ -387,23 +394,21 @@ export class ConventionService {
   }
 
   @action
-  private getNewItemDraftStore(): void {
-    let storeString = localStorage.getItem('draft_new_contention_item');
+  private getNewItemDraftDict(): void {
+    let storeString = localStorage.getItem('convention_new_item_draft_dict');
+
+    let store: NewItemDraftDict = {};
 
     if (storeString) {
-      let store = JSON.parse(storeString) as ItemDraft;
-
-      this.conventionStore.newItemDraft = store;
+      store = JSON.parse(storeString) as NewItemDraftDict;
     }
+
+    this.conventionStore.newItemDraftDict = store;
   }
 
-  private storeNewItemDraft(): void {
-    let {newItemDraft} = this.conventionStore;
+  private storeNewItemDraftDict(): void {
+    let dictString = JSON.stringify(this.conventionStore.newItemDraftDict);
 
-    if (newItemDraft) {
-      let dictString = JSON.stringify(newItemDraft);
-
-      localStorage.setItem('draft_new_contention_item', dictString);
-    }
+    localStorage.setItem('convention_new_item_draft_dict', dictString);
   }
 }

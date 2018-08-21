@@ -69,6 +69,10 @@ export interface EditItemDraftDict {
   [key: number]: ItemDraft;
 }
 
+export interface NewItemDraftDict {
+  [key: number]: ItemDraft;
+}
+
 export interface ConventionCache {
   [key: number]: Convention;
 }
@@ -94,7 +98,7 @@ export class ConventionStore {
   currentContent: ConventionItem[] = [];
 
   @observable
-  newItemDraft?: ItemDraft;
+  newItemDraftDict: NewItemDraftDict = {};
 
   @observable
   editItemDraftDict: EditItemDraftDict = {};
