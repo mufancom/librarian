@@ -1,5 +1,6 @@
 import highlight from 'highlight.js';
 import _marked from 'marked';
+import {CursorResult} from 'prettier';
 import prettierBabylonParser from 'prettier/parser-babylon';
 import prettierMarkdownParser from 'prettier/parser-markdown';
 import prettierPostCSS from 'prettier/parser-postcss';
@@ -43,9 +44,21 @@ _marked.setOptions({
 
 export const mark = _marked;
 
+const prettifyDefaultOptions = {
+  parser: 'markdown' as 'markdown',
+  plugins: prettierPlugins as any,
+};
+
 export function prettify(markdown: string): string {
-  return prettier.format(markdown, {
-    parser: 'markdown',
-    plugins: prettierPlugins as any,
+  return prettier.format(markdown, prettifyDefaultOptions);
+}
+
+export function prettifyWithCursor(
+  markdown: string,
+  cursorOffset: number,
+): CursorResult {
+  return prettier.formatWithCursor(markdown, {
+    ...prettifyDefaultOptions,
+    cursorOffset,
   });
 }

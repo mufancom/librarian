@@ -1,7 +1,12 @@
 declare module 'prettier/standalone' {
-  import {Options} from 'prettier';
+  import {CursorOptions, CursorResult, Options} from 'prettier';
 
   export function format(source: string, options?: Options): string;
+
+  export function formatWithCursor(
+    source: string,
+    options: CursorOptions,
+  ): CursorResult;
 }
 
 declare module 'prettier/parser-babylon';

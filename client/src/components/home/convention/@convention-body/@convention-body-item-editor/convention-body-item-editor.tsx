@@ -3,12 +3,13 @@ import {action, observable} from 'mobx';
 import React, {Component, createRef} from 'react';
 import ReactDOM from 'react-dom';
 import {Icon} from 'react-fa';
-import ReactMde, {ReactMdeTypes} from 'react-mde';
+import ReactMde, {DraftUtil, ReactMdeTypes} from 'react-mde';
 import 'react-mde/lib/styles/css/react-mde-all.css';
 
+import {MarkdownState, MdeState} from 'react-mde/lib/definitions/types';
 import {Direction, ScrollService} from 'services/scroll-service';
 import {styled} from 'theme';
-import {mark} from 'utils/markdown';
+import {mark, prettifyWithCursor} from 'utils/markdown';
 import {inject, observer} from 'utils/mobx';
 
 import {ResizeListener} from '../../../../common';
@@ -165,8 +166,6 @@ export class ConventionBodyItemEditor extends Component<
 
   listenerId!: number;
 
-  mdeKey = 0;
-
   constructor(props: ConventionBodyItemEditorProps) {
     super(props);
 
@@ -181,6 +180,7 @@ export class ConventionBodyItemEditor extends Component<
 
   componentDidMount(): void {
     this.listenerId = this.scrollService.addListener(this.onWindowScroll);
+
     this.onWindowResize();
   }
 
@@ -208,8 +208,7 @@ export class ConventionBodyItemEditor extends Component<
           layout="tabbed"
           onChange={this.onMarkdownInputChange}
           editorState={this.mdeState}
-          generateMarkdownPreview={markdown => Promise.resolve(mark(markdown))}
-          key={this.mdeKey}
+          generateMarkdownPreview={this.generateMarkdownPreview}
         />
       </Wrapper>
     );
@@ -278,11 +277,60 @@ export class ConventionBodyItemEditor extends Component<
     if (ctrlKey && keyCode === 83) {
       event.preventDefault();
 
+      this.prettifyCodes();
+
       let {onSaveKeyDown} = this.props;
 
       if (onSaveKeyDown) {
         onSaveKeyDown();
       }
+    }
+  };
+
+  generateMarkdownPreview = async (markdown: string): Promise<string> => {
+    return mark(markdown);
+  };
+
+  @action
+  prettifyCodes = (): void => {
+    let mdeState = this.mdeState;
+
+    let {draftEditorState} = mdeState;
+
+    if (draftEditorState) {
+      let selection = DraftUtil.getSelection(draftEditorState);
+
+      let {formatted, cursorOffset} = prettifyWithCursor(
+        mdeState.markdown!,
+        selection.start,
+      );
+
+      let selectionLength = selection.end - selection.start;
+
+      selection.start = cursorOffset;
+
+      selection.end = selection.start + selectionLength;
+
+      if (selection.end > formatted.length) {
+        selection.end = formatted.length;
+      }
+
+      let newMarkdownState: MarkdownState = {
+        text: formatted,
+        selection,
+      };
+
+      let newEditorState = DraftUtil.buildNewDraftState(
+        draftEditorState,
+        newMarkdownState,
+      );
+
+      let newMdeState: MdeState = {
+        markdown: formatted,
+        draftEditorState: newEditorState,
+      };
+
+      this.mdeState = newMdeState;
     }
   };
 

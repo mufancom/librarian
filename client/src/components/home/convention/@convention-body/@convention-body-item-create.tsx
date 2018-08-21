@@ -6,7 +6,6 @@ import React, {Component} from 'react';
 import {ConventionService} from 'services/convention-service';
 import {ConventionStore} from 'stores/convention-store';
 import {styled} from 'theme';
-import {prettify} from 'utils/markdown';
 import {inject, observer} from 'utils/mobx';
 
 import {ConventionBodyItemEditor} from './@convention-body-item-editor';
@@ -159,9 +158,7 @@ export class ConventionBodyItemCreate extends Component<
     }
   };
 
-  onSaveKeyDown = (): void => {
-    this.setContent(prettify(this.content));
-  };
+  onSaveKeyDown = (): void => {};
 
   onAutoSave = (): void => {
     this.save();
