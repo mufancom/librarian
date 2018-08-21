@@ -171,7 +171,10 @@ export class ConventionBodyItemCreate extends Component<
   onAutoSave = (): void => {
     let now = Date.now();
 
-    if (now - this.autoSaveLastTime > AUTO_SAVE_INTERVAL) {
+    if (
+      this.autoSaveLastTime !== 0 &&
+      now - this.autoSaveLastTime > AUTO_SAVE_INTERVAL
+    ) {
       this.save();
       this.autoSaveLastTime = now;
     }
