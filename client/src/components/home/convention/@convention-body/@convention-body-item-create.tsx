@@ -59,7 +59,7 @@ export class ConventionBodyItemCreate extends Component<
   content: string = '';
 
   @observable
-  initialContent: string = '';
+  initialContent: string = '## 条目标题\n\n条目正文';
 
   editorRef: React.RefObject<any> = createRef();
 
