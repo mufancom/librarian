@@ -1,6 +1,6 @@
 import {message} from 'antd';
 import classNames from 'classnames';
-import {action, observable} from 'mobx';
+import {action, computed, observable} from 'mobx';
 import React, {Component, createRef} from 'react';
 import ReactDOM from 'react-dom';
 import {NavLink, RouteComponentProps, withRouter} from 'react-router-dom';
@@ -30,6 +30,12 @@ const Wrapper = styled.li`
   padding-bottom: 8px;
   list-style-type: none;
   display: block;
+  transition: all 0.3s;
+
+  &.shift-loading {
+    opacity: 0.5;
+    transition: all 0.3s;
+  }
 
   a {
     color: ${props => props.theme.text.navRegular};
@@ -74,7 +80,7 @@ export class ConventionSideNavItem extends Component<
   conventionService!: ConventionService;
 
   @observable
-  showShiftButton = false;
+  mouseMoveIn = false;
 
   @observable
   renameMode = false;
@@ -85,11 +91,19 @@ export class ConventionSideNavItem extends Component<
   @observable
   itemTitle = this.props.node.entry.title;
 
+  @observable
+  shiftLoading = false;
+
   renameCancelBlocker?: CancelBlocker;
 
   renameBlurTimer: any;
 
   itemTitleRef: React.RefObject<any> = createRef();
+
+  @computed
+  get showButtons(): boolean {
+    return this.mouseMoveIn && this.authStore.isLoggedIn && !this.shiftLoading;
+  }
 
   render(): JSX.Element {
     let {
@@ -99,7 +113,11 @@ export class ConventionSideNavItem extends Component<
 
     return (
       <Wrapper
-        className={classNames('convention-side-nav-item', className)}
+        className={classNames(
+          'convention-side-nav-item',
+          className,
+          this.shiftLoading ? 'shift-loading' : undefined,
+        )}
         onMouseEnter={this.onMouseEnter}
         onMouseLeave={this.onMouseLeave}
       >
@@ -114,23 +132,19 @@ export class ConventionSideNavItem extends Component<
             ref={this.itemTitleRef}
           />
           <ConventionSideNavEditBtn
-            show={this.showShiftButton && this.authStore.isLoggedIn}
+            show={this.showButtons}
             editMode={this.renameMode}
             editLoading={this.renameLoading}
             onClick={this.onRenameButtonClick}
             onFinishClick={this.onRenameFinishButtonClick}
           />
           <ConventionSideNavDeleteBtn
-            show={
-              this.showShiftButton &&
-              this.authStore.isLoggedIn &&
-              !this.renameMode
-            }
+            show={this.showButtons && !this.renameMode}
             onClick={this.onDeleteButtonClick}
           />
         </NavLink>
         <ConventionSideNavShiftBtn
-          show={this.showShiftButton && this.authStore.isLoggedIn}
+          show={this.showButtons}
           upOnclick={this.onUpShiftButtonOnclick}
           downOnclick={this.onDownShiftButtonOnclick}
         />
@@ -140,12 +154,12 @@ export class ConventionSideNavItem extends Component<
 
   @action
   onMouseEnter = (): void => {
-    this.showShiftButton = true;
+    this.mouseMoveIn = true;
   };
 
   @action
   onMouseLeave = (): void => {
-    this.showShiftButton = false;
+    this.mouseMoveIn = false;
   };
 
   @action
@@ -227,7 +241,10 @@ export class ConventionSideNavItem extends Component<
     await this.shiftConvention(1);
   };
 
+  @action
   async shiftConvention(offset: number): Promise<void> {
+    this.shiftLoading = true;
+
     let {
       node: {
         entry: {id, orderId},
@@ -241,6 +258,8 @@ export class ConventionSideNavItem extends Component<
 
       message.error(errorMessage);
     }
+
+    this.shiftLoading = false;
   }
 
   static Wrapper = Wrapper;

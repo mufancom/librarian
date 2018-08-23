@@ -2,6 +2,7 @@ import {message} from 'antd';
 import classNames from 'classnames';
 import {action, observable} from 'mobx';
 import * as React from 'react';
+import FlipMove from 'react-flip-move';
 import {RouteComponentProps, withRouter} from 'react-router';
 
 import {fetchErrorMessage} from 'services/api-service';
@@ -56,12 +57,16 @@ const Menu: React.SFC<MenuProps> = props => {
   if (list) {
     return (
       <ul className="menu">
-        {list.map(val => (
-          <ConventionSideNavCategoryWithRouter
-            key={val.entry.id}
-            node={val as ConventionIndexCategoryNode}
-          />
-        ))}
+        <FlipMove>
+          {list.map(val => (
+            <div key={val.entry.id}>
+              <ConventionSideNavCategoryWithRouter
+                key={val.entry.id}
+                node={val as ConventionIndexCategoryNode}
+              />
+            </div>
+          ))}
+        </FlipMove>
       </ul>
     );
   } else {

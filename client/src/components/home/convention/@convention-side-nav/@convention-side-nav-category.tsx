@@ -1,8 +1,9 @@
 import {Dropdown, Menu, message} from 'antd';
 import classNames from 'classnames';
-import {action, observable} from 'mobx';
+import {action, computed, observable} from 'mobx';
 import React, {Component, createRef} from 'react';
 import ReactDOM from 'react-dom';
+import FlipMove from 'react-flip-move';
 import {RouteComponentProps, withRouter} from 'react-router';
 
 import {fetchErrorMessage} from 'services/api-service';
@@ -31,6 +32,12 @@ const Wrapper = styled.li`
   font-size: 17px;
   font-weight: 700;
   padding: 0;
+  transition: all 0.3s;
+
+  &.shift-loading {
+    opacity: 0.5;
+    transition: all 0.3s;
+  }
 
   ul {
     padding: 38px 0 18px 0;
@@ -133,7 +140,7 @@ export class ConventionSideNavCategory extends Component<
   inputModalLoading = false;
 
   @observable
-  showEditButton = false;
+  mouseMoveIn = false;
 
   @observable
   renameMode = false;
@@ -144,6 +151,9 @@ export class ConventionSideNavCategory extends Component<
   @observable
   categoryTitle = this.props.node.entry.title;
 
+  @observable
+  shiftLoading = false;
+
   categoryTitleRef: React.RefObject<any> = createRef();
 
   renameCancelBlocker?: CancelBlocker;
@@ -152,12 +162,21 @@ export class ConventionSideNavCategory extends Component<
 
   wrapperRef: React.RefObject<any> = createRef();
 
+  @computed
+  get showButtons(): boolean {
+    return this.mouseMoveIn && this.authStore.isLoggedIn && !this.shiftLoading;
+  }
+
   render(): JSX.Element {
     let {className, node} = this.props;
 
     return (
       <Wrapper
-        className={classNames('convention-size-nav-category', className)}
+        className={classNames(
+          'convention-size-nav-category',
+          className,
+          this.shiftLoading ? 'shift-loading' : undefined,
+        )}
         ref={this.wrapperRef}
       >
         <InputModal
@@ -183,18 +202,14 @@ export class ConventionSideNavCategory extends Component<
             ref={this.categoryTitleRef}
           />
           <ConventionSideNavEditBtn
-            show={this.showEditButton && this.authStore.isLoggedIn}
+            show={this.showButtons}
             editMode={this.renameMode}
             editLoading={this.renameLoading}
             onClick={this.onRenameButtonClick}
             onFinishClick={this.onRenameFinishButtonClick}
           />
           <ConventionSideNavDeleteBtn
-            show={
-              this.showEditButton &&
-              this.authStore.isLoggedIn &&
-              !this.renameMode
-            }
+            show={this.showButtons && !this.renameMode}
             onClick={this.onDeleteButtonClick}
           />
           <Dropdown
@@ -205,27 +220,33 @@ export class ConventionSideNavCategory extends Component<
             <ConventionSideNavAddBtn show={this.authStore.isLoggedIn} />
           </Dropdown>
           <ConventionSideNavShiftBtn
-            show={this.showEditButton && this.authStore.isLoggedIn}
+            show={this.showButtons}
             upOnclick={this.onUpShiftButtonOnclick}
             downOnclick={this.onDownShiftButtonOnclick}
           />
         </ConventionCategoryTitle>
         <ul>
           {node.children && node.children.length > 0 ? (
-            node.children.map(
-              val =>
-                val.type === 'convention' ? (
-                  <ConventionSideNavItemWithRouter
-                    key={val.entry.id}
-                    node={val}
-                  />
-                ) : (
-                  <ConventionSideNavGroupWithRouter
-                    key={val.entry.id}
-                    node={val}
-                  />
-                ),
-            )
+            <FlipMove>
+              {node.children.map(
+                val =>
+                  val.type === 'convention' ? (
+                    <div key={val.entry.id}>
+                      <ConventionSideNavItemWithRouter
+                        key={val.entry.id}
+                        node={val}
+                      />
+                    </div>
+                  ) : (
+                    <div key={val.entry.id}>
+                      <ConventionSideNavGroupWithRouter
+                        key={val.entry.id}
+                        node={val}
+                      />
+                    </div>
+                  ),
+              )}
+            </FlipMove>
           ) : (
             <li />
           )}
@@ -240,12 +261,12 @@ export class ConventionSideNavCategory extends Component<
 
   @action
   onMouseEnterTitle = (): void => {
-    this.showEditButton = true;
+    this.mouseMoveIn = true;
   };
 
   @action
   onMouseLeaveTitle = (): void => {
-    this.showEditButton = false;
+    this.mouseMoveIn = false;
   };
 
   @action
@@ -410,7 +431,10 @@ export class ConventionSideNavCategory extends Component<
     await this.shiftCategory(1);
   };
 
+  @action
   async shiftCategory(offset: number): Promise<void> {
+    this.shiftLoading = true;
+
     let {
       node: {
         entry: {id, orderId},
@@ -424,6 +448,8 @@ export class ConventionSideNavCategory extends Component<
 
       message.error(errorMessage);
     }
+
+    this.shiftLoading = false;
   }
 
   static Wrapper = Wrapper;

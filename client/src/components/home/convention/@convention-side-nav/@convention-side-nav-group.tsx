@@ -1,8 +1,9 @@
 import {message} from 'antd';
 import classNames from 'classnames';
-import {action, observable} from 'mobx';
+import {action, computed, observable} from 'mobx';
 import React, {Component, createRef} from 'react';
 import ReactDOM from 'react-dom';
+import FlipMove from 'react-flip-move';
 import {RouteComponentProps, withRouter} from 'react-router';
 
 import {fetchErrorMessage} from 'services/api-service';
@@ -33,6 +34,12 @@ const Wrapper = styled.li`
   font-size: 12.5px;
   font-weight: 300;
   padding-top: 12px;
+  transition: all 0.3s;
+
+  &.shift-loading {
+    opacity: 0.5;
+    transition: all 0.3s;
+  }
 
   ul {
     padding: 6px 0;
@@ -73,7 +80,7 @@ export class ConventionSideNavGroup extends Component<
   showEdit = false;
 
   @observable
-  showShiftButton = false;
+  mouseMoveIn = false;
 
   @observable
   inputModalVisible = false;
@@ -90,17 +97,31 @@ export class ConventionSideNavGroup extends Component<
   @observable
   groupTitle = this.props.node.entry.title;
 
+  @observable
+  shiftLoading = false;
+
   groupTitleRef: React.RefObject<any> = createRef();
 
   renameCancelBlocker?: CancelBlocker;
 
   leaveTimer: any;
 
+  @computed
+  get showButtons(): boolean {
+    return this.mouseMoveIn && this.authStore.isLoggedIn && !this.shiftLoading;
+  }
+
   render(): JSX.Element {
     let {className, node} = this.props;
 
     return (
-      <Wrapper className={classNames('convention-side-nav-group', className)}>
+      <Wrapper
+        className={classNames(
+          'convention-side-nav-group',
+          className,
+          this.shiftLoading ? 'shift-loading' : undefined,
+        )}
+      >
         <InputModal
           title="新增规范"
           placeholder="请输入规范名"
@@ -123,34 +144,34 @@ export class ConventionSideNavGroup extends Component<
             ref={this.groupTitleRef}
           />
           <ConventionSideNavEditBtn
-            show={this.showShiftButton && this.authStore.isLoggedIn}
+            show={this.showButtons}
             editMode={this.renameMode}
             editLoading={this.renameLoading}
             onClick={this.onRenameButtonClick}
             onFinishClick={this.onRenameFinishButtonClick}
           />
           <ConventionSideNavDeleteBtn
-            show={
-              this.showShiftButton &&
-              this.authStore.isLoggedIn &&
-              !this.renameMode
-            }
+            show={this.showButtons && !this.renameMode}
             onClick={this.onDeleteButtonClick}
           />
           <ConventionSideNavShiftBtn
-            show={this.showShiftButton && this.authStore.isLoggedIn}
+            show={this.showButtons}
             upOnclick={this.onUpShiftButtonClick}
             downOnclick={this.onDownShiftButtonClick}
           />
         </GroupTitle>
         <ul style={{marginTop: '7px'}}>
           {node.children && node.children.length > 0 ? (
-            node.children.map(val => (
-              <ConventionSideNavItemWithRouter
-                key={val.entry.id}
-                node={val as ConventionIndexConventionNode}
-              />
-            ))
+            <FlipMove>
+              {node.children.map(val => (
+                <div key={val.entry.id}>
+                  <ConventionSideNavItemWithRouter
+                    key={val.entry.id}
+                    node={val as ConventionIndexConventionNode}
+                  />
+                </div>
+              ))}
+            </FlipMove>
           ) : (
             <li />
           )}
@@ -167,12 +188,12 @@ export class ConventionSideNavGroup extends Component<
 
   @action
   onMouseEnterTitle = (): void => {
-    this.showShiftButton = true;
+    this.mouseMoveIn = true;
   };
 
   @action
   onMouseLeaveTitle = (): void => {
-    this.showShiftButton = false;
+    this.mouseMoveIn = false;
   };
 
   @action
@@ -289,7 +310,10 @@ export class ConventionSideNavGroup extends Component<
     await this.shiftGroup(1);
   };
 
+  @action
   async shiftGroup(offset: number): Promise<void> {
+    this.shiftLoading = true;
+
     let {
       node: {
         entry: {id, orderId},
@@ -303,6 +327,8 @@ export class ConventionSideNavGroup extends Component<
 
       message.error(errorMessage);
     }
+
+    this.shiftLoading = false;
   }
 
   static Wrapper = Wrapper;
