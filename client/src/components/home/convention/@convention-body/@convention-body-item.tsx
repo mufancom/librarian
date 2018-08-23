@@ -21,6 +21,10 @@ const Wrapper = styled.div`
   padding-bottom: 1.9rem;
   position: relative;
 
+  &.shift-loading {
+    opacity: 0.5;
+  }
+
   ${ConventionBodyItemEditor.Wrapper} {
     left: 0;
     right: 0;
@@ -82,12 +86,19 @@ export class ConventionBodyItem extends Component<ConventionBodyItemProps> {
   @observable
   editLoading = false;
 
+  @observable
+  shiftLoading = false;
+
   render(): JSX.Element {
     let {className, item} = this.props;
 
     return (
       <Wrapper
-        className={classNames('convention-body-item', className)}
+        className={classNames(
+          'convention-body-item',
+          className,
+          this.shiftLoading ? 'shift-loading' : undefined,
+        )}
         onMouseEnter={this.conventionOnHoverStart}
         onMouseLeave={this.conventionOnHoverEnd}
       >
@@ -198,17 +209,18 @@ export class ConventionBodyItem extends Component<ConventionBodyItemProps> {
     this.editLoading = false;
   };
 
-  @action
   onUpShiftButtonClick = async (): Promise<void> => {
     await this.shiftCategory(-2);
   };
 
-  @action
   onDownShiftButtonClick = async (): Promise<void> => {
     await this.shiftCategory(1);
   };
 
+  @action
   async shiftCategory(offset: number): Promise<void> {
+    this.shiftLoading = true;
+
     let {item} = this.props;
 
     let {orderId} = item;
@@ -220,6 +232,8 @@ export class ConventionBodyItem extends Component<ConventionBodyItemProps> {
 
       message.error(errorMessage);
     }
+
+    this.shiftLoading = false;
   }
 
   static Wrapper = Wrapper;

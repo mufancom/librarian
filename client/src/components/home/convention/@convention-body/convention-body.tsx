@@ -3,6 +3,7 @@ import classNames from 'classnames';
 import {action, observable} from 'mobx';
 import React, {Component, createRef} from 'react';
 import ReactDOM from 'react-dom';
+import FlipMove from 'react-flip-move';
 import {RouteComponentProps, withRouter} from 'react-router';
 import scrollIntoView from 'scroll-into-view-if-needed';
 
@@ -12,6 +13,7 @@ import {AuthStore} from 'stores/auth-store';
 import {ConventionStore} from 'stores/convention-store';
 import {RouterStore} from 'stores/router-store';
 import {styled} from 'theme';
+import {fadeInUpAnimation} from 'utils/dom';
 import {inject, observer} from 'utils/mobx';
 
 import {MarkdownStyle} from '../../../common';
@@ -61,9 +63,15 @@ export class ConventionBody extends Component<ConventionBodyProps> {
           {...this.props}
           onAddConventionButtonClick={this.onAddConventionButtonClick}
         />
-        {this.conventionStore.currentContent.map(value => {
-          return <ConventionBodyItem key={value.id} item={value} />;
-        })}
+        <FlipMove
+          enterAnimation={fadeInUpAnimation}
+          leaveAnimation="none"
+          delay="50"
+        >
+          {this.conventionStore.currentContent.map(value => {
+            return <ConventionBodyItem key={value.id} item={value} />;
+          })}
+        </FlipMove>
         <ConventionBodyItemCreate
           ref={this.itemCreateRef}
           show={this.showCreateConvention && this.authStore.isLoggedIn}

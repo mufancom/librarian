@@ -8,3 +8,24 @@ export function collapseToEnd(element: HTMLElement): void {
 
   collapse(element, nodeValue!.length);
 }
+
+export const fadeInUpAnimation = {
+  from: {
+    transform: 'translateY(+50px)',
+    opacity: '0',
+  },
+  to: {
+    transform: 'none',
+    opacity: '1',
+  },
+};
+
+export const fadeOutDownAnimation = {
+  from: {
+    opacity: '1',
+  },
+  to: {
+    transform: 'translateY(+50px)',
+    opacity: '0',
+  },
+};

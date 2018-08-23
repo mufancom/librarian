@@ -14,7 +14,7 @@ import {
   ConventionIndexConventionNode,
 } from 'stores/convention-store';
 import {styled} from 'theme';
-import {collapseToEnd} from 'utils/dom';
+import {collapseToEnd, fadeInUpAnimation} from 'utils/dom';
 import {inject, observer} from 'utils/mobx';
 
 import {InputModal} from '../../../common/modal';
@@ -162,7 +162,7 @@ export class ConventionSideNavGroup extends Component<
         </GroupTitle>
         <ul style={{marginTop: '7px'}}>
           {node.children && node.children.length > 0 ? (
-            <FlipMove>
+            <FlipMove enterAnimation={fadeInUpAnimation} duration="300">
               {node.children.map(val => (
                 <div key={val.entry.id}>
                   <ConventionSideNavItemWithRouter

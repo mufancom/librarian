@@ -14,6 +14,7 @@ import {
   ConventionStore,
 } from 'stores/convention-store';
 import {styled} from 'theme';
+import {fadeInUpAnimation} from 'utils/dom';
 import {inject, observer} from 'utils/mobx';
 
 import {InputModal} from '../../../common/modal';
@@ -57,7 +58,7 @@ const Menu: React.SFC<MenuProps> = props => {
   if (list) {
     return (
       <ul className="menu">
-        <FlipMove>
+        <FlipMove enterAnimation={fadeInUpAnimation} duration="300">
           {list.map(val => (
             <div key={val.entry.id}>
               <ConventionSideNavCategoryWithRouter
