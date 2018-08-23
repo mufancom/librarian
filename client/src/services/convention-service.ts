@@ -15,17 +15,36 @@ import {prettify} from 'utils/markdown';
 
 import {APIService} from './api-service';
 
+function isPositionAvailable(
+  node: ConventionIndexNode,
+  insertIndex: number,
+  siblings: ConventionIndexNode[],
+): boolean {
+  let sibling = siblings[insertIndex];
+
+  let {orderId} = node.entry;
+
+  if (sibling) {
+    if (node.type === 'category' && sibling.type === 'convention') {
+      return false;
+    } else if (node.type === 'convention' && sibling.type === 'category') {
+      return true;
+    } else if (orderId > sibling.entry.orderId) {
+      return false;
+    }
+    return true;
+  } else {
+    return true;
+  }
+}
+
 function insertIntoSortedSiblings<T extends ConventionIndexNode>(
   siblings: T[],
-  orderId: number,
   node: T,
 ): void {
   let insertIndex = 0;
 
-  while (
-    siblings.length > insertIndex &&
-    siblings[insertIndex].entry.orderId < orderId
-  ) {
+  while (!isPositionAvailable(node, insertIndex, siblings)) {
     insertIndex++;
   }
 
@@ -53,7 +72,7 @@ function buildIndexTree(
   for (let node of categoryMap.values()) {
     let {entry} = node;
 
-    let {parentId, orderId} = entry;
+    let {parentId} = entry;
 
     let siblings = result;
     if (parentId) {
@@ -64,11 +83,11 @@ function buildIndexTree(
       siblings = categoryMap.get(parentId)!.children;
     }
 
-    insertIntoSortedSiblings(siblings, orderId, node);
+    insertIntoSortedSiblings(siblings, node);
   }
 
   for (let convention of conventions) {
-    let {categoryId, orderId} = convention;
+    let {categoryId} = convention;
 
     if (!categoryMap.has(categoryId)) {
       continue;
@@ -76,7 +95,7 @@ function buildIndexTree(
 
     let siblings = categoryMap.get(categoryId)!.children;
 
-    insertIntoSortedSiblings(siblings, orderId, {
+    insertIntoSortedSiblings(siblings, {
       type: 'convention',
       entry: convention,
     });
