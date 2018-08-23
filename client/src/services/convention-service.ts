@@ -32,6 +32,7 @@ function isPositionAvailable(
     } else if (orderId > sibling.entry.orderId) {
       return false;
     }
+
     return true;
   } else {
     return true;
@@ -75,6 +76,7 @@ function buildIndexTree(
     let {parentId} = entry;
 
     let siblings = result;
+
     if (parentId) {
       if (!categoryMap.has(parentId)) {
         continue;

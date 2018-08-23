@@ -16,31 +16,16 @@
     esutils "^2.0.2"
     js-tokens "^3.0.0"
 
-"@magicspace/configs@^0.1.17":
-  version "0.1.17"
-  resolved "https://registry.npmjs.org/@magicspace/configs/-/configs-0.1.17.tgz#abce9cf990471c3d155c1f4a53c6cc7e8bf8e4a6"
+"@magicspace/configs@^0.1.23":
+  version "0.1.23"
+  resolved "https://registry.npmjs.org/@magicspace/configs/-/configs-0.1.23.tgz#80efe554f8731bb487c25b3ae45d92511fb4d8bc"
   dependencies:
-    "@magicspace/tslint-rules" "^0.1.12"
+    "@magicspace/tslint-rules" "^0.1.19"
     tslint-config-prettier "^1.10.0"
 
-"@magicspace/configs@^0.1.19":
+"@magicspace/tslint-rules@^0.1.19":
   version "0.1.19"
-  resolved "https://registry.npmjs.org/@magicspace/configs/-/configs-0.1.19.tgz#1dc18435406b6399a48412d40d45c9009f10c938"
-  dependencies:
-    "@magicspace/tslint-rules" "^0.1.14"
-    tslint-config-prettier "^1.10.0"
-
-"@magicspace/tslint-rules@^0.1.12":
-  version "0.1.12"
-  resolved "https://registry.npmjs.org/@magicspace/tslint-rules/-/tslint-rules-0.1.12.tgz#fcfddf07fda22451f5cf6d8e7e2380e15fdc9855"
-  dependencies:
-    lodash "^4.17.10"
-    resolve "^1.8.1"
-    tsutils "^2.28.0"
-
-"@magicspace/tslint-rules@^0.1.14":
-  version "0.1.14"
-  resolved "https://registry.npmjs.org/@magicspace/tslint-rules/-/tslint-rules-0.1.14.tgz#13aa1b3fef96b7efd199140b2c6f36ecd2195227"
+  resolved "https://registry.npmjs.org/@magicspace/tslint-rules/-/tslint-rules-0.1.19.tgz#86116246c069523eb57c2758bdf0d3950f07ffc7"
   dependencies:
     lodash "^4.17.10"
     resolve "^1.8.1"
@@ -6134,7 +6119,7 @@ mz@^2.4.0:
     object-assign "^4.0.1"
     thenify-all "^1.0.0"
 
-nan@2.10.0, nan@^2.9.2, nan@~2.10.0:
+nan@2.10.0, nan@^2.9.2:
   version "2.10.0"
   resolved "http://registry.npm.taobao.org/nan/download/nan-2.10.0.tgz#96d0cd610ebd58d4b4de9cc0c6828cda99c7548f"
 
@@ -6276,7 +6261,7 @@ node-pre-gyp@0.10.2:
     semver "^5.3.0"
     tar "^4"
 
-node-pre-gyp@^0.10.0, node-pre-gyp@^0.10.3:
+node-pre-gyp@^0.10.0:
   version "0.10.3"
   resolved "http://registry.npm.taobao.org/node-pre-gyp/download/node-pre-gyp-0.10.3.tgz#3070040716afdc778747b61b6887bf78880b80fc"
   dependencies:
@@ -9090,14 +9075,6 @@ split@^1.0.0:
 sprintf-js@~1.0.2:
   version "1.0.3"
   resolved "http://registry.npm.taobao.org/sprintf-js/download/sprintf-js-1.0.3.tgz#04e6926f662895354f3dd015203633b857297e2c"
-
-sqlite3@^4.0.2:
-  version "4.0.2"
-  resolved "http://registry.npm.taobao.org/sqlite3/download/sqlite3-4.0.2.tgz#1bbeb68b03ead5d499e42a3a1b140064791c5a64"
-  dependencies:
-    nan "~2.10.0"
-    node-pre-gyp "^0.10.3"
-    request "^2.87.0"
 
 sqlstring@2.3.1:
   version "2.3.1"

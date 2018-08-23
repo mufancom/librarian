@@ -1,10 +1,11 @@
+import 'react-mde/lib/styles/css/react-mde-all.css';
+
 import classNames from 'classnames';
 import {action, observable} from 'mobx';
 import React, {Component, createRef} from 'react';
 import ReactDOM from 'react-dom';
 import {Icon} from 'react-fa';
 import ReactMde, {DraftUtil, ReactMdeTypes} from 'react-mde';
-import 'react-mde/lib/styles/css/react-mde-all.css';
 
 import {
   MarkdownState,
@@ -280,6 +281,7 @@ export class ConventionBodyItemEditor extends Component<
   onKeyDown = (event: React.KeyboardEvent): void => {
     let keyCode = event.keyCode || event.which || event.charCode;
     let ctrlKey = event.ctrlKey || event.metaKey;
+
     if (ctrlKey && keyCode === 83) {
       event.preventDefault();
 

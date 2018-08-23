@@ -12,6 +12,7 @@ export const i18nLanguages = {
 function getAcceptableLang(langs: ReadonlyArray<string>): string {
   for (let lang of langs) {
     lang = lang.replace(/-(\w)/g, (_all, letter) => letter.toUpperCase());
+
     if (i18nLanguages.hasOwnProperty(lang)) {
       return lang;
     }

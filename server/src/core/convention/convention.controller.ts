@@ -55,6 +55,7 @@ export class ConventionController {
   @UseGuards(AuthGuard)
   async edit(@Body() data: EditDTO) {
     let convention = await this.conventionService.findOneById(data.id);
+
     if (!convention) {
       throw new ResourceNotFoundException('CONVENTION_NOT_FOUND');
     }

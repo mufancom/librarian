@@ -15,5 +15,6 @@ export function getMarkdownTitle(
   if (result && result.length === 2) {
     return result[1].trim();
   }
+
   return fallback;
 }

@@ -23,6 +23,7 @@ export function fetchErrorMessage(error: any): string {
 
 export class APIErrorException extends Error {
   message: string;
+
   constructor(readonly code: string, _message: string) {
     super(_message);
     this.message = _message;
@@ -92,6 +93,7 @@ export class APIService {
   ): Promise<T> {
     let url = Url.resolve(API_BASE_URL, path);
     let response;
+
     try {
       response = await axios({
         method,
@@ -174,6 +176,7 @@ export class APIService {
 
     let next = async (): Promise<void> => {
       let middleware = middlewares.pop();
+
       if (middleware) {
         await middleware(result, next);
       }

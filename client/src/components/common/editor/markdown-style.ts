@@ -23,13 +23,17 @@ export const MarkdownStyle = styled.div`
     font-size: 1.5em;
   }
   h3 {
+    padding-top: 0.3em;
     font-size: 1.25em;
+    padding-bottom: 0.35em;
   }
   h4 {
-    font-size: 1em;
+    padding-top: 0.5em;
+    font-size: 1.1em;
+    padding-bottom: 0.35em;
   }
   h5 {
-    font-size: 0.85em;
+    font-size: 1em;
   }
   h6 {
     font-size: 0.85em;
@@ -60,6 +64,9 @@ export const MarkdownStyle = styled.div`
   li {
     list-style: initial;
     word-wrap: break-all;
+    & > ul {
+      margin-top: 0.2rem;
+    }
     & > p {
       margin-top: 16px;
     }

@@ -52,6 +52,7 @@ interface MenuProps {
 
 const Menu: React.SFC<MenuProps> = props => {
   const list = props.list;
+
   if (list) {
     return (
       <ul className="menu">
