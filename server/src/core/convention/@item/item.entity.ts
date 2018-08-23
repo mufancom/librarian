@@ -28,6 +28,12 @@ export class Item {
   @Column({name: 'version_id'})
   versionId!: number;
 
+  @Column({name: 'version_hash'})
+  versionHash!: string;
+
+  @Column({name: 'version_created_at', type: 'timestamp'})
+  versionCreatedAt!: Date;
+
   @Column({name: 'comment_count'})
   commentCount!: number;
 

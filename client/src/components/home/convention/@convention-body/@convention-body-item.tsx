@@ -102,8 +102,9 @@ export class ConventionBodyItem extends Component<ConventionBodyItemProps> {
           <div>
             <ItemTopToolBar style={{opacity: this.showSidebar ? 1 : 0}}>
               <ItemVersionInfo>
-                版本ID:&nbsp;
-                {item.versionId} ({formatAsTimeAgo(item.updatedAt)})
+                版本:&nbsp;
+                {item.versionHash.slice(0, 7)} (
+                {formatAsTimeAgo(item.versionCreatedAt)})
               </ItemVersionInfo>
               {this.authStore.isLoggedIn ? (
                 <div>

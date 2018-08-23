@@ -1,5 +1,7 @@
 import {DeepPartial, Repository} from 'typeorm';
 
+import {md5} from 'utils/encryption';
+
 import {ItemVersion} from './item-version.entity';
 import {Item, ItemStatus} from './item.entity';
 
@@ -114,9 +116,16 @@ export async function createItemVersion(
   itemVersionLike: DeepPartial<ItemVersion>,
   itemVersionRepository: Repository<ItemVersion>,
 ) {
+  let now = Date.now();
+
   if (!itemVersionLike.hasOwnProperty('fromId')) {
     itemVersionLike.fromId = 0;
   }
+
+  itemVersionLike.hash = await md5({
+    itemVersion: itemVersionLike,
+    timestamp: now,
+  });
 
   itemVersionLike.commentCount = 0;
   itemVersionLike.thumbUpCount = 0;

@@ -5,8 +5,10 @@ import {
   Param,
   Post,
   Query,
+  Req,
   UseGuards,
 } from '@nestjs/common';
+import {Request} from 'express';
 
 import {
   ResourceConflictingException,
@@ -29,17 +31,18 @@ export class ItemController {
 
   @Post('create')
   @UseGuards(AuthGuard)
-  async create(@Body() data: CreateDTO) {
+  async create(@Body() data: CreateDTO, @Req() {user}: Request) {
     if (!(await this.conventionService.findOneById(data.conventionId))) {
       throw new ResourceNotFoundException('CONVENTION_NOT_FOUND');
     }
 
-    let {conventionId, afterOrderId} = data;
+    let {conventionId, afterOrderId, message} = data;
 
     let {id} = await this.itemService.createItem(
+      user.id,
       conventionId,
       afterOrderId,
-      data.message,
+      message,
       data,
     );
 
@@ -48,7 +51,7 @@ export class ItemController {
 
   @Post('edit')
   @UseGuards(AuthGuard)
-  async edit(@Body() data: EditDTO) {
+  async edit(@Body() data: EditDTO, @Req() {user}: Request) {
     let item = await this.itemService.getItemById(data.id);
 
     if (!item) {
@@ -62,6 +65,7 @@ export class ItemController {
     }
 
     let {versionId} = await this.itemService.editItem(
+      user.id,
       item,
       fromVersionId,
       content,
@@ -75,6 +79,7 @@ export class ItemController {
   @UseGuards(AuthGuard)
   async shift(@Body() data: ShiftDTO) {
     let item = await this.itemService.getItemById(data.id);
+
     if (!item) {
       throw new ResourceNotFoundException('CONVENTION_ITEM_NOT_FOUND');
     }
@@ -96,6 +101,7 @@ export class ItemController {
   @UseGuards(AuthGuard)
   async delete(@Param('id') id: number) {
     let item = await this.itemService.getItemById(id);
+
     if (!item) {
       throw new ResourceNotFoundException('CONVENTION_ITEM_NOT_FOUND');
     }

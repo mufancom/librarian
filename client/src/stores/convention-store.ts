@@ -52,6 +52,8 @@ export interface ConventionItem {
   conventionId: number;
   content: string;
   versionId: number;
+  versionHash: string;
+  versionCreatedAt: string;
   commentCount: number;
   thumbUpCount: number;
   createdAt: string;

@@ -51,6 +51,7 @@ export class ItemService {
 
   @Transaction()
   async createItem(
+    userId: number,
     conventionId: number,
     afterOrderId: number | undefined,
     message: string | undefined,
@@ -60,11 +61,18 @@ export class ItemService {
     itemVersionRepository?: Repository<ItemVersion>,
   ): Promise<Item> {
     let itemVersion = await createItemVersion(
-      {content: itemLike.content, message, conventionItemId: 0},
+      {
+        content: itemLike.content,
+        message,
+        conventionItemId: 0,
+        userId,
+      },
       itemVersionRepository!,
     );
 
     itemLike.versionId = itemVersion.id;
+    itemLike.versionHash = itemVersion.hash;
+    itemLike.versionCreatedAt = itemVersion.createdAt;
 
     let item = await insertItem(
       conventionId,
@@ -81,6 +89,7 @@ export class ItemService {
 
   @Transaction()
   async editItem(
+    userId: number,
     item: Item,
     fromVersionId: number,
     content: string,
@@ -95,12 +104,15 @@ export class ItemService {
         content,
         fromId: fromVersionId,
         message,
+        userId,
       },
       itemVersionRepository!,
     );
 
     item.content = content;
     item.versionId = itemVersion.id;
+    item.versionHash = itemVersion.hash;
+    item.versionCreatedAt = itemVersion.createdAt;
 
     // TODO: consistency backward check
     return saveItem(item, itemRepository!);
