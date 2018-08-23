@@ -166,7 +166,6 @@ export class ConventionSideNavGroup extends Component<
               {node.children.map(val => (
                 <div key={val.entry.id}>
                   <ConventionSideNavItemWithRouter
-                    key={val.entry.id}
                     node={val as ConventionIndexConventionNode}
                   />
                 </div>

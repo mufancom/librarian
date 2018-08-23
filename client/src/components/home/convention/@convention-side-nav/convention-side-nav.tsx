@@ -61,7 +61,6 @@ const Menu: React.SFC<MenuProps> = props => {
           {list.map(val => (
             <div key={val.entry.id}>
               <ConventionSideNavCategoryWithRouter
-                key={val.entry.id}
                 node={val as ConventionIndexCategoryNode}
               />
             </div>

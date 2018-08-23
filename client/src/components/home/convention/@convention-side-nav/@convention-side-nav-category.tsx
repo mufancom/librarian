@@ -231,18 +231,12 @@ export class ConventionSideNavCategory extends Component<
               {node.children.map(
                 val =>
                   val.type === 'convention' ? (
-                    <div key={val.entry.id}>
-                      <ConventionSideNavItemWithRouter
-                        key={val.entry.id}
-                        node={val}
-                      />
+                    <div key={val.type + val.entry.id}>
+                      <ConventionSideNavItemWithRouter node={val} />
                     </div>
                   ) : (
-                    <div key={val.entry.id}>
-                      <ConventionSideNavGroupWithRouter
-                        key={val.entry.id}
-                        node={val}
-                      />
+                    <div key={val.type + val.entry.id}>
+                      <ConventionSideNavGroupWithRouter node={val} />
                     </div>
                   ),
               )}
