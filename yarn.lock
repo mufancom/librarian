@@ -16,16 +16,16 @@
     esutils "^2.0.2"
     js-tokens "^3.0.0"
 
-"@magicspace/configs@^0.1.23":
-  version "0.1.23"
-  resolved "https://registry.npmjs.org/@magicspace/configs/-/configs-0.1.23.tgz#80efe554f8731bb487c25b3ae45d92511fb4d8bc"
+"@magicspace/configs@^0.1.24":
+  version "0.1.24"
+  resolved "https://registry.npmjs.org/@magicspace/configs/-/configs-0.1.24.tgz#c8ef43d17c630cf10bb21b7e3b89e8503e6a04e3"
   dependencies:
-    "@magicspace/tslint-rules" "^0.1.19"
+    "@magicspace/tslint-rules" "^0.1.20"
     tslint-config-prettier "^1.10.0"
 
-"@magicspace/tslint-rules@^0.1.19":
-  version "0.1.19"
-  resolved "https://registry.npmjs.org/@magicspace/tslint-rules/-/tslint-rules-0.1.19.tgz#86116246c069523eb57c2758bdf0d3950f07ffc7"
+"@magicspace/tslint-rules@^0.1.20":
+  version "0.1.20"
+  resolved "https://registry.npmjs.org/@magicspace/tslint-rules/-/tslint-rules-0.1.20.tgz#97fa91f97dc55aa76acf91c21c892ce332043fe2"
   dependencies:
     lodash "^4.17.10"
     resolve "^1.8.1"

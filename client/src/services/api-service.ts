@@ -1,13 +1,12 @@
 import * as Url from 'url';
 
 import axios from 'axios';
+import {Translation} from 'shared/translation';
 
 import {i18n} from 'utils/lang';
 
-import {Translation} from '../../../shared/package/translation';
-
-// const API_BASE_URL = 'https://librarian.mufan.io/api/';
-const API_BASE_URL = 'http://localhost:3002/';
+const API_BASE_URL = 'https://librarian.mufan.io/api/';
+// const API_BASE_URL = 'http://localhost:3002/';
 
 const RESOURCE_BASE_URL = 'https://librarian.mufan.io/api/';
 
