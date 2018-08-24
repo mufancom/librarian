@@ -53,6 +53,7 @@ export class ItemThumbUpService {
 
   async cancelThumbUp(user: User, itemVersionId: number): Promise<ItemThumbUp> {
     let itemThumbUp = await this.getByUserAndItemVersionId(user, itemVersionId);
+
     if (!itemThumbUp) {
       throw new UnnecessaryRequestException('ITEM_VERSION_NOT_LIKED_YET');
     }

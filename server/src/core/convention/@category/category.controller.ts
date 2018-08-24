@@ -35,6 +35,7 @@ export class CategoryController {
     }
 
     let {afterOrderId} = data;
+
     if (
       typeof afterOrderId !== 'undefined' &&
       afterOrderId !== category.orderId
@@ -47,6 +48,7 @@ export class CategoryController {
     if (title) {
       category.title = title;
     }
+
     if (alias) {
       category.alias = alias;
     }

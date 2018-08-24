@@ -1,13 +1,12 @@
 import {Buffer} from 'buffer';
 import * as crypto from 'crypto';
-import {isString} from 'util';
 
 import * as bcrypt from 'bcrypt';
 
 export async function md5(data: string | object): Promise<string> {
   let dataStr: string;
 
-  if (isString(data)) {
+  if (typeof data === 'string') {
     dataStr = data;
   } else {
     dataStr = JSON.stringify(data);
