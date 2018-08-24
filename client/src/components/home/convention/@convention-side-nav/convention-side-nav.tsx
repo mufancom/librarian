@@ -103,6 +103,8 @@ export class ConventionSideNav extends React.Component<ConventionSideNavProps> {
         <InputModal
           title="添加分组"
           placeholder="请输入分组名"
+          secondInput={true}
+          secondInputPlaceholder="请输入别名"
           visible={this.inputModalVisible}
           onOkButtonClick={this.onInputModalOkButtonClick}
           onCancelButtonClick={this.onInputModelCancelButtonClick}
@@ -122,11 +124,14 @@ export class ConventionSideNav extends React.Component<ConventionSideNavProps> {
     this.inputModalVisible = true;
   };
 
-  onInputModalOkButtonClick = async (value: string): Promise<void> => {
+  onInputModalOkButtonClick = async (
+    value: string,
+    alias: string,
+  ): Promise<void> => {
     this.inputModalLoading = true;
 
     try {
-      await this.conventionService.createCategory(0, value);
+      await this.conventionService.createCategory(0, value, alias);
 
       this.inputModalVisible = false;
     } catch (error) {
