@@ -1,6 +1,7 @@
 import {Body, Controller, Get, Param, Post, UseGuards} from '@nestjs/common';
 
 import {ResourceNotFoundException} from 'common/exceptions';
+import {Config} from 'utils/config';
 
 import {AuthGuard} from '../auth';
 
@@ -25,14 +26,9 @@ export class ConventionController {
     };
   }
 
-  @Get(':id')
-  async get(@Param('id') id: number) {
-    return this.conventionService.findOneById(id);
-  }
-
-  @Get(':id/items')
-  async getItems(@Param('id') id: number) {
-    return this.itemService.getItems(id);
+  @Get('prettier-config')
+  async getPrettierConfig() {
+    return Config.clientPrettier.get();
   }
 
   @Post('create')
@@ -80,6 +76,16 @@ export class ConventionController {
     }
 
     await this.conventionService.save(convention);
+  }
+
+  @Get(':id')
+  async get(@Param('id') id: number) {
+    return this.conventionService.findOneById(id);
+  }
+
+  @Get(':id/items')
+  async getItems(@Param('id') id: number) {
+    return this.itemService.getItems(id);
   }
 
   @Get(':id/delete')

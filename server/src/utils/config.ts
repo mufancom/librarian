@@ -2,6 +2,7 @@ import * as FS from 'fs';
 import * as Path from 'path';
 
 import {TypeOrmModuleOptions} from '@nestjs/typeorm/dist/interfaces/typeorm-options.interface';
+import {Options as ClientPrettierConfig} from 'prettier';
 import {ConnectionOptions} from 'typeorm';
 
 import {ExcludeProperty} from 'lang';
@@ -13,6 +14,10 @@ const CONFIG_BASE_PATH = Path.join(PROJECT_DIR, '.config');
 const SERVER_CONFIG_PATH = Path.join(CONFIG_BASE_PATH, 'server.json');
 const DATABASE_CONFIG_PATH = Path.join(CONFIG_BASE_PATH, 'database.json');
 const SESSION_CONFIG_PATH = Path.join(CONFIG_BASE_PATH, 'session.json');
+const CLIENT_PRETTIER_PATH = Path.join(
+  CONFIG_BASE_PATH,
+  'client-prettier.json',
+);
 
 export class ConfigService<T extends object> {
   private readonly data: T;
@@ -58,4 +63,7 @@ export class Config {
   static server = new ConfigService<ServerConfig>(SERVER_CONFIG_PATH);
   static database = new ConfigService<DatabaseConfig>(DATABASE_CONFIG_PATH);
   static session = new ConfigService<SessionConfig>(SESSION_CONFIG_PATH);
+  static clientPrettier = new ConfigService<ClientPrettierConfig>(
+    CLIENT_PRETTIER_PATH,
+  );
 }
