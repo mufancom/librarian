@@ -87,11 +87,9 @@ export interface ConventionContentCache {
 
 export type PrettierConfig = Options;
 
-export type UrlBimap = Bimap<ConventionIndexNode, string>;
-
 export class ConventionStore {
   @observable
-  index: ConventionIndexNode[];
+  index: ConventionIndexNode[] = [];
 
   @observable
   conventionCache: ConventionCache = {};
@@ -117,9 +115,5 @@ export class ConventionStore {
   @observable
   currentId = 0;
 
-  urlBimap: UrlBimap = new Bimap<ConventionIndexNode, string>();
-
-  constructor() {
-    this.index = [];
-  }
+  pathMap = new Map<string, Convention>();
 }

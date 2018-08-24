@@ -12,7 +12,6 @@ import {
   ItemDraft,
   NewItemDraftDict,
   PrettierConfig,
-  UrlBimap,
 } from 'stores/convention-store';
 import {prettify, prettifyWithCursor} from 'utils/markdown';
 
@@ -97,6 +96,7 @@ function generateUrl(
 function buildIndexTree(
   categories: Category[],
   conventions: Convention[],
+  urlMap: Map<string, Convention>,
 ): ConventionIndexNode[] {
   let categoryMap = new Map<number, ConventionIndexCategoryNode>();
 
@@ -139,10 +139,16 @@ function buildIndexTree(
 
     let siblings = categoryMap.get(categoryId)!.children;
 
+    let url = generateUrl(convention, categoryMap);
+
+    if (url) {
+      urlMap.set(url, convention);
+    }
+
     insertIntoSortedSiblings(siblings, {
       type: 'convention',
       entry: convention,
-      url: generateUrl(convention, categoryMap),
+      url,
     });
   }
 
@@ -184,7 +190,11 @@ export class ConventionService {
       GetIndexSuccessData
     >('convention/index');
 
-    this.conventionStore.index = buildIndexTree(categories, conventions);
+    this.conventionStore.index = buildIndexTree(
+      categories,
+      conventions,
+      this.conventionStore.pathMap,
+    );
   }
 
   @action
@@ -256,6 +266,14 @@ export class ConventionService {
     await this.apiService.get(`convention/category/${id}/delete`);
 
     await this.getIndex();
+  }
+
+  async getConventionByPath(path: string): Promise<Convention | undefined> {
+    if (this.conventionStore.index.length === 0) {
+      await this.getIndex();
+    }
+
+    return this.conventionStore.pathMap.get(path);
   }
 
   @action

@@ -5,6 +5,7 @@ import {Route, RouteComponentProps, Switch, withRouter} from 'react-router';
 import styled from 'styled-components';
 
 import {ConventionService} from 'services/convention-service';
+import {ConventionStore} from 'stores/convention-store';
 import {RouterStore} from 'stores/router-store';
 import {inject, observer} from 'utils/mobx';
 
@@ -28,10 +29,46 @@ interface ConventionProps extends RouteComponentProps<any> {
   className?: string;
 }
 
+interface RouteIdMatchParams {
+  id: number;
+}
+
+interface RouteThreeLevelParams {
+  category: string;
+  group: string;
+  item: string;
+}
+
+interface RouteTwoLevelParams {
+  category: string;
+  group: never;
+  item: string;
+}
+
+type RouteParams =
+  | RouteIdMatchParams
+  | RouteThreeLevelParams
+  | RouteTwoLevelParams;
+
+function isRouteIdMatchParams(
+  params: RouteParams,
+): params is RouteIdMatchParams {
+  return 'id' in params;
+}
+
+function isRouteTwoLevelParams(
+  params: RouteParams,
+): params is RouteTwoLevelParams {
+  return 'category' in params && !('group' in params) && 'item' in params;
+}
+
 @observer
 export class Convention extends React.Component<ConventionProps> {
   @inject
   routerStore!: RouterStore;
+
+  @inject
+  conventionStore!: ConventionStore;
 
   @inject
   conventionService!: ConventionService;
@@ -72,6 +109,28 @@ export class Convention extends React.Component<ConventionProps> {
                     )}
                   />
                   <Route
+                    path="/convention/:category/:group/:item"
+                    component={(props: any) => (
+                      <RouteTrackerWithRouter
+                        {...props}
+                        onChange={this.onRouteChange}
+                      >
+                        <ConventionBody {...props} />
+                      </RouteTrackerWithRouter>
+                    )}
+                  />
+                  <Route
+                    path="/convention/:category/:item"
+                    component={(props: any) => (
+                      <RouteTrackerWithRouter
+                        {...props}
+                        onChange={this.onRouteChange}
+                      >
+                        <ConventionBody {...props} />
+                      </RouteTrackerWithRouter>
+                    )}
+                  />
+                  <Route
                     exact={true}
                     path="/convention/"
                     component={ConventionIndex}
@@ -91,8 +150,32 @@ export class Convention extends React.Component<ConventionProps> {
     );
   }
 
-  onRouteChange = (match: any): void => {
-    let {id} = match.params;
+  onRouteChange = async (match: any): Promise<void> => {
+    let params = match.params as RouteParams;
+
+    let id = 0;
+
+    if (isRouteIdMatchParams(params)) {
+      id = params.id;
+    } else {
+      let path;
+
+      if (isRouteTwoLevelParams(params)) {
+        let {category, item} = params;
+
+        path = `${category}/${item}`;
+      } else {
+        let {category, group, item} = params;
+
+        path = `${category}/${item}/${group}`;
+      }
+
+      let convention = await this.conventionService.getConventionByPath(path);
+
+      if (convention) {
+        id = convention.id;
+      }
+    }
 
     // tslint:disable-next-line:no-console
     this.conventionService.load(id).catch(console.log);
