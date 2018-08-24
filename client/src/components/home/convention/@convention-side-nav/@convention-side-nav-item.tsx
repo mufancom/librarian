@@ -108,7 +108,7 @@ export class ConventionSideNavItem extends Component<
   render(): JSX.Element {
     let {
       className,
-      node: {entry},
+      node: {entry, url},
     } = this.props;
 
     return (
@@ -121,7 +121,7 @@ export class ConventionSideNavItem extends Component<
         onMouseEnter={this.onMouseEnter}
         onMouseLeave={this.onMouseLeave}
       >
-        <NavLink to={`/convention/${entry.id}`}>
+        <NavLink to={`/convention/${url ? url : entry.id}`}>
           <ConventionSideNavEditableTitle
             renameMode={this.renameMode}
             setRenameMode={this.setRenameMode}

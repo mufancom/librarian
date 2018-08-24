@@ -12,6 +12,7 @@ import {
   ItemDraft,
   NewItemDraftDict,
   PrettierConfig,
+  UrlBimap,
 } from 'stores/convention-store';
 import {prettify, prettifyWithCursor} from 'utils/markdown';
 
@@ -64,6 +65,35 @@ function insertIntoSortedSiblings<T extends ConventionIndexNode>(
   siblings.splice(insertIndex, 0, node);
 }
 
+function generateUrl(
+  convention: Convention,
+  categoryMap: Map<number, ConventionIndexCategoryNode>,
+): string | undefined {
+  if (convention.alias) {
+    let url = convention.alias;
+
+    let parentCategoryId = convention.categoryId;
+
+    while (parentCategoryId) {
+      let category = categoryMap.get(parentCategoryId);
+
+      if (!category || !category.entry.alias) {
+        return undefined;
+      }
+
+      let {alias, parentId} = category.entry;
+
+      url = `${alias}/${url}`;
+
+      parentCategoryId = parentId;
+    }
+
+    return url;
+  }
+
+  return undefined;
+}
+
 function buildIndexTree(
   categories: Category[],
   conventions: Convention[],
@@ -112,6 +142,7 @@ function buildIndexTree(
     insertIntoSortedSiblings(siblings, {
       type: 'convention',
       entry: convention,
+      url: generateUrl(convention, categoryMap),
     });
   }
 

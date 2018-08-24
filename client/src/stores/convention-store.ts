@@ -41,6 +41,7 @@ export interface ConventionIndexCategoryNode {
 export interface ConventionIndexConventionNode {
   type: 'convention';
   entry: Convention;
+  url: string | undefined;
 }
 
 export type ConventionIndexNode =
@@ -86,6 +87,8 @@ export interface ConventionContentCache {
 
 export type PrettierConfig = Options;
 
+export type UrlBimap = Bimap<ConventionIndexNode, string>;
+
 export class ConventionStore {
   @observable
   index: ConventionIndexNode[];
@@ -113,6 +116,8 @@ export class ConventionStore {
 
   @observable
   currentId = 0;
+
+  urlBimap: UrlBimap = new Bimap<ConventionIndexNode, string>();
 
   constructor() {
     this.index = [];
