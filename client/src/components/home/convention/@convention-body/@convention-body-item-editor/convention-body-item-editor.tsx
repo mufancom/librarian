@@ -12,9 +12,10 @@ import {
   MdeState,
   TextSelection,
 } from 'react-mde/lib/definitions/types';
+import {ConventionService} from 'services/convention-service';
 import {Direction, ScrollService} from 'services/scroll-service';
 import {styled} from 'theme';
-import {mark, prettifyWithCursor} from 'utils/markdown';
+import {mark} from 'utils/markdown';
 import {inject, observer} from 'utils/mobx';
 
 import {ResizeListener} from '../../../../common';
@@ -156,6 +157,9 @@ export class ConventionBodyItemEditor extends Component<
   @inject
   scrollService!: ScrollService;
 
+  @inject
+  conventionService!: ConventionService;
+
   @observable
   mdeState: ReactMdeTypes.MdeState;
 
@@ -278,14 +282,14 @@ export class ConventionBodyItemEditor extends Component<
   };
 
   @action
-  onKeyDown = (event: React.KeyboardEvent): void => {
+  onKeyDown = async (event: React.KeyboardEvent): Promise<void> => {
     let keyCode = event.keyCode || event.which || event.charCode;
     let ctrlKey = event.ctrlKey || event.metaKey;
 
     if (ctrlKey && keyCode === 83) {
       event.preventDefault();
 
-      this.prettifyCodes();
+      await this.prettifyCodes();
 
       let {onSaveKeyDown} = this.props;
 
@@ -300,7 +304,7 @@ export class ConventionBodyItemEditor extends Component<
   };
 
   @action
-  prettifyCodes = (): void => {
+  prettifyCodes = async (): Promise<void> => {
     let mdeState = this.mdeState;
 
     let {draftEditorState} = mdeState;
@@ -308,7 +312,7 @@ export class ConventionBodyItemEditor extends Component<
     if (draftEditorState) {
       let selection = DraftUtil.getSelection(draftEditorState);
 
-      let {formatted, cursorOffset} = prettifyWithCursor(
+      let {formatted, cursorOffset} = await this.conventionService.prettify(
         mdeState.markdown!,
         selection.start,
       );

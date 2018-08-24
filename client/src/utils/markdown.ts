@@ -1,6 +1,6 @@
 import highlight from 'highlight.js';
 import _marked from 'marked';
-import {CursorResult} from 'prettier';
+import {CursorOptions, CursorResult, Options} from 'prettier';
 import prettierBabylonParser from 'prettier/parser-babylon';
 import prettierMarkdownParser from 'prettier/parser-markdown';
 import prettierPostCSS from 'prettier/parser-postcss';
@@ -49,16 +49,18 @@ const prettifyDefaultOptions = {
   plugins: prettierPlugins as any,
 };
 
-export function prettify(markdown: string): string {
-  return prettier.format(markdown, prettifyDefaultOptions);
+export function prettify(markdown: string, options?: Options): string {
+  return prettier.format(markdown, {...prettifyDefaultOptions, ...options});
 }
 
 export function prettifyWithCursor(
   markdown: string,
   cursorOffset: number,
+  options?: CursorOptions,
 ): CursorResult {
   return prettier.formatWithCursor(markdown, {
     ...prettifyDefaultOptions,
     cursorOffset,
+    ...options,
   });
 }

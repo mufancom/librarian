@@ -1,4 +1,5 @@
 import {observable} from 'mobx';
+import {Options} from 'prettier';
 
 export enum CategoryStatus {
   deleted,
@@ -83,6 +84,8 @@ export interface ConventionContentCache {
   [key: number]: ConventionItem[];
 }
 
+export type PrettierConfig = Options;
+
 export class ConventionStore {
   @observable
   index: ConventionIndexNode[];
@@ -104,6 +107,9 @@ export class ConventionStore {
 
   @observable
   editItemDraftDict: EditItemDraftDict = {};
+
+  @observable
+  prettierConfig: PrettierConfig | undefined;
 
   @observable
   currentId = 0;

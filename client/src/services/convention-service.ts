@@ -1,4 +1,5 @@
 import {action} from 'mobx';
+import {CursorOptions, CursorResult} from 'prettier';
 
 import {
   Category,
@@ -10,10 +11,21 @@ import {
   EditItemDraftDict,
   ItemDraft,
   NewItemDraftDict,
+  PrettierConfig,
 } from 'stores/convention-store';
-import {prettify} from 'utils/markdown';
+import {prettify, prettifyWithCursor} from 'utils/markdown';
 
 import {APIService} from './api-service';
+
+const FALLBACK_PRETTIER_CONFIG: PrettierConfig = {
+  printWidth: 80,
+  tabWidth: 2,
+  useTabs: false,
+  semi: true,
+  singleQuote: true,
+  trailingComma: 'all',
+  bracketSpacing: false,
+};
 
 function isPositionAvailable(
   node: ConventionIndexNode,
@@ -282,7 +294,7 @@ export class ConventionService {
     conventionId: number,
     content: string,
   ): Promise<void> {
-    content = prettify(content);
+    content = await this.prettify(content);
 
     await this.apiService.post('convention/item/create', {
       conventionId,
@@ -299,7 +311,7 @@ export class ConventionService {
   ): Promise<void> {
     let {id, conventionId} = conventionItem;
 
-    content = prettify(content);
+    content = await this.prettify(content);
 
     await this.apiService.post('convention/item/edit', {
       id,
@@ -308,6 +320,44 @@ export class ConventionService {
     });
 
     await this.freshCurrentConventionItems(conventionId);
+  }
+
+  @action
+  async getPrettierConfig(): Promise<PrettierConfig> {
+    let {prettierConfig} = this.conventionStore;
+
+    if (prettierConfig) {
+      return prettierConfig;
+    }
+
+    try {
+      let config = await this.apiService.get('convention/prettier-config');
+
+      this.conventionStore.prettierConfig = config;
+
+      return config;
+    } catch (error) {
+      return FALLBACK_PRETTIER_CONFIG;
+    }
+  }
+
+  async prettify(markdown: string): Promise<string>;
+  async prettify(markdown: string, cursorOffset: number): Promise<CursorResult>;
+  async prettify(
+    markdown: string,
+    cursorOffset?: number,
+  ): Promise<string | CursorResult> {
+    let config = await this.getPrettierConfig();
+
+    if (cursorOffset) {
+      return prettifyWithCursor(
+        markdown,
+        cursorOffset,
+        config as CursorOptions,
+      );
+    } else {
+      return prettify(markdown, config);
+    }
   }
 
   async shiftConventionItem(
