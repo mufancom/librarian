@@ -125,6 +125,8 @@ export class ConventionSideNavGroup extends Component<
         <InputModal
           title="新增规范"
           placeholder="请输入规范名"
+          secondInput={true}
+          secondInputPlaceholder="请输入别名"
           visible={this.inputModalVisible}
           onOkButtonClick={this.inputModalOkButtonOnclick}
           onCancelButtonClick={this.inputModelCancelButtonOnClick}
@@ -263,7 +265,10 @@ export class ConventionSideNavGroup extends Component<
   };
 
   @action
-  inputModalOkButtonOnclick = async (value: string): Promise<void> => {
+  inputModalOkButtonOnclick = async (
+    value: string,
+    alias: string,
+  ): Promise<void> => {
     let {
       node: {
         entry: {id},
@@ -273,7 +278,7 @@ export class ConventionSideNavGroup extends Component<
     this.inputModalLoading = true;
 
     try {
-      await this.conventionService.createConvention(id, value);
+      await this.conventionService.createConvention(id, value, alias);
 
       this.inputModalVisible = false;
     } catch (error) {

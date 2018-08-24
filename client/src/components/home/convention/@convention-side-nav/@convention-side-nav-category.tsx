@@ -158,7 +158,7 @@ export class ConventionSideNavCategory extends Component<
 
   renameCancelBlocker?: CancelBlocker;
 
-  inputModalOkButtonOnclick?: (value: string) => void;
+  inputModalOkButtonOnclick?: (value: string, secondValue: string) => void;
 
   wrapperRef: React.RefObject<any> = createRef();
 
@@ -182,6 +182,8 @@ export class ConventionSideNavCategory extends Component<
         <InputModal
           title={this.inputModalTitle}
           placeholder={this.inputModalPlaceholder}
+          secondInput={true}
+          secondInputPlaceholder={'请输入别名'}
           visible={this.inputModalVisible}
           onOkButtonClick={this.inputModalOkButtonOnclick}
           onCancelButtonClick={this.inputModelCancelButtonOnClick}
@@ -347,7 +349,10 @@ export class ConventionSideNavCategory extends Component<
   };
 
   @action
-  addGroupModalOkButtonOnclick = async (value: string): Promise<void> => {
+  addGroupModalOkButtonOnclick = async (
+    value: string,
+    alias: string,
+  ): Promise<void> => {
     let {
       node: {
         entry: {id},
@@ -357,7 +362,7 @@ export class ConventionSideNavCategory extends Component<
     this.inputModalLoading = true;
 
     try {
-      await this.conventionService.createCategory(id, value);
+      await this.conventionService.createCategory(id, value, alias);
 
       this.inputModalVisible = false;
     } catch (error) {
@@ -379,7 +384,10 @@ export class ConventionSideNavCategory extends Component<
   };
 
   @action
-  addConventionModalOkButtonOnclick = async (value: string): Promise<void> => {
+  addConventionModalOkButtonOnclick = async (
+    value: string,
+    alias: string,
+  ): Promise<void> => {
     let {
       node: {
         entry: {id},
@@ -389,7 +397,7 @@ export class ConventionSideNavCategory extends Component<
     this.inputModalLoading = true;
 
     try {
-      await this.conventionService.createConvention(id, value);
+      await this.conventionService.createConvention(id, value, alias);
 
       this.inputModalVisible = false;
     } catch (error) {

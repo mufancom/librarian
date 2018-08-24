@@ -68,29 +68,37 @@ function generateUrl(
   convention: Convention,
   categoryMap: Map<number, ConventionIndexCategoryNode>,
 ): string | undefined {
-  if (convention.alias) {
-    let url = convention.alias;
+  let names = [];
 
-    let parentCategoryId = convention.categoryId;
+  let {alias, title} = convention;
 
-    while (parentCategoryId) {
-      let category = categoryMap.get(parentCategoryId);
+  names.push(alias ? alias : title);
 
-      if (!category || !category.entry.alias) {
-        return undefined;
-      }
+  let parentCategoryId = convention.categoryId;
 
-      let {alias, parentId} = category.entry;
+  while (parentCategoryId) {
+    let category = categoryMap.get(parentCategoryId);
 
-      url = `${alias}/${url}`;
-
-      parentCategoryId = parentId;
+    if (!category) {
+      return undefined;
     }
 
-    return url;
+    let {title, alias, parentId} = category.entry;
+
+    names.push(alias ? alias : title);
+
+    parentCategoryId = parentId;
   }
 
-  return undefined;
+  let url = '';
+
+  for (let [index, name] of names.entries()) {
+    let onlyTwoParams = names.length === 2 && index === 1;
+
+    url = `${name}${onlyTwoParams ? '/-' : ''}/${url}`;
+  }
+
+  return url;
 }
 
 function buildIndexTree(
@@ -233,11 +241,13 @@ export class ConventionService {
   async createCategory(
     parentId: number,
     title: string,
+    alias?: string,
     afterOrderId?: number,
   ): Promise<void> {
     await this.apiService.post('convention/category/create', {
       title,
       parentId,
+      alias,
       afterOrderId,
     });
 
@@ -298,11 +308,13 @@ export class ConventionService {
   async createConvention(
     categoryId: number,
     title: string,
+    alias?: string,
     afterOrderId?: number,
   ): Promise<void> {
     await this.apiService.post('convention/create', {
       categoryId,
       title,
+      alias,
       afterOrderId,
     });
 

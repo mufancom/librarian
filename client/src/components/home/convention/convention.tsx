@@ -41,7 +41,7 @@ interface RouteThreeLevelParams {
 
 interface RouteTwoLevelParams {
   category: string;
-  group: never;
+  group: '-';
   item: string;
 }
 
@@ -54,12 +54,6 @@ function isRouteIdMatchParams(
   params: RouteParams,
 ): params is RouteIdMatchParams {
   return 'id' in params;
-}
-
-function isRouteTwoLevelParams(
-  params: RouteParams,
-): params is RouteTwoLevelParams {
-  return 'category' in params && !('group' in params) && 'item' in params;
 }
 
 @observer
@@ -98,7 +92,7 @@ export class Convention extends React.Component<ConventionProps> {
               >
                 <Switch>
                   <Route
-                    path="/convention/:id(\d+)"
+                    path="/convention/:id(\d+)/:category/:group/:item"
                     component={(props: any) => (
                       <RouteTrackerWithRouter
                         {...props}
@@ -110,17 +104,6 @@ export class Convention extends React.Component<ConventionProps> {
                   />
                   <Route
                     path="/convention/:category/:group/:item"
-                    component={(props: any) => (
-                      <RouteTrackerWithRouter
-                        {...props}
-                        onChange={this.onRouteChange}
-                      >
-                        <ConventionBody {...props} />
-                      </RouteTrackerWithRouter>
-                    )}
-                  />
-                  <Route
-                    path="/convention/:category/:item"
                     component={(props: any) => (
                       <RouteTrackerWithRouter
                         {...props}
@@ -160,15 +143,9 @@ export class Convention extends React.Component<ConventionProps> {
     } else {
       let path;
 
-      if (isRouteTwoLevelParams(params)) {
-        let {category, item} = params;
+      let {category, group, item} = params;
 
-        path = `${category}/${item}`;
-      } else {
-        let {category, group, item} = params;
-
-        path = `${category}/${group}/${item}`;
-      }
+      path = `${category}/${group}/${item}/`;
 
       let convention = await this.conventionService.getConventionByPath(path);
 

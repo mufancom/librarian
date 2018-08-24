@@ -13,15 +13,18 @@ export interface InputModalProps {
   title: string;
   loading?: boolean;
   placeholder?: string;
+  secondInput?: boolean;
+  secondInputPlaceholder?: string;
   okButtonTitle?: string;
   cancelButtonTitle?: string;
-  onOkButtonClick?(value: string): void;
+  onOkButtonClick?(value: string, secondValue: string): void;
   onCancelButtonClick?(): void;
 }
 
 @observer
 export class InputModal extends Component<InputModalProps> {
   inputRef: React.RefObject<Input> = createRef();
+  secondInputRef: React.RefObject<Input> = createRef();
 
   render(): JSX.Element {
     let {
@@ -31,6 +34,8 @@ export class InputModal extends Component<InputModalProps> {
       onCancelButtonClick,
       loading,
       placeholder,
+      secondInput,
+      secondInputPlaceholder,
       cancelButtonTitle,
       okButtonTitle,
     } = this.props;
@@ -60,6 +65,16 @@ export class InputModal extends Component<InputModalProps> {
           <p>
             <Input ref={this.inputRef} placeholder={placeholder} />
           </p>
+          {secondInput ? (
+            <p>
+              <Input
+                ref={this.secondInputRef}
+                placeholder={secondInputPlaceholder}
+              />
+            </p>
+          ) : (
+            undefined
+          )}
         </Modal>
       </Wrapper>
     );
@@ -68,12 +83,14 @@ export class InputModal extends Component<InputModalProps> {
   onOkClick = (): void => {
     let {onOkButtonClick} = this.props;
     let value = this.inputRef.current!.input.value;
+    let secondValue = this.secondInputRef.current!.input.value;
 
     if (onOkButtonClick) {
-      onOkButtonClick(value);
+      onOkButtonClick(value, secondValue);
     }
 
     this.inputRef.current!.input.value = '';
+    this.secondInputRef.current!.input.value = '';
   };
 
   static Wrapper = Wrapper;
