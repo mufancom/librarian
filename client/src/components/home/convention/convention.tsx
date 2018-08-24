@@ -167,7 +167,7 @@ export class Convention extends React.Component<ConventionProps> {
       } else {
         let {category, group, item} = params;
 
-        path = `${category}/${item}/${group}`;
+        path = `${category}/${group}/${item}`;
       }
 
       let convention = await this.conventionService.getConventionByPath(path);
