@@ -4,7 +4,12 @@ import * as React from 'react';
 import {Route, RouteComponentProps, Switch, withRouter} from 'react-router';
 import styled from 'styled-components';
 
-import {ConventionService} from 'services/convention-service';
+import {
+  ConventionService,
+  RouteParams,
+  VersionsRouteParams,
+  isRouteIdMatchParams,
+} from 'services/convention-service';
 import {ConventionStore} from 'stores/convention-store';
 import {RouterStore} from 'stores/router-store';
 import {inject, observer} from 'utils/mobx';
@@ -15,6 +20,7 @@ import {ConventionBody} from './@convention-body';
 import {ConventionIndex} from './@convention-index';
 import {ConventionSideSearch} from './@convention-side-search';
 import {ConventionSiderLayoutWithRouter} from './@convention-sider-layout';
+import {ConventionVersions} from './@convention-versions/convention-versions';
 
 const {Content} = Layout;
 
@@ -27,33 +33,6 @@ const Wrapper = styled.div`
 
 interface ConventionProps extends RouteComponentProps<any> {
   className?: string;
-}
-
-interface RouteIdMatchParams {
-  id: number;
-}
-
-interface RouteThreeLevelParams {
-  category: string;
-  group: string;
-  item: string;
-}
-
-interface RouteTwoLevelParams {
-  category: string;
-  group: '-';
-  item: string;
-}
-
-type RouteParams =
-  | RouteIdMatchParams
-  | RouteThreeLevelParams
-  | RouteTwoLevelParams;
-
-function isRouteIdMatchParams(
-  params: RouteParams,
-): params is RouteIdMatchParams {
-  return 'id' in params;
 }
 
 @observer
@@ -79,54 +58,68 @@ export class Convention extends React.Component<ConventionProps> {
             md={{span: 20, offset: 2}}
             lg={{span: 18, offset: 3}}
             xl={{span: 16, offset: 4}}
-            className="header-nav"
           >
-            <Layout>
-              <ConventionSiderLayoutWithRouter />
-              <Content
-                style={{
-                  margin: '0 16px 0 300px',
-                  padding: 0,
-                  overflow: 'visible',
-                }}
-              >
-                <Switch>
-                  <Route
-                    path="/convention/:id(\d+)/:category/:group/:item"
-                    component={(props: any) => (
-                      <RouteTrackerWithRouter
-                        {...props}
-                        onChange={this.onRouteChange}
-                      >
-                        <ConventionBody {...props} />
-                      </RouteTrackerWithRouter>
-                    )}
-                  />
-                  <Route
-                    path="/convention/:category/:group/:item"
-                    component={(props: any) => (
-                      <RouteTrackerWithRouter
-                        {...props}
-                        onChange={this.onRouteChange}
-                      >
-                        <ConventionBody {...props} />
-                      </RouteTrackerWithRouter>
-                    )}
-                  />
-                  <Route
-                    exact={true}
-                    path="/convention/"
-                    component={ConventionIndex}
-                  />
-                  <Route>
-                    <div>
-                      Miss at {this.routerStore.location.pathname} <br />
-                      (TODO: 404 {'>_<'})
-                    </div>
-                  </Route>
-                </Switch>
-              </Content>
-            </Layout>
+            <Switch>
+              <Route
+                path="/convention/:category/:group/:item/:itemId(\d+)/versions"
+                component={(props: any) => (
+                  <RouteTrackerWithRouter
+                    {...props}
+                    onChange={this.onRouteChangeToVersions}
+                  >
+                    <ConventionVersions />
+                  </RouteTrackerWithRouter>
+                )}
+              />
+              <Route>
+                <Layout>
+                  <ConventionSiderLayoutWithRouter />
+                  <Content
+                    style={{
+                      margin: '0 16px 0 300px',
+                      padding: 0,
+                      overflow: 'visible',
+                    }}
+                  >
+                    <Switch>
+                      <Route
+                        path="/convention/:id(\d+)/:category/:group/:item"
+                        component={(props: any) => (
+                          <RouteTrackerWithRouter
+                            {...props}
+                            onChange={this.onRouteChange}
+                          >
+                            <ConventionBody {...props} />
+                          </RouteTrackerWithRouter>
+                        )}
+                      />
+                      <Route
+                        path="/convention/:category/:group/:item"
+                        component={(props: any) => (
+                          <RouteTrackerWithRouter
+                            {...props}
+                            onChange={this.onRouteChange}
+                          >
+                            <ConventionBody {...props} />
+                          </RouteTrackerWithRouter>
+                        )}
+                      />
+                      <Route
+                        exact={true}
+                        path="/convention/"
+                        component={ConventionIndex}
+                      />
+                      <Route>
+                        <div>
+                          Miss at {this.routerStore.location.pathname} <br />
+                          (TODO: 404 {'>_<'})
+                        </div>
+                      </Route>
+                    </Switch>
+                  </Content>
+                </Layout>
+              </Route>
+            </Switch>
           </Col>
         </Row>
       </Wrapper>
@@ -141,13 +134,9 @@ export class Convention extends React.Component<ConventionProps> {
     if (isRouteIdMatchParams(params)) {
       id = params.id;
     } else {
-      let path;
-
-      let {category, group, item} = params;
-
-      path = `${category}/${group}/${item}/`;
-
-      let convention = await this.conventionService.getConventionByPath(path);
+      let convention = await this.conventionService.getConventionByPathParams(
+        params,
+      );
 
       if (convention) {
         id = convention.id;
@@ -156,8 +145,22 @@ export class Convention extends React.Component<ConventionProps> {
 
     // tslint:disable-next-line:no-console
     this.conventionService.load(id).catch(console.log);
+  };
 
-    scrollTo(0, 0);
+  onRouteChangeToVersions = async (match: any): Promise<void> => {
+    let params = match.params as VersionsRouteParams;
+
+    let {category, group, item} = params;
+
+    let path = `${category}/${group}/${item}/`;
+
+    let convention = await this.conventionService.getConventionByPath(path);
+
+    if (convention) {
+      this.conventionStore.currentVersionConvention = convention;
+    }
+
+    this.conventionStore.currentConventionItemId = params.itemId;
   };
 
   static Wrapper = Wrapper;

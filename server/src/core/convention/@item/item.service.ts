@@ -18,7 +18,7 @@ import {
 import {ItemVersion} from './item-version.entity';
 import {Item, ItemStatus} from './item.entity';
 
-const ITEM_VERSION_PAGE_SIZE = 20;
+export const ITEM_VERSION_PAGE_SIZE = 20;
 
 @Injectable()
 export class ItemService {
@@ -179,13 +179,14 @@ export class ItemService {
     itemId: number,
     page: number,
     itemVersionRepository: Repository<ItemVersion> = this.itemVersionRepository,
-  ): Promise<ItemVersion[]> {
+  ): Promise<[ItemVersion[], number]> {
     return itemVersionRepository
       .createQueryBuilder()
       .where('convention_item_id = :itemId', {itemId})
-      .offset(ITEM_VERSION_PAGE_SIZE * (page - 1))
+      .orderBy('created_at', 'DESC')
+      .skip(ITEM_VERSION_PAGE_SIZE * (page - 1))
       .take(ITEM_VERSION_PAGE_SIZE)
-      .getMany();
+      .getManyAndCount();
   }
 
   async increaseItemVersionCommentCount(

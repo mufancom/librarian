@@ -7,6 +7,7 @@ import {
   ConventionIndexCategoryNode,
   ConventionIndexNode,
   ConventionItem,
+  ConventionItemVersion,
   ConventionStore,
   EditItemDraftDict,
   ItemDraft,
@@ -17,6 +18,35 @@ import {prettify, prettifyWithCursor} from 'utils/markdown';
 
 import {APIService} from './api-service';
 
+export interface RouteIdMatchParams {
+  id: number;
+}
+
+export interface RouteThreeLevelParams {
+  category: string;
+  group: string;
+  item: string;
+}
+
+export interface RouteTwoLevelParams {
+  category: string;
+  group: '-';
+  item: string;
+}
+
+export type RouteAliasParams = RouteThreeLevelParams | RouteTwoLevelParams;
+
+export type RouteParams = RouteIdMatchParams | RouteAliasParams;
+
+export type VersionsRouteParams = RouteAliasParams & {
+  itemId: number;
+};
+
+export interface GetConventionItemVersionsData {
+  versions: ConventionItemVersion[];
+  pageCount: number;
+}
+
 const FALLBACK_PRETTIER_CONFIG: PrettierConfig = {
   printWidth: 80,
   tabWidth: 2,
@@ -26,6 +56,21 @@ const FALLBACK_PRETTIER_CONFIG: PrettierConfig = {
   trailingComma: 'all',
   bracketSpacing: false,
 };
+
+export function isRouteAliasParams(value: any): value is RouteAliasParams {
+  return (
+    typeof value === 'object' &&
+    'category' in value &&
+    'group' in value &&
+    'item' in value
+  );
+}
+
+export function isRouteIdMatchParams(
+  params: RouteParams,
+): params is RouteIdMatchParams {
+  return typeof params === 'object' && 'id' in params;
+}
 
 function isPositionAvailable(
   node: ConventionIndexNode,
@@ -104,7 +149,7 @@ function generateUrl(
 function buildIndexTree(
   categories: Category[],
   conventions: Convention[],
-  urlMap: Map<string, Convention>,
+  urlMap: Map<string, string>,
 ): ConventionIndexNode[] {
   let categoryMap = new Map<number, ConventionIndexCategoryNode>();
 
@@ -150,7 +195,7 @@ function buildIndexTree(
     let url = generateUrl(convention, categoryMap);
 
     if (url) {
-      urlMap.set(url, convention);
+      urlMap.set(url, JSON.stringify(convention));
     }
 
     insertIntoSortedSiblings(siblings, {
@@ -182,13 +227,18 @@ export class ConventionService {
 
   @action
   async load(id: number): Promise<void> {
-    if (this.conventionStore.currentId !== id) {
+    if (
+      !this.conventionStore.currentConvention ||
+      this.conventionStore.currentConvention.id !== id
+    ) {
       this.getConvention(id)
         .then(value => {
           this.conventionStore.currentConvention = value;
         })
         .catch();
       this.conventionStore.currentContent = await this.getContent(id);
+
+      scrollTo(0, 0);
     }
   }
 
@@ -292,7 +342,47 @@ export class ConventionService {
       await this.getIndex();
     }
 
-    return this.conventionStore.pathMap.get(path);
+    let objStr = this.conventionStore.pathMap.get(path);
+
+    if (objStr) {
+      return JSON.parse(objStr) as Convention;
+    }
+
+    return undefined;
+  }
+
+  async getPathByConvention(
+    convention: Convention,
+  ): Promise<string | undefined> {
+    if (this.conventionStore.index.length === 0) {
+      await this.getIndex();
+    }
+
+    return this.conventionStore.pathMap.getKeyByValue(
+      JSON.stringify(convention),
+    );
+  }
+
+  async getConventionByPathParams(
+    category: string,
+    group: string,
+    item: string,
+  ): Promise<Convention | undefined>;
+  async getConventionByPathParams(
+    params: RouteParams,
+  ): Promise<Convention | undefined>;
+  async getConventionByPathParams(
+    category: string | RouteParams,
+    group?: string,
+    item?: string,
+  ): Promise<Convention | undefined> {
+    if (isRouteAliasParams(category)) {
+      ({category, group, item} = category);
+    }
+
+    let path = `${category}/${group}/${item}/`;
+
+    return this.getConventionByPath(path);
   }
 
   @action
@@ -378,6 +468,14 @@ export class ConventionService {
     await this.freshCurrentConventionItems(conventionId);
   }
 
+  async getConventionItem(
+    conventionItemId: number,
+  ): Promise<ConventionItem | undefined> {
+    return this.apiService.get<ConventionItem>(
+      `convention/item/${conventionItemId}`,
+    );
+  }
+
   async editConventionItem(
     conventionItem: ConventionItem,
     fromVersionId: number,
@@ -394,6 +492,37 @@ export class ConventionService {
     });
 
     await this.freshCurrentConventionItems(conventionId);
+  }
+
+  async shiftConventionItem(
+    conventionItem: ConventionItem,
+    afterOrderId: number,
+  ): Promise<void> {
+    let {id, conventionId} = conventionItem;
+
+    await this.apiService.post('convention/item/shift', {
+      id,
+      afterOrderId,
+    });
+
+    await this.freshCurrentConventionItems(conventionId);
+  }
+
+  async deleteConventionItem(conventionItem: ConventionItem): Promise<void> {
+    let {id, conventionId} = conventionItem;
+
+    await this.apiService.get(`convention/item/${id}/delete`);
+
+    await this.freshCurrentConventionItems(conventionId);
+  }
+
+  async getConventionItemVersions(
+    conventionItemId: number,
+    page: number,
+  ): Promise<GetConventionItemVersionsData> {
+    return this.apiService.get<GetConventionItemVersionsData>(
+      `convention/item/${conventionItemId}/versions?page=${page}`,
+    );
   }
 
   @action
@@ -432,28 +561,6 @@ export class ConventionService {
     } else {
       return prettify(markdown, config);
     }
-  }
-
-  async shiftConventionItem(
-    conventionItem: ConventionItem,
-    afterOrderId: number,
-  ): Promise<void> {
-    let {id, conventionId} = conventionItem;
-
-    await this.apiService.post('convention/item/shift', {
-      id,
-      afterOrderId,
-    });
-
-    await this.freshCurrentConventionItems(conventionId);
-  }
-
-  async deleteConventionItem(conventionItem: ConventionItem): Promise<void> {
-    let {id, conventionId} = conventionItem;
-
-    await this.apiService.get(`convention/item/${id}/delete`);
-
-    await this.freshCurrentConventionItems(conventionId);
   }
 
   getEditConventionItemDraft(conventionItemId: number): ItemDraft | undefined {

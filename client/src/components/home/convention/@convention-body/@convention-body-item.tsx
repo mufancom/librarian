@@ -2,6 +2,7 @@ import {Popconfirm, message} from 'antd';
 import classNames from 'classnames';
 import {action, observable} from 'mobx';
 import React, {Component} from 'react';
+import {NavLink} from 'react-router-dom';
 
 import {fetchErrorMessage} from 'services/api-service';
 import {ConventionService} from 'services/convention-service';
@@ -51,6 +52,16 @@ const ItemTopToolBar = styled.div`
 
 const ItemTopToolBarButton = styled.a`
   margin-left: 7px;
+  font-size: 0.85rem;
+
+  &.danger {
+    color: ${props => props.theme.dangerAccent()} !important;
+  }
+`;
+
+const ItemTopToolBarNavLink = styled(NavLink)`
+  margin-left: 7px;
+  font-size: 0.85rem;
 
   &.danger {
     color: ${props => props.theme.dangerAccent()} !important;
@@ -119,6 +130,9 @@ export class ConventionBodyItem extends Component<ConventionBodyItemProps> {
               </ItemVersionInfo>
               {this.authStore.isLoggedIn ? (
                 <div>
+                  <ItemTopToolBarNavLink to={`${item.id}/versions`}>
+                    历史版本
+                  </ItemTopToolBarNavLink>
                   <ItemTopToolBarButton onClick={this.editOnclick}>
                     编辑
                   </ItemTopToolBarButton>

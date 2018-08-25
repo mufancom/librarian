@@ -1,8 +1,9 @@
 {
   "extends": "../node_modules/vts/tsconfig-browser.json",
   "compilerOptions": {
-    "jsx": "react",
+    "target": "es6",
     "module": "esnext",
+    "jsx": "react",
     "moduleResolution": "node",
     "experimentalDecorators": true,
     "emitDecoratorMetadata": true,

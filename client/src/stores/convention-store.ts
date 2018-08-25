@@ -1,6 +1,8 @@
 import {observable} from 'mobx';
 import {Options} from 'prettier';
 
+import {Bimap} from 'utils/common';
+
 export enum CategoryStatus {
   deleted,
   normal,
@@ -64,6 +66,19 @@ export interface ConventionItem {
   status: number;
 }
 
+export interface ConventionItemVersion {
+  id: number;
+  conventionItemId: number;
+  fromId: number;
+  userId: number;
+  content: string;
+  message?: string;
+  hash: string;
+  commentCount: number;
+  thumbUpCount: number;
+  createdAt: string;
+}
+
 export interface ItemDraft {
   content: string;
   savedAt: string;
@@ -104,6 +119,12 @@ export class ConventionStore {
   currentContent: ConventionItem[] = [];
 
   @observable
+  currentVersionConvention: Convention | undefined;
+
+  @observable
+  currentConventionItemId = 0;
+
+  @observable
   newItemDraftDict: NewItemDraftDict = {};
 
   @observable
@@ -112,8 +133,5 @@ export class ConventionStore {
   @observable
   prettierConfig: PrettierConfig | undefined;
 
-  @observable
-  currentId = 0;
-
-  pathMap = new Map<string, Convention>();
+  pathMap = new Bimap<string, string>();
 }

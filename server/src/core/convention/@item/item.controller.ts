@@ -20,7 +20,7 @@ import {AuthGuard} from '../../auth';
 import {ConventionService} from '../convention.service';
 
 import {CreateDTO, EditDTO, RollbackDTO, ShiftDTO} from './item.dto';
-import {ItemService} from './item.service';
+import {ITEM_VERSION_PAGE_SIZE, ItemService} from './item.service';
 
 @Controller('convention/item')
 export class ItemController {
@@ -94,7 +94,14 @@ export class ItemController {
 
   @Get(':id/versions')
   async getVersions(@Param('id') id: number, @Query('page') page = 1) {
-    return this.itemService.getItemVersionsByItemId(id, page);
+    let [versions, count] = await this.itemService.getItemVersionsByItemId(
+      id,
+      page,
+    );
+
+    let pageCount = Math.ceil(count / ITEM_VERSION_PAGE_SIZE);
+
+    return {versions, pageCount};
   }
 
   @Get(':id/delete')
