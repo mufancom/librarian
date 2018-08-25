@@ -89,6 +89,15 @@ export class ConventionSideNavGroup extends Component<
   inputModalLoading = false;
 
   @observable
+  aliasInputModalVisible = false;
+
+  @observable
+  aliasInputModalInitialValue: string | undefined;
+
+  @observable
+  aliasInputModalLoading = false;
+
+  @observable
   renameMode = false;
 
   @observable
@@ -132,6 +141,15 @@ export class ConventionSideNavGroup extends Component<
           onCancelButtonClick={this.inputModelCancelButtonOnClick}
           loading={this.inputModalLoading}
         />
+        <InputModal
+          title="修改别名"
+          placeholder="请输入新的别名"
+          visible={this.aliasInputModalVisible}
+          initialValue={this.aliasInputModalInitialValue}
+          onOkButtonClick={this.aliasInputModalOnclick}
+          onCancelButtonClick={this.aliasInputModalCancelButtonOnclick}
+          loading={this.aliasInputModalLoading}
+        />
         <GroupTitle
           onMouseEnter={this.onMouseEnterTitle}
           onMouseLeave={this.onMouseLeaveTitle}
@@ -151,6 +169,7 @@ export class ConventionSideNavGroup extends Component<
             editLoading={this.renameLoading}
             onClick={this.onRenameButtonClick}
             onFinishClick={this.onRenameFinishButtonClick}
+            onAliasEditClick={this.onAliasEditClick}
           />
           <ConventionSideNavDeleteBtn
             show={this.showButtons && !this.renameMode}
@@ -288,6 +307,41 @@ export class ConventionSideNavGroup extends Component<
     }
 
     this.inputModalLoading = false;
+  };
+
+  @action
+  onAliasEditClick = (): void => {
+    let {alias} = this.props.node.entry;
+
+    this.aliasInputModalInitialValue = alias;
+
+    this.aliasInputModalVisible = true;
+  };
+
+  @action
+  aliasInputModalOnclick = async (value: string): Promise<void> => {
+    this.aliasInputModalLoading = true;
+
+    let {id} = this.props.node.entry;
+
+    try {
+      await this.conventionService.editCategoryAlias(id, value);
+
+      message.success('别名修改成功');
+
+      this.aliasInputModalVisible = false;
+    } catch (error) {
+      let errorMessage = fetchErrorMessage(error);
+
+      message.error(errorMessage);
+    }
+
+    this.aliasInputModalLoading = false;
+  };
+
+  @action
+  aliasInputModalCancelButtonOnclick = (): void => {
+    this.aliasInputModalVisible = false;
   };
 
   onDeleteButtonClick = async (): Promise<void> => {

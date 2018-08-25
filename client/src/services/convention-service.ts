@@ -272,6 +272,15 @@ export class ConventionService {
     await this.getIndex();
   }
 
+  async editCategoryAlias(id: number, alias: string): Promise<void> {
+    await this.apiService.post('convention/category/edit', {
+      id,
+      alias,
+    });
+
+    await this.getIndex();
+  }
+
   async deleteCategory(id: number): Promise<void> {
     await this.apiService.get(`convention/category/${id}/delete`);
 
@@ -327,20 +336,24 @@ export class ConventionService {
     await this.getIndex();
   }
 
-  @action
   async shiftConvention(id: number, afterOrderId: number): Promise<void> {
     await this.apiService.post('convention/edit', {id, afterOrderId});
 
     await this.getIndex();
   }
 
-  @action
   async renameConvention(id: number, title: string): Promise<void> {
     await this.apiService.post('convention/edit', {id, title});
 
     await this.getIndex();
 
     await this.freshConvention(id);
+  }
+
+  async editConventionAlias(id: number, alias: string): Promise<void> {
+    await this.apiService.post('convention/edit', {id, alias});
+
+    await this.getIndex();
   }
 
   @action

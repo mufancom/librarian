@@ -50,7 +50,7 @@ const Wrapper = styled.li`
 
   ${ConventionSideNavEditableTitle.Wrapper} {
     display: inline-block;
-    max-width: 130px;
+    max-width: 120px;
   }
 
   ${ConventionSideNavEditBtn.Wrapper}, ${ConventionSideNavDeleteBtn.Wrapper} {
@@ -70,7 +70,7 @@ const ConventionCategoryTitle = styled.div`
   }
 
   & > ${ConventionSideNavEditableTitle.Wrapper} {
-    max-width: 110px;
+    max-width: 90px;
   }
 `;
 
@@ -140,6 +140,15 @@ export class ConventionSideNavCategory extends Component<
   inputModalLoading = false;
 
   @observable
+  aliasInputModalVisible = false;
+
+  @observable
+  aliasInputModalInitialValue: string | undefined;
+
+  @observable
+  aliasInputModalLoading = false;
+
+  @observable
   mouseMoveIn = false;
 
   @observable
@@ -186,8 +195,17 @@ export class ConventionSideNavCategory extends Component<
           secondInputPlaceholder={'请输入别名'}
           visible={this.inputModalVisible}
           onOkButtonClick={this.inputModalOkButtonOnclick}
-          onCancelButtonClick={this.inputModelCancelButtonOnClick}
+          onCancelButtonClick={this.inputModalCancelButtonOnClick}
           loading={this.inputModalLoading}
+        />
+        <InputModal
+          title="修改别名"
+          placeholder="请输入新的别名"
+          visible={this.aliasInputModalVisible}
+          initialValue={this.aliasInputModalInitialValue}
+          onOkButtonClick={this.aliasInputModalOnclick}
+          onCancelButtonClick={this.aliasInputModalCancelButtonOnclick}
+          loading={this.aliasInputModalLoading}
         />
 
         <ConventionCategoryTitle
@@ -209,6 +227,7 @@ export class ConventionSideNavCategory extends Component<
             editLoading={this.renameLoading}
             onClick={this.onRenameButtonClick}
             onFinishClick={this.onRenameFinishButtonClick}
+            onAliasEditClick={this.onAliasEditClick}
           />
           <ConventionSideNavDeleteBtn
             show={this.showButtons && !this.renameMode}
@@ -222,7 +241,7 @@ export class ConventionSideNavCategory extends Component<
             <ConventionSideNavAddBtn show={this.authStore.isLoggedIn} />
           </Dropdown>
           <ConventionSideNavShiftBtn
-            show={this.showButtons}
+            show={this.showButtons && !this.renameMode}
             upOnclick={this.onUpShiftButtonOnclick}
             downOnclick={this.onDownShiftButtonOnclick}
           />
@@ -305,9 +324,7 @@ export class ConventionSideNavCategory extends Component<
 
     this.renameLoading = true;
 
-    let {
-      node: {entry},
-    } = this.props;
+    let {entry} = this.props.node;
 
     try {
       await this.conventionService.renameCategory(entry.id, this.categoryTitle);
@@ -323,8 +340,43 @@ export class ConventionSideNavCategory extends Component<
   };
 
   @action
-  inputModelCancelButtonOnClick = (): void => {
+  inputModalCancelButtonOnClick = (): void => {
     this.inputModalVisible = false;
+  };
+
+  @action
+  onAliasEditClick = (): void => {
+    let {alias} = this.props.node.entry;
+
+    this.aliasInputModalInitialValue = alias;
+
+    this.aliasInputModalVisible = true;
+  };
+
+  @action
+  aliasInputModalOnclick = async (value: string): Promise<void> => {
+    this.aliasInputModalLoading = true;
+
+    let {id} = this.props.node.entry;
+
+    try {
+      await this.conventionService.editCategoryAlias(id, value);
+
+      message.success('别名修改成功');
+
+      this.aliasInputModalVisible = false;
+    } catch (error) {
+      let errorMessage = fetchErrorMessage(error);
+
+      message.error(errorMessage);
+    }
+
+    this.aliasInputModalLoading = false;
+  };
+
+  @action
+  aliasInputModalCancelButtonOnclick = (): void => {
+    this.aliasInputModalVisible = false;
   };
 
   addMenuItemOnclick = (index: number): void => {
@@ -364,6 +416,8 @@ export class ConventionSideNavCategory extends Component<
     try {
       await this.conventionService.createCategory(id, value, alias);
 
+      message.success('新添分组成功');
+
       this.inputModalVisible = false;
     } catch (error) {
       let errorMessage = fetchErrorMessage(error);
@@ -398,6 +452,8 @@ export class ConventionSideNavCategory extends Component<
 
     try {
       await this.conventionService.createConvention(id, value, alias);
+
+      message.success('新添规范成功');
 
       this.inputModalVisible = false;
     } catch (error) {

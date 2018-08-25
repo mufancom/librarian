@@ -13,6 +13,8 @@ import {styled} from 'theme';
 import {collapseToEnd} from 'utils/dom';
 import {inject, observer} from 'utils/mobx';
 
+import {InputModal} from '../../../common';
+
 import {
   CancelBlocker,
   ConventionSideNavDeleteBtn,
@@ -94,6 +96,15 @@ export class ConventionSideNavItem extends Component<
   @observable
   shiftLoading = false;
 
+  @observable
+  aliasInputModalVisible = false;
+
+  @observable
+  aliasInputModalInitialValue: string | undefined;
+
+  @observable
+  aliasInputModalLoading = false;
+
   renameCancelBlocker?: CancelBlocker;
 
   renameBlurTimer: any;
@@ -121,6 +132,15 @@ export class ConventionSideNavItem extends Component<
         onMouseEnter={this.onMouseEnter}
         onMouseLeave={this.onMouseLeave}
       >
+        <InputModal
+          title="修改别名"
+          placeholder="请输入新的别名"
+          visible={this.aliasInputModalVisible}
+          initialValue={this.aliasInputModalInitialValue}
+          onOkButtonClick={this.aliasInputModalOnclick}
+          onCancelButtonClick={this.aliasInputModalCancelButtonOnclick}
+          loading={this.aliasInputModalLoading}
+        />
         <NavLink to={`/convention/${url ? url : entry.id}`}>
           <ConventionSideNavEditableTitle
             renameMode={this.renameMode}
@@ -137,6 +157,7 @@ export class ConventionSideNavItem extends Component<
             editLoading={this.renameLoading}
             onClick={this.onRenameButtonClick}
             onFinishClick={this.onRenameFinishButtonClick}
+            onAliasEditClick={this.onAliasEditClick}
           />
           <ConventionSideNavDeleteBtn
             show={this.showButtons && !this.renameMode}
@@ -144,7 +165,7 @@ export class ConventionSideNavItem extends Component<
           />
         </NavLink>
         <ConventionSideNavShiftBtn
-          show={this.showButtons}
+          show={this.showButtons && !this.renameMode}
           upOnclick={this.onUpShiftButtonOnclick}
           downOnclick={this.onDownShiftButtonOnclick}
         />
@@ -217,6 +238,41 @@ export class ConventionSideNavItem extends Component<
     }
 
     this.renameLoading = false;
+  };
+
+  @action
+  onAliasEditClick = (): void => {
+    let {alias} = this.props.node.entry;
+
+    this.aliasInputModalInitialValue = alias;
+
+    this.aliasInputModalVisible = true;
+  };
+
+  @action
+  aliasInputModalOnclick = async (value: string): Promise<void> => {
+    this.aliasInputModalLoading = true;
+
+    let {id} = this.props.node.entry;
+
+    try {
+      await this.conventionService.editConventionAlias(id, value);
+
+      message.success('别名修改成功');
+
+      this.aliasInputModalVisible = false;
+    } catch (error) {
+      let errorMessage = fetchErrorMessage(error);
+
+      message.error(errorMessage);
+    }
+
+    this.aliasInputModalLoading = false;
+  };
+
+  @action
+  aliasInputModalCancelButtonOnclick = (): void => {
+    this.aliasInputModalVisible = false;
   };
 
   onDeleteButtonClick = async (): Promise<void> => {

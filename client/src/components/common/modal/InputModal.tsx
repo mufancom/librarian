@@ -7,19 +7,28 @@ import {observer} from 'utils/mobx';
 
 const Wrapper = styled.div``;
 
-export interface InputModalProps {
+interface InputModalWithSecondInputProps {
+  secondInput: true;
+  onOkButtonClick?(value: string, secondValue: string): void;
+}
+
+interface InputModalWithoutSecondInputProps {
+  secondInput?: false | undefined;
+  onOkButtonClick?(value: string): void;
+}
+
+export type InputModalProps = {
   className?: string;
   visible: boolean;
   title: string;
   loading?: boolean;
   placeholder?: string;
-  secondInput?: boolean;
+  initialValue?: string;
   secondInputPlaceholder?: string;
   okButtonTitle?: string;
   cancelButtonTitle?: string;
-  onOkButtonClick?(value: string, secondValue: string): void;
   onCancelButtonClick?(): void;
-}
+} & (InputModalWithSecondInputProps | InputModalWithoutSecondInputProps);
 
 @observer
 export class InputModal extends Component<InputModalProps> {
@@ -33,6 +42,7 @@ export class InputModal extends Component<InputModalProps> {
       visible,
       onCancelButtonClick,
       loading,
+      initialValue,
       placeholder,
       secondInput,
       secondInputPlaceholder,
@@ -63,7 +73,11 @@ export class InputModal extends Component<InputModalProps> {
           ]}
         >
           <p>
-            <Input ref={this.inputRef} placeholder={placeholder} />
+            <Input
+              ref={this.inputRef}
+              placeholder={placeholder}
+              defaultValue={initialValue}
+            />
           </p>
           {secondInput ? (
             <p>
@@ -81,16 +95,23 @@ export class InputModal extends Component<InputModalProps> {
   }
 
   onOkClick = (): void => {
-    let {onOkButtonClick} = this.props;
     let value = this.inputRef.current!.input.value;
-    let secondValue = this.secondInputRef.current!.input.value;
 
-    if (onOkButtonClick) {
-      onOkButtonClick(value, secondValue);
+    let secondValue;
+
+    if (this.props.onOkButtonClick) {
+      if (this.props.secondInput) {
+        secondValue = this.secondInputRef.current!.input.value;
+
+        this.props.onOkButtonClick(value, secondValue);
+
+        this.secondInputRef.current!.input.value = '';
+      } else {
+        this.props.onOkButtonClick(value);
+      }
     }
 
     this.inputRef.current!.input.value = '';
-    this.secondInputRef.current!.input.value = '';
   };
 
   static Wrapper = Wrapper;

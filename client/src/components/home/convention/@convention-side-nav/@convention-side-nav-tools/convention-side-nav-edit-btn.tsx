@@ -47,6 +47,13 @@ const EditButton = styled.div`
   }
 `;
 
+const AliasEditButton = styled.a`
+  display: inline !important;
+  color: ${props => props.theme.accent()} !important;
+  margin-left: 7px;
+  font-size: 12px;
+`;
+
 export interface ConventionSideNavEditBtnProps {
   className?: string;
   show: boolean;
@@ -54,6 +61,7 @@ export interface ConventionSideNavEditBtnProps {
   editLoading?: boolean;
   onClick?(): void;
   onFinishClick?(): void;
+  onAliasEditClick?(): void;
 }
 
 @observer
@@ -61,20 +69,26 @@ export class ConventionSideNavEditBtn extends Component<
   ConventionSideNavEditBtnProps
 > {
   render(): JSX.Element {
-    let {className, show, editMode, editLoading} = this.props;
+    let {className, show, editMode, editLoading, onAliasEditClick} = this.props;
 
     return (
       <Wrapper
         className={classNames('convention-side-nav-edit-btn', className)}
       >
         {editMode ? (
-          <FinishButton onMouseDown={this.onInnerFinishClick}>
-            <Button
-              loading={editLoading}
-              className="finish-button"
-              icon="check"
-            />
-          </FinishButton>
+          <div style={{display: 'inline'}}>
+            <FinishButton onMouseDown={this.onInnerFinishClick}>
+              <Button
+                loading={editLoading}
+                className="finish-button"
+                icon="check"
+              />
+            </FinishButton>
+
+            <AliasEditButton onMouseDown={onAliasEditClick}>
+              别名
+            </AliasEditButton>
+          </div>
         ) : (
           <EditButton
             className={show ? 'show' : 'hide'}
