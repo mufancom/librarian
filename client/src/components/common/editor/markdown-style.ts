@@ -151,7 +151,8 @@ export const MarkdownStyle = styled.div`
   pre {
     word-wrap: normal;
     padding: 16px;
-    overflow: auto;
+    overflow-x: auto;
+    overflow-y: hidden;
     font-size: 90%;
     line-height: 1.45;
     border-radius: 4px;
