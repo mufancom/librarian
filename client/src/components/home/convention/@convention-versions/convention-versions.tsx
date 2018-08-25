@@ -21,12 +21,9 @@ const Wrapper = styled.div`
   padding: 10px 40px;
   margin-bottom: 30px;
 
-  .timeline {
-    animation: fadeUpIn 0.5s;
-  }
-
   .ant-timeline-item {
     padding: 0 !important;
+    animation: fadeUpIn 0.5s;
 
     &:nth-last-child(2) {
       .ant-timeline-item-tail {
@@ -142,7 +139,7 @@ export class ConventionVersions extends Component<ConventionVersionsProps> {
     return (
       <Wrapper className={classNames('convention-versions', className)}>
         <ConventionVersionsHeader />
-        <Timeline className="timeline">
+        <Timeline>
           {this.versionGroups.map(group => (
             <Timeline.Item key={group.date}>
               <DateTitle>{group.date}</DateTitle>
