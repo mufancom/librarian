@@ -128,33 +128,35 @@ export class ConventionBodyItem extends Component<ConventionBodyItemProps> {
                 {item.versionHash.slice(0, 7)} (
                 {formatAsTimeAgo(item.versionCreatedAt)})
               </ItemVersionInfo>
-              {this.authStore.isLoggedIn ? (
-                <div>
-                  <ItemTopToolBarNavLink to={`${item.id}/versions`}>
-                    历史版本
-                  </ItemTopToolBarNavLink>
-                  <ItemTopToolBarButton onClick={this.editOnclick}>
-                    编辑
-                  </ItemTopToolBarButton>
-                  <Popconfirm
-                    placement="bottomRight"
-                    title="您确定要删除该条目？"
-                    onConfirm={this.deleteOnclick}
-                    okText="确定"
-                    cancelText="取消"
-                  >
-                    <ItemTopToolBarButton className="danger">
-                      删除
+              <div>
+                <ItemTopToolBarNavLink to={`${item.id}/versions`}>
+                  历史版本
+                </ItemTopToolBarNavLink>
+                {this.authStore.isLoggedIn ? (
+                  <div style={{display: 'inline'}}>
+                    <ItemTopToolBarButton onClick={this.editOnclick}>
+                      编辑
                     </ItemTopToolBarButton>
-                  </Popconfirm>
-                  <ConventionBodyItemShiftButton
-                    upOnclick={this.onUpShiftButtonClick}
-                    downOnclick={this.onDownShiftButtonClick}
-                  />
-                </div>
-              ) : (
-                undefined
-              )}
+                    <Popconfirm
+                      placement="bottomRight"
+                      title="您确定要删除该条目？"
+                      onConfirm={this.deleteOnclick}
+                      okText="确定"
+                      cancelText="取消"
+                    >
+                      <ItemTopToolBarButton className="danger">
+                        删除
+                      </ItemTopToolBarButton>
+                    </Popconfirm>
+                    <ConventionBodyItemShiftButton
+                      upOnclick={this.onUpShiftButtonClick}
+                      downOnclick={this.onDownShiftButtonClick}
+                    />{' '}
+                  </div>
+                ) : (
+                  undefined
+                )}
+              </div>
             </ItemTopToolBar>
 
             <ItemRenderContent
