@@ -11,7 +11,10 @@ export interface Translation {
   EMAIL_ISEMAIL_EXCEPTION: string;
   AFTER_ORDER_ID_MIN_EXCEPTION: string;
   TITLE_LENGTH_EXCEPTION: string;
+  ALIAS_LENGTH_EXCEPTION: string;
   CONTENT_MINLENGTH_EXCEPTION: string;
+  TITLE_MATCHES_EXCEPTION: string;
+  ALIAS_MATCHES_EXCEPTION: string;
 
   /* Authentication failed */
   AUTHENTICATION_FAILED: string;
@@ -33,6 +36,8 @@ export interface Translation {
   USERNAME_ALREADY_EXISTS: string;
   EMAIL_ALREADY_EXISTS: string;
   BASE_VERSION_OUT_DATED: string;
+  TITLE_ALREADY_EXISTS_UNDER_SAME_PARENT: string;
+  ALIAS_ALREADY_EXISTS_UNDER_SAME_PARENT: string;
 
   /* Unnecessary request */
   UNNECESSARY_REQUEST: string;

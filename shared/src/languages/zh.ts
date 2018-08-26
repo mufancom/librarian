@@ -11,7 +11,10 @@ export const zh: Translation = {
   EMAIL_ISEMAIL_EXCEPTION: '请输入有效的邮箱地址',
   AFTER_ORDER_ID_MIN_EXCEPTION: '已经到顶啦',
   TITLE_LENGTH_EXCEPTION: '标题应为1-20位',
+  ALIAS_LENGTH_EXCEPTION: '别名应为1-20位',
   CONTENT_MINLENGTH_EXCEPTION: '内容不能为空',
+  TITLE_MATCHES_EXCEPTION: '标题不能以数字或空格开头',
+  ALIAS_MATCHES_EXCEPTION: '别名不能以数字或空格开头',
 
   AUTHENTICATION_FAILED: '授权失败',
   USERNAME_PASSWORD_MISMATCH: '用户名或密码错误',
@@ -30,6 +33,8 @@ export const zh: Translation = {
   USERNAME_ALREADY_EXISTS: '用户名已经被占用',
   EMAIL_ALREADY_EXISTS: '邮箱已经注册过',
   BASE_VERSION_OUT_DATED: '修改所基于的版本已过期',
+  TITLE_ALREADY_EXISTS_UNDER_SAME_PARENT: '同父目录下已有重复标题',
+  ALIAS_ALREADY_EXISTS_UNDER_SAME_PARENT: '同父目录下已有重复别名',
 
   UNNECESSARY_REQUEST: '无用访问',
   CANNOT_ROLLBACK_TO_CURRENT_VERSION: '不能回滚到当前版本',

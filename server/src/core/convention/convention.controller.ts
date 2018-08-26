@@ -1,6 +1,9 @@
 import {Body, Controller, Get, Param, Post, UseGuards} from '@nestjs/common';
 
-import {ResourceNotFoundException} from 'common/exceptions';
+import {
+  ResourceConflictingException,
+  ResourceNotFoundException,
+} from 'common/exceptions';
 import {Config} from 'utils/config';
 
 import {AuthGuard} from '../auth';
@@ -34,8 +37,31 @@ export class ConventionController {
   @Post('create')
   @UseGuards(AuthGuard)
   async create(@Body() data: CreateDTO) {
-    if (!(await this.categoryService.findOneById(data.categoryId))) {
+    let {categoryId, title, alias} = data;
+
+    if (!(await this.categoryService.findOneById(categoryId))) {
       throw new ResourceNotFoundException('CATEGORY_NOT_FOUND');
+    }
+
+    let existedConvention = await this.conventionService.findSiblingByTitleOrAlias(
+      categoryId,
+      title,
+      alias,
+    );
+
+    if (existedConvention) {
+      if (
+        title === existedConvention.title ||
+        title === existedConvention.alias
+      ) {
+        throw new ResourceConflictingException(
+          'TITLE_ALREADY_EXISTS_UNDER_SAME_PARENT',
+        );
+      } else {
+        throw new ResourceConflictingException(
+          'ALIAS_ALREADY_EXISTS_UNDER_SAME_PARENT',
+        );
+      }
     }
 
     let {id} = await this.conventionService.insert(
@@ -50,13 +76,34 @@ export class ConventionController {
   @Post('edit')
   @UseGuards(AuthGuard)
   async edit(@Body() data: EditDTO) {
-    let convention = await this.conventionService.findOneById(data.id);
+    let {id, title, alias, afterOrderId} = data;
+
+    let convention = await this.conventionService.findOneById(id);
 
     if (!convention) {
       throw new ResourceNotFoundException('CONVENTION_NOT_FOUND');
     }
 
-    let {afterOrderId} = data;
+    let existedConvention = await this.conventionService.findSiblingByTitleOrAlias(
+      convention.categoryId,
+      title,
+      alias,
+    );
+
+    if (existedConvention) {
+      if (
+        title === existedConvention.title ||
+        title === existedConvention.alias
+      ) {
+        throw new ResourceConflictingException(
+          'TITLE_ALREADY_EXISTS_UNDER_SAME_PARENT',
+        );
+      } else {
+        throw new ResourceConflictingException(
+          'ALIAS_ALREADY_EXISTS_UNDER_SAME_PARENT',
+        );
+      }
+    }
 
     if (
       typeof afterOrderId !== 'undefined' &&
@@ -64,8 +111,6 @@ export class ConventionController {
     ) {
       convention = await this.conventionService.shift(convention, afterOrderId);
     }
-
-    let {title, alias} = data;
 
     if (title) {
       convention.title = title;

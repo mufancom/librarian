@@ -7,9 +7,9 @@ import styled from 'styled-components';
 
 import {
   ConventionService,
-  RouteParams,
+  RouteAliasParams,
+  RouteIdMatchParams,
   VersionsRouteParams,
-  isRouteIdMatchParams,
 } from 'services/convention-service';
 import {ConventionStore} from 'stores/convention-store';
 import {RouterStore} from 'stores/router-store';
@@ -78,7 +78,7 @@ export class Convention extends React.Component<ConventionProps> {
                     component={(props: any) => (
                       <RouteTrackerWithRouter
                         {...props}
-                        onChange={this.onRouteChange}
+                        onChange={this.onRouteChangeWithIdParam}
                       >
                         <ConventionBody {...props} />
                       </RouteTrackerWithRouter>
@@ -115,21 +115,38 @@ export class Convention extends React.Component<ConventionProps> {
     );
   }
 
+  onRouteChangeWithIdParam = async (match: any): Promise<void> => {
+    let {id, category, group, item} = match.params as RouteIdMatchParams &
+      RouteAliasParams;
+
+    let convention = await this.conventionService.getConvention(id);
+
+    let oldPath = `/convention/${id}/${category}/${group}/${item}`;
+
+    let newPath = await this.conventionService.getPathByConvention(convention);
+
+    let nowFullPath = this.routerStore.location.pathname;
+
+    let payload = nowFullPath.slice(oldPath.length);
+
+    let {hash, search} = this.routerStore.location;
+
+    let newFullPath = `/convention/${newPath}${payload}${hash}${search}`;
+
+    this.routerStore.push(newFullPath);
+  };
+
   onRouteChange = async (match: any): Promise<void> => {
-    let params = match.params as RouteParams;
+    let params = match.params as RouteAliasParams;
 
     let id = 0;
 
-    if (isRouteIdMatchParams(params)) {
-      id = params.id;
-    } else {
-      let convention = await this.conventionService.getConventionByPathParams(
-        params,
-      );
+    let convention = await this.conventionService.getConventionByPathParams(
+      params,
+    );
 
-      if (convention) {
-        id = convention.id;
-      }
+    if (convention) {
+      id = convention.id;
     }
 
     let {currentConvention} = this.conventionStore;

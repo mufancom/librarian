@@ -40,6 +40,41 @@ export class ConventionService {
       .getOne();
   }
 
+  async findSiblingByTitleOrAlias(
+    categoryId: number,
+    title?: string,
+    alias?: string,
+    thisId?: number,
+  ): Promise<Convention | undefined> {
+    let checkNameSQL = 'false';
+
+    if (title) {
+      checkNameSQL = 'title = :title or alias = :title';
+    }
+
+    if (alias) {
+      checkNameSQL += ' or title = :alias or alias = :alias';
+    }
+
+    let checkIdSQL = '';
+
+    if (thisId) {
+      checkIdSQL = 'and id != :thisId';
+    }
+
+    let sql = `category_id = :categoryId and status != :deleted ${checkIdSQL} and (${checkNameSQL})`;
+
+    return this.conventionRepository
+      .createQueryBuilder()
+      .where(sql, {
+        categoryId,
+        title,
+        alias,
+        deleted: ConventionStatus.deleted,
+      })
+      .getOne();
+  }
+
   async getMaxOrderId(categoryId: number): Promise<number> {
     let maxOrderId = (await this.conventionRepository
       .createQueryBuilder()

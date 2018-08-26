@@ -11,7 +11,10 @@ export const en: Translation = {
   EMAIL_ISEMAIL_EXCEPTION: 'Please enter a valid email address',
   AFTER_ORDER_ID_MIN_EXCEPTION: "It's already at the top",
   TITLE_LENGTH_EXCEPTION: 'Title should be 1-20 characters long',
+  ALIAS_LENGTH_EXCEPTION: 'Alias should be 1-20 characters long',
   CONTENT_MINLENGTH_EXCEPTION: 'Content should not be empty',
+  TITLE_MATCHES_EXCEPTION: 'Title could not start with a number or blank',
+  ALIAS_MATCHES_EXCEPTION: 'Alias could not start with a number or blank',
 
   AUTHENTICATION_FAILED: 'Authentication failed',
   USERNAME_PASSWORD_MISMATCH: 'Username and password mismatch',
@@ -31,6 +34,10 @@ export const en: Translation = {
   USERNAME_ALREADY_EXISTS: 'Username already exists',
   EMAIL_ALREADY_EXISTS: 'Email already exists',
   BASE_VERSION_OUT_DATED: 'The version that the edit is based on is outdated',
+  TITLE_ALREADY_EXISTS_UNDER_SAME_PARENT:
+    'The title is not available under the parent category',
+  ALIAS_ALREADY_EXISTS_UNDER_SAME_PARENT:
+    'The alias is not available under the parent category',
 
   UNNECESSARY_REQUEST: 'Unnecessary request',
   CANNOT_ROLLBACK_TO_CURRENT_VERSION: 'Cannot rollback to the current version',

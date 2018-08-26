@@ -1,6 +1,9 @@
 import {Body, Controller, Get, Param, Post, UseGuards} from '@nestjs/common';
 
-import {ResourceNotFoundException} from 'common/exceptions';
+import {
+  ResourceConflictingException,
+  ResourceNotFoundException,
+} from 'common/exceptions';
 
 import {AuthGuard} from '../../auth';
 
@@ -14,10 +17,28 @@ export class CategoryController {
   @Post('create')
   @UseGuards(AuthGuard)
   async create(@Body() data: CreateDTO) {
-    let {parentId, afterOrderId} = data;
+    let {parentId, afterOrderId, title, alias} = data;
 
     if (parentId !== 0 && !(await this.categoryService.findOneById(parentId))) {
       throw new ResourceNotFoundException('PARENT_CATEGORY_NOT_FOUND');
+    }
+
+    let existedCategory = await this.categoryService.findSiblingByTitleOrAlias(
+      parentId,
+      title,
+      alias,
+    );
+
+    if (existedCategory) {
+      if (title === existedCategory.title || title === existedCategory.alias) {
+        throw new ResourceConflictingException(
+          'TITLE_ALREADY_EXISTS_UNDER_SAME_PARENT',
+        );
+      } else {
+        throw new ResourceConflictingException(
+          'ALIAS_ALREADY_EXISTS_UNDER_SAME_PARENT',
+        );
+      }
     }
 
     let {id} = await this.categoryService.insert(parentId, afterOrderId, data);
@@ -28,13 +49,31 @@ export class CategoryController {
   @Post('edit')
   @UseGuards(AuthGuard)
   async edit(@Body() data: EditDTO) {
-    let category = await this.categoryService.findOneById(data.id);
+    let {id, title, alias, afterOrderId} = data;
+
+    let category = await this.categoryService.findOneById(id);
 
     if (!category) {
       throw new ResourceNotFoundException('CATEGORY_NOT_FOUND');
     }
 
-    let {afterOrderId} = data;
+    let existedCategory = await this.categoryService.findSiblingByTitleOrAlias(
+      category.parentId,
+      title,
+      alias,
+    );
+
+    if (existedCategory) {
+      if (title === existedCategory.title || title === existedCategory.alias) {
+        throw new ResourceConflictingException(
+          'TITLE_ALREADY_EXISTS_UNDER_SAME_PARENT',
+        );
+      } else {
+        throw new ResourceConflictingException(
+          'ALIAS_ALREADY_EXISTS_UNDER_SAME_PARENT',
+        );
+      }
+    }
 
     if (
       typeof afterOrderId !== 'undefined' &&
@@ -42,8 +81,6 @@ export class CategoryController {
     ) {
       category = await this.categoryService.shift(category, afterOrderId);
     }
-
-    let {title, alias} = data;
 
     if (title) {
       category.title = title;

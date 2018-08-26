@@ -28,6 +28,41 @@ export class CategoryService {
       .getOne();
   }
 
+  async findSiblingByTitleOrAlias(
+    parentId: number,
+    title?: string,
+    alias?: string,
+    thisId?: number,
+  ): Promise<Category | undefined> {
+    let checkNameSQL = 'false';
+
+    if (title) {
+      checkNameSQL = 'title = :title or alias = :title';
+    }
+
+    if (alias) {
+      checkNameSQL += ' or title = :alias or alias = :alias';
+    }
+
+    let checkIdSQL = '';
+
+    if (thisId) {
+      checkIdSQL = 'and id != :thisId';
+    }
+
+    let sql = `parent_id = :parentId and status != :deleted ${checkIdSQL} and (${checkNameSQL})`;
+
+    return this.categoryRepository
+      .createQueryBuilder()
+      .where(sql, {
+        parentId,
+        title,
+        alias,
+        deleted: CategoryStatus.deleted,
+      })
+      .getOne();
+  }
+
   async getMaxOrderId(parentId: number): Promise<number> {
     let maxOrderId = (await this.categoryRepository
       .createQueryBuilder()
