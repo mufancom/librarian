@@ -9,6 +9,7 @@ import scrollIntoView from 'scroll-into-view-if-needed';
 
 import {fetchErrorMessage} from 'services/api-service';
 import {ConventionService} from 'services/convention-service';
+import {ScrollService} from 'services/scroll-service';
 import {AuthStore} from 'stores/auth-store';
 import {ConventionStore} from 'stores/convention-store';
 import {styled} from 'theme';
@@ -70,10 +71,6 @@ const Wrapper = styled(MarkdownStyle)`
   }
 `;
 
-interface HeadingAnchorProps {
-  headings: Heading[];
-}
-
 function formAnchorLinks(tree: Heading[]): React.ReactNode {
   return tree.map(val => (
     <Link
@@ -85,15 +82,22 @@ function formAnchorLinks(tree: Heading[]): React.ReactNode {
   ));
 }
 
+interface HeadingAnchorProps {
+  opacity: number;
+  headings: Heading[];
+}
+
 const HeadingAnchor: React.SFC<HeadingAnchorProps> = props => {
+  let {opacity, headings} = props;
+
   return (
     <Anchor
       affix={false}
       className="anchor"
       offsetTop={100}
-      style={{marginLeft: '20px'}}
+      style={{marginLeft: '20px', opacity, transition: 'all .5s'}}
       showInkInFixed={true}
-      children={formAnchorLinks(props.headings)}
+      children={formAnchorLinks(headings)}
     />
   );
 };
@@ -113,13 +117,29 @@ export class ConventionBody extends Component<ConventionBodyProps> {
   @inject
   conventionService!: ConventionService;
 
+  @inject
+  scrollService!: ScrollService;
+
   @observable
   showCreateConvention = false;
 
   @observable
   createConventionLoading = false;
 
+  @observable
+  fadeAnchor = true;
+
+  listenerId!: number;
+
   itemCreateRef: React.RefObject<ConventionBodyItemCreate> = createRef();
+
+  componentDidMount(): void {
+    this.listenerId = this.scrollService.addListener(this.onWindowScroll);
+  }
+
+  componentWillUnmount(): void {
+    this.scrollService.removeListener(this.listenerId);
+  }
 
   render(): JSX.Element {
     let {className} = this.props;
@@ -164,12 +184,24 @@ export class ConventionBody extends Component<ConventionBodyProps> {
               marginLeft: '20px',
             }}
           >
-            <HeadingAnchor headings={headings} />
+            <HeadingAnchor
+              opacity={this.fadeAnchor ? 0.3 : 1}
+              headings={headings}
+            />
           </Sider>
         </Layout>
       </Wrapper>
     );
   }
+
+  @action
+  onWindowScroll = (scrollTop: number): void => {
+    if (scrollTop > 100) {
+      this.fadeAnchor = false;
+    } else {
+      this.fadeAnchor = true;
+    }
+  };
 
   @action
   onAddConventionButtonClick = (): void => {
