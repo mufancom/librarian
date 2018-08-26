@@ -4,6 +4,7 @@ import {CursorOptions, CursorResult} from 'prettier';
 import {
   Category,
   Convention,
+  ConventionContent,
   ConventionIndexCategoryNode,
   ConventionIndexNode,
   ConventionItem,
@@ -15,7 +16,7 @@ import {
   NewItemDraftDict,
   PrettierConfig,
 } from 'stores/convention-store';
-import {prettify, prettifyWithCursor} from 'utils/markdown';
+import {Heading, mark, prettify, prettifyWithCursor} from 'utils/markdown';
 
 import {APIService} from './api-service';
 
@@ -228,16 +229,18 @@ export class ConventionService {
 
   @action
   async load(id: number): Promise<void> {
+    let {conventionStore} = this;
+
     if (
-      !this.conventionStore.currentConvention ||
-      this.conventionStore.currentConvention.id !== id
+      !conventionStore.currentConvention ||
+      conventionStore.currentConvention.id !== id
     ) {
       this.getConvention(id)
         .then(value => {
-          this.conventionStore.currentConvention = value;
+          conventionStore.currentConvention = value;
         })
         .catch();
-      this.conventionStore.currentContent = await this.getContent(id);
+      conventionStore.currentContent = await this.getContent(id);
     }
   }
 
@@ -272,7 +275,7 @@ export class ConventionService {
   async getContent(
     id: number,
     cached: boolean = true,
-  ): Promise<ConventionItem[]> {
+  ): Promise<ConventionContent> {
     let cacheStore = this.conventionStore.conventionContentCache;
 
     if (cacheStore.hasOwnProperty(id) && cached) {
@@ -283,8 +286,23 @@ export class ConventionService {
       `convention/${id}/items`,
     );
 
-    cacheStore[id] = content;
-    return content;
+    let combinedHeadingTree: Heading[] = [];
+
+    for (let item of content) {
+      let {html, headingTree} = mark(item.content);
+
+      combinedHeadingTree = combinedHeadingTree.concat(headingTree);
+
+      item.renderedHTML = html;
+    }
+
+    let conventionContent = {
+      items: content,
+      headings: combinedHeadingTree,
+    };
+
+    cacheStore[id] = conventionContent;
+    return conventionContent;
   }
 
   async createCategory(
@@ -598,6 +616,8 @@ export class ConventionService {
   async loadVersions(params: VersionsRouteParams, page: number): Promise<void> {
     let {itemId} = params;
 
+    this.conventionStore.versionGroups = [];
+
     let convention = await this.getConventionByPathParams(params);
 
     let item = await this.getConventionItem(itemId);
@@ -605,19 +625,19 @@ export class ConventionService {
     if (convention && item) {
       let conventionStore = this.conventionStore;
 
+      let data = await this.getConventionItemVersions(itemId, page);
+
+      conventionStore.currentVersionConventionPath = await this.getPathByConvention(
+        convention,
+      );
+
       conventionStore.currentVersionConvention = convention;
 
       conventionStore.currentVersionConventionItem = item;
 
       conventionStore.currentVersionPage = page;
 
-      let data = await this.getConventionItemVersions(itemId, page);
-
       conventionStore.versionGroups = buildVersionGroups(data.versions);
-
-      conventionStore.currentVersionConventionPath = await this.getPathByConvention(
-        convention,
-      );
 
       conventionStore.versionPageCount = data.pageCount;
     }

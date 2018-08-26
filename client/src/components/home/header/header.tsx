@@ -1,4 +1,3 @@
-import {Col, Row} from 'antd';
 import classNames from 'classnames';
 import * as React from 'react';
 import {RouteComponentProps, withRouter} from 'react-router';
@@ -12,7 +11,7 @@ import {HeaderUser} from './@header-user';
 
 const Wrapper = styled.div`
   .header-nav {
-    display: inline-block;
+    display: block;
     position: relative;
     padding-top: 10px;
   }
@@ -34,6 +33,7 @@ const Wrapper = styled.div`
 
 const MenuWrapper = styled.div`
   float: right;
+  margin-right: 10px;
 `;
 
 export interface HeaderProps extends RouteComponentProps<any> {
@@ -47,22 +47,13 @@ export class Header extends React.Component<HeaderProps> {
 
     return (
       <Wrapper className={classNames('header', className)}>
-        <Row>
-          <Col
-            xs={{span: 24, offset: 0}}
-            sm={{span: 22, offset: 1}}
-            md={{span: 20, offset: 2}}
-            lg={{span: 18, offset: 3}}
-            xl={{span: 16, offset: 4}}
-            className="header-nav header-nav-with-hint-bar"
-          >
-            <HeaderLogo />
-            <MenuWrapper>
-              <HeaderNavWithRouter />
-              <HeaderUser />
-            </MenuWrapper>
-          </Col>
-        </Row>
+        <div className="header-nav header-nav-with-hint-bar">
+          <HeaderLogo />
+          <MenuWrapper>
+            <HeaderNavWithRouter />
+            <HeaderUser />
+          </MenuWrapper>
+        </div>
       </Wrapper>
     );
   }

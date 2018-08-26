@@ -1,4 +1,4 @@
-import {Col, Layout, Row} from 'antd';
+import {Layout} from 'antd';
 import classNames from 'classnames';
 import * as QueryString from 'query-string';
 import * as React from 'react';
@@ -56,77 +56,67 @@ export class Convention extends React.Component<ConventionProps> {
 
     return (
       <Wrapper className={classNames('convention', className)}>
-        <Row>
-          <Col
-            xs={{span: 24, offset: 0}}
-            sm={{span: 22, offset: 1}}
-            md={{span: 20, offset: 2}}
-            lg={{span: 18, offset: 3}}
-            xl={{span: 16, offset: 4}}
-          >
-            <Switch>
-              <Route
-                path="/convention/:category/:group/:item/:itemId(\d+)/versions"
-                component={(props: any) => (
-                  <RouteTrackerWithRouter
-                    {...props}
-                    onChange={this.onRouteChangeToVersions}
-                  >
-                    <ConventionVersions />
-                  </RouteTrackerWithRouter>
-                )}
-              />
-              <Route>
-                <Layout>
-                  <ConventionSiderLayoutWithRouter />
-                  <Content
-                    style={{
-                      margin: '0 16px 0 300px',
-                      padding: 0,
-                      overflow: 'visible',
-                    }}
-                  >
-                    <Switch>
-                      <Route
-                        path="/convention/:id(\d+)/:category/:group/:item"
-                        component={(props: any) => (
-                          <RouteTrackerWithRouter
-                            {...props}
-                            onChange={this.onRouteChange}
-                          >
-                            <ConventionBody {...props} />
-                          </RouteTrackerWithRouter>
-                        )}
-                      />
-                      <Route
-                        path="/convention/:category/:group/:item"
-                        component={(props: any) => (
-                          <RouteTrackerWithRouter
-                            {...props}
-                            onChange={this.onRouteChange}
-                          >
-                            <ConventionBody {...props} />
-                          </RouteTrackerWithRouter>
-                        )}
-                      />
-                      <Route
-                        exact={true}
-                        path="/convention/"
-                        component={ConventionIndex}
-                      />
-                      <Route>
-                        <div>
-                          Miss at {this.routerStore.location.pathname} <br />
-                          (TODO: 404 {'>_<'})
-                        </div>
-                      </Route>
-                    </Switch>
-                  </Content>
-                </Layout>
-              </Route>
-            </Switch>
-          </Col>
-        </Row>
+        <Switch>
+          <Route
+            path="/convention/:category/:group/:item/:itemId(\d+)/versions"
+            component={(props: any) => (
+              <RouteTrackerWithRouter
+                {...props}
+                onChange={this.onRouteChangeToVersions}
+              >
+                <ConventionVersions />
+              </RouteTrackerWithRouter>
+            )}
+          />
+          <Route>
+            <Layout>
+              <ConventionSiderLayoutWithRouter />
+              <Content
+                style={{
+                  margin: '0 16px 0 300px',
+                  padding: 0,
+                  overflow: 'visible',
+                }}
+              >
+                <Switch>
+                  <Route
+                    path="/convention/:id(\d+)/:category/:group/:item"
+                    component={(props: any) => (
+                      <RouteTrackerWithRouter
+                        {...props}
+                        onChange={this.onRouteChange}
+                      >
+                        <ConventionBody {...props} />
+                      </RouteTrackerWithRouter>
+                    )}
+                  />
+                  <Route
+                    path="/convention/:category/:group/:item"
+                    component={(props: any) => (
+                      <RouteTrackerWithRouter
+                        {...props}
+                        onChange={this.onRouteChange}
+                      >
+                        <ConventionBody {...props} />
+                      </RouteTrackerWithRouter>
+                    )}
+                  />
+                  <Route
+                    exact={true}
+                    path="/convention/"
+                    component={ConventionIndex}
+                  />
+                  <Route>
+                    <div>
+                      Miss at {this.routerStore.location.pathname} <br />
+                      (TODO: 404 {'>_<'})
+                    </div>
+                  </Route>
+                </Switch>
+              </Content>
+            </Layout>
+          </Route>
+        </Switch>
       </Wrapper>
     );
   }
@@ -148,9 +138,15 @@ export class Convention extends React.Component<ConventionProps> {
       }
     }
 
+    let {currentConvention} = this.conventionStore;
+
+    let lastConventionId = currentConvention ? currentConvention.id : undefined;
+
     await this.conventionService.load(id);
 
-    scrollTo(0, 0);
+    if (!lastConventionId || lastConventionId !== id) {
+      scrollTo(0, 0);
+    }
   };
 
   onRouteChangeToVersions = async (match: any): Promise<void> => {

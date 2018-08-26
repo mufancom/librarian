@@ -62,10 +62,12 @@ export class ConventionSiderLayout extends Component<
         <Sider
           className={`nav-sider${this.pullUp ? ' pull-up' : ''}`}
           style={{
-            backgroundColor: 'transparent',
-            bottom: 0,
+            backgroundColor: '#fff',
+            bottom: '-20px',
             position: 'fixed',
             overflow: 'auto',
+            zIndex: 50,
+            paddingRight: '10px',
           }}
           width={230}
         >

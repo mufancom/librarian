@@ -300,7 +300,7 @@ export class ConventionBodyItemEditor extends Component<
   };
 
   generateMarkdownPreview = async (markdown: string): Promise<string> => {
-    return mark(markdown);
+    return mark(markdown).html;
   };
 
   @action

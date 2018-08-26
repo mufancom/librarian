@@ -5,7 +5,6 @@ import {NavLink} from 'react-router-dom';
 
 import {ConventionService} from 'services/convention-service';
 import {ConventionStore} from 'stores/convention-store';
-import {RouterStore} from 'stores/router-store';
 import {styled} from 'theme';
 import {inject, observer} from 'utils/mobx';
 import {getMarkdownTitle} from 'utils/regex';
@@ -30,9 +29,6 @@ export interface ConventionVersionsHeaderProps {
 export class ConventionVersionsHeader extends Component<
   ConventionVersionsHeaderProps
 > {
-  @inject
-  routerStore!: RouterStore;
-
   @inject
   conventionStore!: ConventionStore;
 

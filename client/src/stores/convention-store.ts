@@ -2,6 +2,7 @@ import {observable} from 'mobx';
 import {Options} from 'prettier';
 
 import {Bimap} from 'utils/common';
+import {Heading} from 'utils/markdown';
 
 export const ITEM_VERSION_PAGE_SIZE = 20;
 
@@ -65,6 +66,7 @@ export interface ConventionItem {
   createdAt: string;
   updatedAt: string;
   deletedAt?: string;
+  renderedHTML: string;
   status: number;
 }
 
@@ -98,8 +100,13 @@ export interface ConventionCache {
   [key: number]: Convention;
 }
 
+export interface ConventionContent {
+  headings: Heading[];
+  items: ConventionItem[];
+}
+
 export interface ConventionContentCache {
-  [key: number]: ConventionItem[];
+  [key: number]: ConventionContent;
 }
 
 export interface ItemVersionGroup {
@@ -120,10 +127,13 @@ export class ConventionStore {
   currentConvention?: Convention;
 
   @observable
+  currentConventionHeadingTree: Heading[] = [];
+
+  @observable
   conventionContentCache: ConventionContentCache = {};
 
   @observable
-  currentContent: ConventionItem[] = [];
+  currentContent: ConventionContent | undefined;
 
   @observable
   currentVersionConventionItem?: ConventionItem;

@@ -10,7 +10,6 @@ import {AuthStore} from 'stores/auth-store';
 import {ConventionItem} from 'stores/convention-store';
 import {styled} from 'theme';
 import {formatAsTimeAgo} from 'utils/date';
-import {mark} from 'utils/markdown';
 import {inject, observer} from 'utils/mobx';
 
 import {ConventionBodyItemEdit} from './@convention-body-item-edit';
@@ -122,7 +121,12 @@ export class ConventionBodyItem extends Component<ConventionBodyItemProps> {
           />
         ) : (
           <div>
-            <ItemTopToolBar style={{opacity: this.showSidebar ? 1 : 0}}>
+            <ItemTopToolBar
+              style={{
+                opacity: this.showSidebar ? 1 : 0,
+                right: this.authStore.isLoggedIn ? '28px' : '10px',
+              }}
+            >
               <ItemVersionInfo>
                 版本:&nbsp;
                 {item.versionHash.slice(0, 7)} (
@@ -151,7 +155,7 @@ export class ConventionBodyItem extends Component<ConventionBodyItemProps> {
                     <ConventionBodyItemShiftButton
                       upOnclick={this.onUpShiftButtonClick}
                       downOnclick={this.onDownShiftButtonClick}
-                    />{' '}
+                    />
                   </div>
                 ) : (
                   undefined
@@ -160,7 +164,7 @@ export class ConventionBodyItem extends Component<ConventionBodyItemProps> {
             </ItemTopToolBar>
 
             <ItemRenderContent
-              dangerouslySetInnerHTML={{__html: mark(item.content)}}
+              dangerouslySetInnerHTML={{__html: item.renderedHTML}}
             />
             <ConventionBodyItemFooter item={item} />
           </div>
