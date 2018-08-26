@@ -15,7 +15,7 @@ const {Sider} = Layout;
 
 const Wrapper = styled.div`
   ${ConventionSideSearch.Wrapper} {
-    margin-left: 26px;
+    margin-left: 36px;
     margin-top: 27px;
   }
 
@@ -69,7 +69,7 @@ export class ConventionSiderLayout extends Component<
             zIndex: 50,
             paddingRight: '10px',
           }}
-          width={230}
+          width={250}
         >
           <ConventionSideSearch />
           <ConventionSideNavWithRouter />

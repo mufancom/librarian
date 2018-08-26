@@ -38,12 +38,12 @@ const Wrapper = styled.div`
 
   ul.menu {
     margin-top: 20px;
-    padding-left: 30px;
+    padding-left: 40px;
   }
 
   ${ConventionSideNavAddCategoryButton.Wrapper} {
     margin-top: 30px;
-    margin-left: 30px;
+    margin-left: 40px;
   }
 `;
 

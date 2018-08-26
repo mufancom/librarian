@@ -50,7 +50,7 @@ const Wrapper = styled.li`
 
   ${ConventionSideNavEditableTitle.Wrapper} {
     display: inline-block;
-    max-width: 120px;
+    max-width: 140px;
   }
 
   ${ConventionSideNavEditBtn.Wrapper}, ${ConventionSideNavDeleteBtn.Wrapper} {
@@ -70,7 +70,7 @@ const ConventionCategoryTitle = styled.div`
   }
 
   & > ${ConventionSideNavEditableTitle.Wrapper} {
-    max-width: 90px;
+    max-width: 110px;
   }
 `;
 

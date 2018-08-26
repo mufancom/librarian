@@ -19,18 +19,12 @@ import {RouteTrackerWithRouter} from '../../common/TrackingRoute';
 
 import {ConventionBody} from './@convention-body';
 import {ConventionIndex} from './@convention-index';
-import {ConventionSideSearch} from './@convention-side-search';
 import {ConventionSiderLayoutWithRouter} from './@convention-sider-layout';
 import {ConventionVersions} from './@convention-versions/convention-versions';
 
 const {Content} = Layout;
 
-const Wrapper = styled.div`
-  ${ConventionSideSearch.Wrapper} {
-    margin-left: 26px;
-    margin-top: 27px;
-  }
-`;
+const Wrapper = styled.div``;
 
 export interface ConventionVersionQueries {
   page?: string;
