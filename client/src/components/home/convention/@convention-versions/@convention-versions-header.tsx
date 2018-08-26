@@ -1,11 +1,10 @@
 import {Breadcrumb} from 'antd';
 import classNames from 'classnames';
-import {action, observable} from 'mobx';
 import React, {Component} from 'react';
 import {NavLink} from 'react-router-dom';
 
 import {ConventionService} from 'services/convention-service';
-import {ConventionItem, ConventionStore} from 'stores/convention-store';
+import {ConventionStore} from 'stores/convention-store';
 import {RouterStore} from 'stores/router-store';
 import {styled} from 'theme';
 import {inject, observer} from 'utils/mobx';
@@ -40,28 +39,27 @@ export class ConventionVersionsHeader extends Component<
   @inject
   conventionService!: ConventionService;
 
-  @observable
-  conventionPath: string | undefined;
-
-  @observable
-  conventionItem: ConventionItem | undefined;
-
-  savedItemId: number = 0;
-
   render(): JSX.Element {
     let {className} = this.props;
 
-    let convention = this.conventionStore.currentVersionConvention;
+    let {
+      currentVersionConvention: convention,
+      currentVersionConventionItem: conventionItem,
+      currentVersionConventionPath: conventionPath,
+    } = this.conventionStore;
 
-    let itemId = this.conventionStore.currentConventionItemId;
+    let conventionTitle = 'Loading...';
 
-    let {title: conventionTitle} = convention
-      ? convention
-      : {title: 'Loading...'};
+    let conventionItemTitle = 'Loading...';
 
-    let {conventionPath, conventionItem} = this;
+    if (convention && conventionItem) {
+      conventionTitle = convention.title;
 
-    this.listenToItemId(itemId).catch();
+      conventionItemTitle = getMarkdownTitle(
+        conventionItem.content,
+        `#${conventionItem.id}`,
+      );
+    }
 
     return (
       <Wrapper className={classNames('convention-versions-header', className)}>
@@ -79,14 +77,7 @@ export class ConventionVersionsHeader extends Component<
             undefined
           )}
           {conventionItem ? (
-            <Breadcrumb.Item>
-              {conventionItem
-                ? getMarkdownTitle(
-                    conventionItem.content,
-                    `#${conventionItem.id}`,
-                  )
-                : 'Loading...'}
-            </Breadcrumb.Item>
+            <Breadcrumb.Item>{conventionItemTitle}</Breadcrumb.Item>
           ) : (
             undefined
           )}
@@ -95,29 +86,6 @@ export class ConventionVersionsHeader extends Component<
       </Wrapper>
     );
   }
-
-  listenToItemId = async (itemId: number): Promise<void> => {
-    if (this.savedItemId !== itemId) {
-      await this.initHeader();
-
-      this.savedItemId = itemId;
-    }
-  };
-
-  @action
-  initHeader = async (): Promise<void> => {
-    let convention = this.conventionStore.currentVersionConvention!;
-
-    let {currentConventionItemId} = this.conventionStore;
-
-    this.conventionPath = await this.conventionService.getPathByConvention(
-      convention,
-    );
-
-    this.conventionItem = await this.conventionService.getConventionItem(
-      currentConventionItemId,
-    );
-  };
 
   static Wrapper = Wrapper;
 }

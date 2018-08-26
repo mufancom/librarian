@@ -3,6 +3,8 @@ import {Options} from 'prettier';
 
 import {Bimap} from 'utils/common';
 
+export const ITEM_VERSION_PAGE_SIZE = 20;
+
 export enum CategoryStatus {
   deleted,
   normal,
@@ -100,6 +102,11 @@ export interface ConventionContentCache {
   [key: number]: ConventionItem[];
 }
 
+export interface ItemVersionGroup {
+  date: string;
+  children: ConventionItemVersion[];
+}
+
 export type PrettierConfig = Options;
 
 export class ConventionStore {
@@ -119,10 +126,22 @@ export class ConventionStore {
   currentContent: ConventionItem[] = [];
 
   @observable
+  currentVersionConventionItem?: ConventionItem;
+
+  @observable
   currentVersionConvention: Convention | undefined;
 
   @observable
-  currentConventionItemId = 0;
+  currentVersionConventionPath: string | undefined;
+
+  @observable
+  currentVersionPage = 1;
+
+  @observable
+  versionGroups: ItemVersionGroup[] = [];
+
+  @observable
+  versionPageCount: number = 1;
 
   @observable
   newItemDraftDict: NewItemDraftDict = {};

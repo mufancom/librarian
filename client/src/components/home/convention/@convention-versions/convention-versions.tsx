@@ -1,11 +1,9 @@
 import {Avatar, Button, Card, Pagination, Timeline} from 'antd';
 import classNames from 'classnames';
-import {action, observable} from 'mobx';
-import * as QueryString from 'query-string';
 import React, {Component} from 'react';
 
 import {ConventionService} from 'services/convention-service';
-import {ConventionItemVersion, ConventionStore} from 'stores/convention-store';
+import {ConventionStore, ITEM_VERSION_PAGE_SIZE} from 'stores/convention-store';
 import {RouterStore} from 'stores/router-store';
 import {styled} from 'theme';
 import {formatAsTimeAgo} from 'utils/date';
@@ -14,8 +12,6 @@ import {inject, observer} from 'utils/mobx';
 import {ConventionVersionsHeader} from './@convention-versions-header';
 
 const ButtonGroup = Button.Group;
-
-export const ITEM_VERSION_PAGE_SIZE = 20;
 
 const Wrapper = styled.div`
   padding: 10px 40px;
@@ -91,17 +87,8 @@ const PaginationContainer = styled.div`
   animation: fadeUpIn 0.65s;
 `;
 
-export interface ItemVersionGroup {
-  date: string;
-  children: ConventionItemVersion[];
-}
-
 export interface ConventionVersionsProps {
   className?: string;
-}
-
-export interface ConventionVersionQueries {
-  page?: string;
 }
 
 @observer
@@ -115,32 +102,22 @@ export class ConventionVersions extends Component<ConventionVersionsProps> {
   @inject
   conventionService!: ConventionService;
 
-  @observable
-  versionGroups: ItemVersionGroup[] = [];
-
-  @observable
-  pageCount: number = 1;
-
   savedItemId: number = 0;
 
   render(): JSX.Element {
     let {className} = this.props;
 
-    let {page} = QueryString.parse(
-      this.routerStore.location.search,
-    ) as ConventionVersionQueries;
-
-    let pageNum = page ? parseInt(page) : 1;
-
-    let conventionItemId = this.conventionStore.currentConventionItemId;
-
-    this.listenToItemId(conventionItemId).catch();
+    let {
+      versionGroups,
+      versionPageCount,
+      currentVersionPage,
+    } = this.conventionStore;
 
     return (
       <Wrapper className={classNames('convention-versions', className)}>
         <ConventionVersionsHeader />
         <Timeline>
-          {this.versionGroups.map(group => (
+          {versionGroups.map(group => (
             <Timeline.Item key={group.date}>
               <DateTitle>{group.date}</DateTitle>
               {group.children.map(itemVersion => {
@@ -176,12 +153,12 @@ export class ConventionVersions extends Component<ConventionVersionsProps> {
           ))}
           <Timeline.Item style={{display: 'none'}} />
         </Timeline>
-        {this.versionGroups.length ? (
+        {versionGroups.length ? (
           <PaginationContainer>
             <Pagination
-              current={pageNum}
+              current={currentVersionPage}
               defaultPageSize={ITEM_VERSION_PAGE_SIZE}
-              total={this.pageCount * ITEM_VERSION_PAGE_SIZE}
+              total={versionPageCount * ITEM_VERSION_PAGE_SIZE}
               onChange={this.onPaginationChange}
             />
           </PaginationContainer>
@@ -192,73 +169,9 @@ export class ConventionVersions extends Component<ConventionVersionsProps> {
     );
   }
 
-  listenToItemId = async (itemId: number): Promise<void> => {
-    let {page} = QueryString.parse(
-      this.routerStore.location.search,
-    ) as ConventionVersionQueries;
-
-    let pageNum = page ? parseInt(page) : 1;
-
-    if (this.savedItemId !== itemId) {
-      this.savedItemId = itemId;
-
-      await this.initVersions(pageNum);
-    }
-  };
-
-  @action
-  async initVersions(page: number = 1): Promise<void> {
-    let conventionItemId = this.conventionStore.currentConventionItemId;
-
-    if (conventionItemId) {
-      let {
-        pageCount,
-        versions,
-      } = await this.conventionService.getConventionItemVersions(
-        conventionItemId,
-        page,
-      );
-
-      this.versionGroups = buildVersionGroups(versions);
-      this.pageCount = pageCount;
-    }
-  }
-
   onPaginationChange = (page: number): void => {
     this.routerStore.push(`?page=${page}`);
   };
 
   static Wrapper = Wrapper;
-}
-
-function buildVersionGroups(
-  versions: ConventionItemVersion[],
-): ItemVersionGroup[] {
-  let result: ItemVersionGroup[] = [];
-
-  let lastDate: string = '';
-
-  let nowGroupIndex: number = -1;
-
-  for (let version of versions) {
-    let date = new Date(version.createdAt);
-
-    let dateStr = date.toLocaleDateString();
-
-    if (lastDate === dateStr) {
-      result[nowGroupIndex].children.push(version);
-    } else if (dateStr) {
-      nowGroupIndex++;
-
-      let group: ItemVersionGroup = {
-        date: dateStr,
-        children: [version],
-      };
-
-      result[nowGroupIndex] = group;
-      lastDate = dateStr;
-    }
-  }
-
-  return result;
 }

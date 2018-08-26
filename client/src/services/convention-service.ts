@@ -11,6 +11,7 @@ import {
   ConventionStore,
   EditItemDraftDict,
   ItemDraft,
+  ItemVersionGroup,
   NewItemDraftDict,
   PrettierConfig,
 } from 'stores/convention-store';
@@ -237,8 +238,6 @@ export class ConventionService {
         })
         .catch();
       this.conventionStore.currentContent = await this.getContent(id);
-
-      scrollTo(0, 0);
     }
   }
 
@@ -596,6 +595,35 @@ export class ConventionService {
   }
 
   @action
+  async loadVersions(params: VersionsRouteParams, page: number): Promise<void> {
+    let {itemId} = params;
+
+    let convention = await this.getConventionByPathParams(params);
+
+    let item = await this.getConventionItem(itemId);
+
+    if (convention && item) {
+      let conventionStore = this.conventionStore;
+
+      conventionStore.currentVersionConvention = convention;
+
+      conventionStore.currentVersionConventionItem = item;
+
+      conventionStore.currentVersionPage = page;
+
+      let data = await this.getConventionItemVersions(itemId, page);
+
+      conventionStore.versionGroups = buildVersionGroups(data.versions);
+
+      conventionStore.currentVersionConventionPath = await this.getPathByConvention(
+        convention,
+      );
+
+      conventionStore.versionPageCount = data.pageCount;
+    }
+  }
+
+  @action
   getNewConventionItemDraft(conventionId: number): ItemDraft | undefined {
     let {newItemDraftDict} = this.conventionStore;
 
@@ -664,4 +692,36 @@ export class ConventionService {
 
     localStorage.setItem('convention_new_item_draft_dict', dictString);
   }
+}
+
+function buildVersionGroups(
+  versions: ConventionItemVersion[],
+): ItemVersionGroup[] {
+  let result: ItemVersionGroup[] = [];
+
+  let lastDate: string = '';
+
+  let nowGroupIndex: number = -1;
+
+  for (let version of versions) {
+    let date = new Date(version.createdAt);
+
+    let dateStr = date.toLocaleDateString();
+
+    if (lastDate === dateStr) {
+      result[nowGroupIndex].children.push(version);
+    } else if (dateStr) {
+      nowGroupIndex++;
+
+      let group: ItemVersionGroup = {
+        date: dateStr,
+        children: [version],
+      };
+
+      result[nowGroupIndex] = group;
+      lastDate = dateStr;
+    }
+  }
+
+  return result;
 }

@@ -1,5 +1,6 @@
 import {Col, Layout, Row} from 'antd';
 import classNames from 'classnames';
+import * as QueryString from 'query-string';
 import * as React from 'react';
 import {Route, RouteComponentProps, Switch, withRouter} from 'react-router';
 import styled from 'styled-components';
@@ -30,6 +31,10 @@ const Wrapper = styled.div`
     margin-top: 27px;
   }
 `;
+
+export interface ConventionVersionQueries {
+  page?: string;
+}
 
 interface ConventionProps extends RouteComponentProps<any> {
   className?: string;
@@ -143,24 +148,23 @@ export class Convention extends React.Component<ConventionProps> {
       }
     }
 
-    // tslint:disable-next-line:no-console
-    this.conventionService.load(id).catch(console.log);
+    await this.conventionService.load(id);
+
+    scrollTo(0, 0);
   };
 
   onRouteChangeToVersions = async (match: any): Promise<void> => {
     let params = match.params as VersionsRouteParams;
 
-    let {category, group, item} = params;
+    let {page} = QueryString.parse(
+      this.routerStore.location.search,
+    ) as ConventionVersionQueries;
 
-    let path = `${category}/${group}/${item}/`;
+    let pageNum = page ? parseInt(page) : 1;
 
-    let convention = await this.conventionService.getConventionByPath(path);
+    await this.conventionService.loadVersions(params, pageNum);
 
-    if (convention) {
-      this.conventionStore.currentVersionConvention = convention;
-    }
-
-    this.conventionStore.currentConventionItemId = params.itemId;
+    scrollTo(0, 0);
   };
 
   static Wrapper = Wrapper;
