@@ -69,6 +69,14 @@ interface MarkdownRenderResult {
   headingTree: Heading[];
 }
 
+function feedDotWhenNone(id: string): string {
+  if (id.indexOf('.') === -1) {
+    return `${id}.`;
+  }
+
+  return id;
+}
+
 export function mark(
   markdown: string,
   decycle: boolean = true,
@@ -82,6 +90,8 @@ export function mark(
     let id = calculateHeadingId(startFromId, plainHeadings, level);
 
     plainHeadings.push({text, level, id});
+
+    id = feedDotWhenNone(id);
 
     return id;
   };
@@ -152,6 +162,8 @@ function buildHeadingTree(headings: PlainHeading[]): Heading[] {
   let lastHeading: Heading | undefined;
 
   for (let {level, text, id} of headings) {
+    id = feedDotWhenNone(id);
+
     let heading: Heading = {
       text,
       level,

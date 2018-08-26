@@ -79,7 +79,7 @@ function formAnchorLinks(tree: Heading[]): React.ReactNode {
     <Link
       key={val.level + val.id}
       href={`#${val.id}`}
-      title={val.text}
+      title={decodeURI(val.id)}
       children={formAnchorLinks(val.children)}
     />
   ));

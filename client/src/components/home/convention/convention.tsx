@@ -100,12 +100,22 @@ export class Convention extends React.Component<ConventionProps> {
                     path="/convention/"
                     component={ConventionIndex}
                   />
-                  <Route>
+                  <Route exact={true} path="/convention/f-o-f">
                     <div>
                       Miss at {this.routerStore.location.pathname} <br />
                       (TODO: 404 {'>_<'})
                     </div>
                   </Route>
+                  <Route
+                    component={(props: any) => (
+                      <RouteTrackerWithRouter
+                        {...props}
+                        onChange={this.onRouteChangeMiss}
+                      >
+                        <div />
+                      </RouteTrackerWithRouter>
+                    )}
+                  />
                 </Switch>
               </Content>
             </Layout>
@@ -121,19 +131,25 @@ export class Convention extends React.Component<ConventionProps> {
 
     let convention = await this.conventionService.getConvention(id);
 
-    let oldPath = `/convention/${id}/${category}/${group}/${item}`;
+    if (convention) {
+      let oldPath = `/convention/${id}/${category}/${group}/${item}`;
 
-    let newPath = await this.conventionService.getPathByConvention(convention);
+      let newPath = await this.conventionService.getPathByConvention(
+        convention,
+      );
 
-    let nowFullPath = this.routerStore.location.pathname;
+      let nowFullPath = this.routerStore.location.pathname;
 
-    let payload = nowFullPath.slice(oldPath.length);
+      let payload = nowFullPath.slice(oldPath.length);
 
-    let {hash, search} = this.routerStore.location;
+      let {hash, search} = this.routerStore.location;
 
-    let newFullPath = `/convention/${newPath}${payload}${hash}${search}`;
+      let newFullPath = `/convention/${newPath}${payload}${hash}${search}`;
 
-    this.routerStore.push(newFullPath);
+      this.routerStore.push(newFullPath);
+    } else {
+      this.routerStore.push('/convention/f-o-f');
+    }
   };
 
   onRouteChange = async (match: any): Promise<void> => {
@@ -147,16 +163,20 @@ export class Convention extends React.Component<ConventionProps> {
 
     if (convention) {
       id = convention.id;
-    }
 
-    let {currentConvention} = this.conventionStore;
+      let {currentConvention} = this.conventionStore;
 
-    let lastConventionId = currentConvention ? currentConvention.id : undefined;
+      let lastConventionId = currentConvention
+        ? currentConvention.id
+        : undefined;
 
-    await this.conventionService.load(id);
+      await this.conventionService.load(id);
 
-    if (!lastConventionId || lastConventionId !== id) {
-      scrollTo(0, 0);
+      if (!lastConventionId || lastConventionId !== id) {
+        scrollTo(0, 0);
+      }
+    } else {
+      this.routerStore.push('/convention/f-o-f');
     }
   };
 
@@ -172,6 +192,10 @@ export class Convention extends React.Component<ConventionProps> {
     await this.conventionService.loadVersions(params, pageNum);
 
     scrollTo(0, 0);
+  };
+
+  onRouteChangeMiss = (): void => {
+    this.routerStore.push('/convention/f-o-f');
   };
 
   static Wrapper = Wrapper;
