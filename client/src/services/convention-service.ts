@@ -288,8 +288,8 @@ export class ConventionService {
 
     let combinedHeadingTree: Heading[] = [];
 
-    for (let item of content) {
-      let {html, headingTree} = mark(item.content);
+    for (let [index, item] of content.entries()) {
+      let {html, headingTree} = mark(item.content, true, index + 1);
 
       combinedHeadingTree = combinedHeadingTree.concat(headingTree);
 

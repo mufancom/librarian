@@ -33,15 +33,17 @@ highlight.configure({
 
 class HeadingRenderer extends Renderer {
   constructor(
-    private _heading: (text: string, level: number) => void,
+    private _heading: (text: string, level: number) => string,
     options?: MarkedOptions,
   ) {
     super(options);
   }
 
   heading(text: string, level: number): string {
-    this._heading(text, level);
-    return `<h${level} id="${encodeURI(text)}">${text}</h${level}>\n`;
+    let id = this._heading(text, level);
+    return `<h${level} id="${encodeURI(
+      `${id} ${text}`,
+    )}">${text}</h${level}>\n`;
   }
 }
 
@@ -54,10 +56,10 @@ const defaultMarkOptions = {
 export interface PlainHeading {
   text: string;
   level: number;
+  id: string;
 }
 
 export interface Heading extends PlainHeading {
-  id: string;
   parent?: Heading | undefined;
   children: Heading[];
 }
@@ -70,12 +72,18 @@ interface MarkdownRenderResult {
 export function mark(
   markdown: string,
   decycle: boolean = true,
+  startFromId: number = 1,
 ): MarkdownRenderResult {
   let plainHeadings: PlainHeading[] = [];
 
-  let headerRendingHook = (text: string, level: number): void => {
+  let headerRendingHook = (text: string, level: number): string => {
     text = filterHTMLTags(text);
-    plainHeadings.push({text, level});
+
+    let id = calculateHeadingId(startFromId, plainHeadings, level);
+
+    plainHeadings.push({text, level, id});
+
+    return id;
   };
 
   let markOptions = {
@@ -94,16 +102,60 @@ export function mark(
   return {html, headingTree};
 }
 
+function calculateHeadingId(
+  startFromId: number,
+  headings: PlainHeading[],
+  level: number,
+): string {
+  const REGEX_LAST_NUMBER = /(?!\.)(\d+)$/;
+
+  let lastHeadingIndex = headings.length - 1;
+
+  let id = `${startFromId}`;
+
+  if (lastHeadingIndex >= 0) {
+    let {id: lastId, level: lastLevel} = headings[lastHeadingIndex];
+
+    if (level > lastLevel) {
+      id = lastId + '.1'.repeat(level - lastLevel);
+    } else if (level === lastLevel) {
+      let parallelId = lastId.match(REGEX_LAST_NUMBER)![0];
+
+      let parallelIdNum = parseInt(parallelId);
+
+      id = lastId.slice(0, -parallelId.length) + (parallelIdNum + 1);
+    } else {
+      let lastDotPosition: number | undefined;
+
+      for (let i = 0; i < lastLevel - level; i++) {
+        lastDotPosition = lastId.lastIndexOf('.', lastDotPosition);
+      }
+
+      if (lastDotPosition !== -1) {
+        let parallelFullId = lastId.slice(0, lastDotPosition);
+
+        let parallelId = parallelFullId.match(REGEX_LAST_NUMBER)![0];
+
+        let parallelIdNum = parseInt(parallelId);
+
+        id = parallelFullId.slice(0, -parallelId.length) + (parallelIdNum + 1);
+      }
+    }
+  }
+
+  return id;
+}
+
 function buildHeadingTree(headings: PlainHeading[]): Heading[] {
   let headingTree: Heading[] = [];
 
   let lastHeading: Heading | undefined;
 
-  for (let {level, text} of headings) {
+  for (let {level, text, id} of headings) {
     let heading: Heading = {
       text,
       level,
-      id: encodeURI(text),
+      id,
       children: [],
     };
 
@@ -126,6 +178,8 @@ function buildHeadingTree(headings: PlainHeading[]): Heading[] {
         }
       }
     }
+
+    heading.id = encodeURI(`${id} ${heading.text}`);
 
     treeToHookOn.push(heading);
     lastHeading = heading;
