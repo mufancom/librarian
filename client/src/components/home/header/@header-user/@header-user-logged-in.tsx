@@ -22,7 +22,7 @@ const Wrapper = styled.div`
 
   .username-text {
     float: left;
-    padding-left: 10px;
+    padding-left: 2px;
   }
 `;
 

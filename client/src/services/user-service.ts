@@ -1,3 +1,4 @@
+import md5 from 'md5';
 import {action} from 'mobx';
 
 import {AuthStore} from 'stores/auth-store';
@@ -34,7 +35,7 @@ export class UserService {
       this.authStore.role = data.role;
       this.authStore.username = data.username;
       this.authStore.email = data.email;
-      this.authStore.avatar = data.avatar ? data.avatar : '';
+      this.authStore.avatar = this.getAvatarUrl(data.email);
     } catch (error) {}
   }
 
@@ -49,7 +50,7 @@ export class UserService {
     this.authStore.role = data.role;
     this.authStore.username = data.username;
     this.authStore.email = data.email;
-    this.authStore.avatar = data.avatar ? data.avatar : '';
+    this.authStore.avatar = this.getAvatarUrl(data.email);
 
     return data.username;
   }
@@ -80,5 +81,11 @@ export class UserService {
     this.authStore.username = '';
     this.authStore.email = '';
     this.authStore.avatar = '';
+  }
+
+  getAvatarUrl(email: string): string {
+    let emailHash = md5(email);
+
+    return `https://secure.gravatar.com/avatar/${emailHash}`;
   }
 }

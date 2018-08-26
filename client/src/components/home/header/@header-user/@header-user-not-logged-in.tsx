@@ -19,7 +19,7 @@ const Wrapper = styled.div`
 
   .hint-text {
     float: left;
-    padding-left: 10px;
+    padding-left: 2px;
   }
 `;
 

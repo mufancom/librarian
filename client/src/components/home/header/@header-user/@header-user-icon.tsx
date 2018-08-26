@@ -1,3 +1,4 @@
+import {Avatar} from 'antd';
 import classNames from 'classnames';
 import React, {Component} from 'react';
 
@@ -7,11 +8,6 @@ import {styled} from 'theme';
 const Wrapper = styled.div`
   width: 38px;
   height: 38px;
-
-  img {
-    width: 100%;
-    height: 100%;
-  }
 `;
 
 export interface HeaderUserIconProps {
@@ -25,7 +21,7 @@ export class HeaderUserIcon extends Component<HeaderUserIconProps> {
 
     return (
       <Wrapper className={classNames('header-user-icon', className)}>
-        <img src={icon ? icon : defaultAvatar} />
+        <Avatar src={icon ? icon : defaultAvatar} />
       </Wrapper>
     );
   }
