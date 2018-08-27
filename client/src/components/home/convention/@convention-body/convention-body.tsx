@@ -133,6 +133,10 @@ export class ConventionBody extends Component<ConventionBodyProps> {
 
   itemCreateRef: React.RefObject<ConventionBodyItemCreate> = createRef();
 
+  componentWillMount(): void {
+    this.onWindowScroll(window.scrollY);
+  }
+
   componentDidMount(): void {
     this.listenerId = this.scrollService.addListener(this.onWindowScroll);
   }
