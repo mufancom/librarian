@@ -724,9 +724,6 @@ function buildVersionGroups(
   let nowGroupIndex: number = -1;
 
   for (let version of versions) {
-    // tslint:disable-next-line:no-console
-    console.log(version.itemVersion);
-
     let date = new Date(version.itemVersion.createdAt);
 
     let dateStr = date.toLocaleDateString();

@@ -1,3 +1,7 @@
+import 'nprogress/nprogress.css';
+
+import NProgress from 'nprogress';
+
 export function collapse(element: HTMLElement, position: number): void {
   let selection = window.getSelection();
   selection.collapse(element.firstChild!, position);
@@ -29,3 +33,11 @@ export const fadeOutDownAnimation = {
     opacity: '0',
   },
 };
+
+export function startProgress(): void {
+  NProgress.start();
+}
+
+export function doneProgress(): void {
+  NProgress.done();
+}

@@ -13,6 +13,7 @@ import {
 } from 'services/convention-service';
 import {ConventionStore} from 'stores/convention-store';
 import {RouterStore} from 'stores/router-store';
+import {doneProgress, startProgress} from 'utils/dom';
 import {inject, observer} from 'utils/mobx';
 
 import {RouteTrackerWithRouter} from '../../common/TrackingRoute';
@@ -153,6 +154,8 @@ export class Convention extends React.Component<ConventionProps> {
   };
 
   onRouteChange = async (match: any): Promise<void> => {
+    startProgress();
+
     let params = match.params as RouteAliasParams;
 
     let id = 0;
@@ -178,9 +181,13 @@ export class Convention extends React.Component<ConventionProps> {
     } else {
       this.routerStore.push('/convention/f-o-f');
     }
+
+    doneProgress();
   };
 
   onRouteChangeToVersions = async (match: any): Promise<void> => {
+    startProgress();
+
     let params = match.params as VersionsRouteParams;
 
     let {page} = QueryString.parse(
@@ -192,6 +199,8 @@ export class Convention extends React.Component<ConventionProps> {
     await this.conventionService.loadVersions(params, pageNum);
 
     scrollTo(0, 0);
+
+    doneProgress();
   };
 
   onRouteChangeMiss = (): void => {

@@ -125,7 +125,7 @@ const Wrapper = styled.div`
 
       &.pull-up {
         .mde-header {
-          top: 2px;
+          top: 0;
           transition: all 0.3s;
           animation: showToolbar 0.3s;
         }
@@ -168,8 +168,6 @@ export class ConventionBodyItemEditor extends Component<
 
   @observable
   pullUp = false;
-
-  pullUpTimer: any;
 
   wrapperRef: React.RefObject<any>;
 

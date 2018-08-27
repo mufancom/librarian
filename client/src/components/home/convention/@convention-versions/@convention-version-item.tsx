@@ -1,6 +1,7 @@
-import {Avatar, Button, Card} from 'antd';
+import {Avatar, Button, Card, Tooltip} from 'antd';
 import classNames from 'classnames';
 import React, {Component} from 'react';
+import CopyToClipboard from 'react-copy-to-clipboard';
 
 import {UserService} from 'services/user-service';
 import {ConventionItemVersionWithUserInfo} from 'stores/convention-store';
@@ -59,6 +60,12 @@ const CardRightSide = styled.div`
 
   .ant-btn-group {
     display: inline;
+    margin-right: 15px;
+  }
+
+  .rollback-button {
+    font-size: 12px;
+    padding: 0;
   }
 `;
 
@@ -91,7 +98,7 @@ export class ConventionVersionItem extends Component<
 
     return (
       <Wrapper className={classNames('convention-version-item', className)}>
-        <Card key={itemVersion.id}>
+        <Card>
           <CardLeftSide>
             <CardTitle>{message}</CardTitle>
             <CardSubtitle>
@@ -105,9 +112,16 @@ export class ConventionVersionItem extends Component<
           </CardLeftSide>
           <CardRightSide>
             <ButtonGroup>
-              <Button icon="copy" />
+              <CopyToClipboard text={hash}>
+                <Tooltip placement="left" title="已复制" trigger="click">
+                  <Button className="copy-button" icon="copy" />
+                </Tooltip>
+              </CopyToClipboard>
               <Button style={{width: '82px'}}>{hash.slice(0, 7)}</Button>
             </ButtonGroup>
+            <Button className="rollback-button" style={{width: '52px'}}>
+              {'回滚'}
+            </Button>
           </CardRightSide>
         </Card>
       </Wrapper>

@@ -189,6 +189,10 @@
   version "9.6.29"
   resolved "https://registry.npmjs.org/@types/node/-/node-9.6.29.tgz#9b3c5b288c77fbd2ab5684d36e3528cb9ee5429f"
 
+"@types/nprogress@^0.0.29":
+  version "0.0.29"
+  resolved "https://registry.npmjs.org/@types/nprogress/-/nprogress-0.0.29.tgz#060bd510022a005f1840234030d3132fb9195471"
+
 "@types/prettier@^1.13.2":
   version "1.13.2"
   resolved "https://registry.npmjs.org/@types/prettier/-/prettier-1.13.2.tgz#ffe96278e712a8d4e467e367a338b05e22872646"
@@ -6611,6 +6615,10 @@ npm@^6.1.0:
     console-control-strings "~1.1.0"
     gauge "~2.7.3"
     set-blocking "~2.0.0"
+
+nprogress@^0.2.0:
+  version "0.2.0"
+  resolved "https://registry.npmjs.org/nprogress/-/nprogress-0.2.0.tgz#cb8f34c53213d895723fcbab907e9422adbcafb1"
 
 nth-check@~1.0.1:
   version "1.0.1"

@@ -73,7 +73,10 @@ export class ConventionVersions extends Component<ConventionVersionsProps> {
             <Timeline.Item key={group.date}>
               <DateTitle>{group.date}</DateTitle>
               {group.children.map(itemVersionWithUserInfo => (
-                <ConventionVersionItem item={itemVersionWithUserInfo} />
+                <ConventionVersionItem
+                  key={itemVersionWithUserInfo.itemVersion.id}
+                  item={itemVersionWithUserInfo}
+                />
               ))}
             </Timeline.Item>
           ))}

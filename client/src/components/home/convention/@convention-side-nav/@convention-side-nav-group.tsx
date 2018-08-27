@@ -113,8 +113,6 @@ export class ConventionSideNavGroup extends Component<
 
   renameCancelBlocker?: CancelBlocker;
 
-  leaveTimer: any;
-
   @computed
   get showButtons(): boolean {
     return this.mouseMoveIn && this.authStore.isLoggedIn && !this.shiftLoading;
