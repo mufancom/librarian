@@ -154,8 +154,6 @@ export class Convention extends React.Component<ConventionProps> {
   };
 
   onRouteChange = async (match: any): Promise<void> => {
-    startProgress();
-
     let params = match.params as RouteAliasParams;
 
     let id = 0;
@@ -173,16 +171,19 @@ export class Convention extends React.Component<ConventionProps> {
         ? currentConvention.id
         : undefined;
 
+      if (!lastConventionId || lastConventionId !== id) {
+        startProgress();
+      }
+
       await this.conventionService.load(id);
 
       if (!lastConventionId || lastConventionId !== id) {
+        doneProgress();
         scrollTo(0, 0);
       }
     } else {
       this.routerStore.push('/convention/f-o-f');
     }
-
-    doneProgress();
   };
 
   onRouteChangeToVersions = async (match: any): Promise<void> => {
