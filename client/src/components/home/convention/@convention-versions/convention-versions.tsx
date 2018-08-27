@@ -3,6 +3,7 @@ import classNames from 'classnames';
 import React, {Component} from 'react';
 
 import {ConventionService} from 'services/convention-service';
+import {UserService} from 'services/user-service';
 import {ConventionStore, ITEM_VERSION_PAGE_SIZE} from 'stores/convention-store';
 import {RouterStore} from 'stores/router-store';
 import {styled} from 'theme';
@@ -102,6 +103,9 @@ export class ConventionVersions extends Component<ConventionVersionsProps> {
   @inject
   conventionService!: ConventionService;
 
+  @inject
+  userService!: UserService;
+
   savedItemId: number = 0;
 
   render(): JSX.Element {
@@ -120,8 +124,12 @@ export class ConventionVersions extends Component<ConventionVersionsProps> {
           {versionGroups.map(group => (
             <Timeline.Item key={group.date}>
               <DateTitle>{group.date}</DateTitle>
-              {group.children.map(itemVersion => {
+              {group.children.map(itemVersionWithUserInfo => {
+                let {itemVersion, user} = itemVersionWithUserInfo;
+
                 let {id, message, hash, createdAt, fromId} = itemVersion;
+
+                let {username, email} = user;
 
                 if (fromId) {
                   message = message ? message : `#${id} 编辑`;
@@ -134,8 +142,11 @@ export class ConventionVersions extends Component<ConventionVersionsProps> {
                     <CardLeftSide>
                       <CardTitle>{message}</CardTitle>
                       <CardSubtitle>
-                        <Avatar size={17} icon="user" /> Dizy 提交于&nbsp;
-                        {formatAsTimeAgo(createdAt)}
+                        <Avatar
+                          size={17}
+                          src={this.userService.getAvatarUrl(email)}
+                        />{' '}
+                        {username} 提交于 {formatAsTimeAgo(createdAt)}
                       </CardSubtitle>
                     </CardLeftSide>
                     <CardRightSide>

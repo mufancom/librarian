@@ -1,3 +1,5 @@
+import {underscoreToCamelCase} from 'utils/regex';
+
 export interface SeparatedJoinedResult<L, R> {
   left: L;
   right: R;
@@ -13,9 +15,13 @@ export function splitJoinedResult<L, R>(
 
   for (const [key, value] of Object.entries(mixedData)) {
     if (key.startsWith(leftKey)) {
-      leftObject[key.slice(leftKey.length + 1)] = value;
+      let fieldName = underscoreToCamelCase(key.slice(leftKey.length + 1));
+
+      leftObject[fieldName] = value;
     } else if (key.startsWith(rightKey)) {
-      rightObject[key.slice(rightKey.length + 1)] = value;
+      let fieldName = underscoreToCamelCase(key.slice(rightKey.length + 1));
+
+      rightObject[fieldName] = value;
     }
   }
 

@@ -7,6 +7,10 @@ import {
   TransactionRepository,
 } from 'typeorm';
 
+import {splitJoinedResult} from 'utils/repository';
+
+import {User} from '../../user';
+
 import {
   createItemVersion,
   getItemMaxOrderId,
@@ -19,6 +23,15 @@ import {ItemVersion} from './item-version.entity';
 import {Item, ItemStatus} from './item.entity';
 
 export const ITEM_VERSION_PAGE_SIZE = 20;
+
+export interface ItemVersionWithUserInfo {
+  itemVersion: ItemVersion;
+  user: {
+    id: number;
+    username: string;
+    email: string;
+  };
+}
 
 @Injectable()
 export class ItemService {
@@ -179,14 +192,38 @@ export class ItemService {
     itemId: number,
     page: number,
     itemVersionRepository: Repository<ItemVersion> = this.itemVersionRepository,
-  ): Promise<[ItemVersion[], number]> {
-    return itemVersionRepository
+  ): Promise<[ItemVersionWithUserInfo[], number]> {
+    let count = await itemVersionRepository
+      .createQueryBuilder()
+      .where('convention_item_id = :itemId', {itemId})
+      .getCount();
+
+    let mixedJoinedItems = await itemVersionRepository
       .createQueryBuilder()
       .where('convention_item_id = :itemId', {itemId})
       .orderBy('created_at', 'DESC')
-      .skip(ITEM_VERSION_PAGE_SIZE * (page - 1))
-      .take(ITEM_VERSION_PAGE_SIZE)
-      .getManyAndCount();
+      .leftJoinAndMapOne('user', User, 'User', 'User.id = user_id')
+      .offset(ITEM_VERSION_PAGE_SIZE * (page - 1))
+      .limit(ITEM_VERSION_PAGE_SIZE)
+      .execute();
+
+    let result: ItemVersionWithUserInfo[] = [];
+
+    for (let mixedJoinedItem of mixedJoinedItems) {
+      let {left: itemVersion, right: user} = splitJoinedResult<
+        ItemVersion,
+        User
+      >('ItemVersion', 'User', mixedJoinedItem);
+
+      let {id, username, email} = user;
+
+      result.push({
+        itemVersion,
+        user: {id, username, email},
+      });
+    }
+
+    return [result, count];
   }
 
   async increaseItemVersionCommentCount(

@@ -8,7 +8,7 @@ import {
   ConventionIndexCategoryNode,
   ConventionIndexNode,
   ConventionItem,
-  ConventionItemVersion,
+  ConventionItemVersionWithUserInfo,
   ConventionStore,
   EditItemDraftDict,
   ItemDraft,
@@ -45,7 +45,7 @@ export type VersionsRouteParams = RouteAliasParams & {
 };
 
 export interface GetConventionItemVersionsData {
-  versions: ConventionItemVersion[];
+  versions: ConventionItemVersionWithUserInfo[];
   pageCount: number;
 }
 
@@ -715,7 +715,7 @@ export class ConventionService {
 }
 
 function buildVersionGroups(
-  versions: ConventionItemVersion[],
+  versions: ConventionItemVersionWithUserInfo[],
 ): ItemVersionGroup[] {
   let result: ItemVersionGroup[] = [];
 
@@ -724,7 +724,10 @@ function buildVersionGroups(
   let nowGroupIndex: number = -1;
 
   for (let version of versions) {
-    let date = new Date(version.createdAt);
+    // tslint:disable-next-line:no-console
+    console.log(version.itemVersion);
+
+    let date = new Date(version.itemVersion.createdAt);
 
     let dateStr = date.toLocaleDateString();
 

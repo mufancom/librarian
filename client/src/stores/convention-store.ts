@@ -109,9 +109,18 @@ export interface ConventionContentCache {
   [key: number]: ConventionContent;
 }
 
+export interface ConventionItemVersionWithUserInfo {
+  itemVersion: ConventionItemVersion;
+  user: {
+    id: number;
+    username: string;
+    email: string;
+  };
+}
+
 export interface ItemVersionGroup {
   date: string;
-  children: ConventionItemVersion[];
+  children: ConventionItemVersionWithUserInfo[];
 }
 
 export type PrettierConfig = Options;
