@@ -20,7 +20,7 @@ const Wrapper = styled.div`
   }
 
   ${HomeHeader.Wrapper} {
-    padding: 0 20px 0 10px;
+    padding: 0 30px 0 10px;
     background: ${props => props.theme.light};
   }
 `;

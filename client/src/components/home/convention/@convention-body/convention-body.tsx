@@ -32,7 +32,7 @@ const Wrapper = styled(MarkdownStyle)`
 
   .anchor {
     position: fixed;
-    top: 100px;
+    top: 130px;
     overflow-y: hidden;
 
     a {

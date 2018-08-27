@@ -5,6 +5,8 @@ import {AuthStore} from 'stores/auth-store';
 
 import {APIService} from './api-service';
 
+const DEFAULT_AVATAR = encodeURI('none');
+
 interface LoginSuccessData {
   id: number;
   role: number;
@@ -83,9 +85,19 @@ export class UserService {
     this.authStore.avatar = '';
   }
 
-  getAvatarUrl(email: string): string {
-    let emailHash = md5(email);
+  getEmailHash(email: string): string {
+    return md5(email);
+  }
 
-    return `https://secure.gravatar.com/avatar/${emailHash}`;
+  getAvatarUrl(email: string): string {
+    let emailHash = this.getEmailHash(email);
+
+    return `https://secure.gravatar.com/avatar/${emailHash}?d=${DEFAULT_AVATAR}`;
+  }
+
+  getAvatarProfileUrl(email: string): string {
+    let emailHash = this.getEmailHash(email);
+
+    return `https://en.gravatar.com/${emailHash}`;
   }
 }

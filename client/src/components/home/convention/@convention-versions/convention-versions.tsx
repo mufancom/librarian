@@ -144,6 +144,7 @@ export class ConventionVersions extends Component<ConventionVersionsProps> {
                       <CardSubtitle>
                         <Avatar
                           size={17}
+                          icon="user"
                           src={this.userService.getAvatarUrl(email)}
                         />{' '}
                         {username} 提交于 {formatAsTimeAgo(createdAt)}

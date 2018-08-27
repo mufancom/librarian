@@ -26,13 +26,19 @@ const Wrapper = styled.div`
   }
 `;
 
-const createDropdownMenu = (logoutOnclick: any): JSX.Element => (
+const createDropdownMenu = (
+  logoutOnclick: any,
+  changeAvatarOnclick: any,
+): JSX.Element => (
   <Menu
     getPopupContainer={() => document.body}
     style={{
       marginTop: '-30px',
     }}
   >
+    <Menu.Item>
+      <a onClick={changeAvatarOnclick}>修改头像</a>
+    </Menu.Item>
     <Menu.Item>
       <a href="#">修改密码</a>
     </Menu.Item>
@@ -51,15 +57,11 @@ export interface HeaderUserLoggedInProps {
 export class HeaderUserLoggedIn extends Component<HeaderUserLoggedInProps> {
   @inject
   authStore!: AuthStore;
+
   @inject
   userService!: UserService;
 
   wrapperRef: React.RefObject<any> = createRef();
-
-  constructor(props: HeaderUserLoggedInProps) {
-    super(props);
-    this.handleLogoutOnclick = this.handleLogoutOnclick.bind(this);
-  }
 
   render(): JSX.Element {
     let {className} = this.props;
@@ -70,7 +72,10 @@ export class HeaderUserLoggedIn extends Component<HeaderUserLoggedInProps> {
         ref={this.wrapperRef}
       >
         <Dropdown
-          overlay={createDropdownMenu(this.handleLogoutOnclick)}
+          overlay={createDropdownMenu(
+            this.onMenuLogoutClick,
+            this.onMenuChangeAvatarClick,
+          )}
           getPopupContainer={this.getWrapperDom}
         >
           <a>
@@ -86,7 +91,11 @@ export class HeaderUserLoggedIn extends Component<HeaderUserLoggedInProps> {
     return ReactDOM.findDOMNode(this.wrapperRef.current) as HTMLLIElement;
   };
 
-  async handleLogoutOnclick(): Promise<void> {
+  onMenuChangeAvatarClick = (): void => {
+    window.open(this.userService.getAvatarProfileUrl(this.authStore.email));
+  };
+
+  onMenuLogoutClick = async (): Promise<void> => {
     try {
       await this.userService.logout();
 
@@ -94,7 +103,7 @@ export class HeaderUserLoggedIn extends Component<HeaderUserLoggedInProps> {
     } catch (error) {
       message.error(fetchErrorMessage(error));
     }
-  }
+  };
 
   static Wrapper = Wrapper;
 }
