@@ -8,6 +8,7 @@ import {
   ConventionIndexCategoryNode,
   ConventionIndexNode,
   ConventionItem,
+  ConventionItemVersion,
   ConventionItemVersionWithUserInfo,
   ConventionStore,
   EditItemDraftDict,
@@ -58,157 +59,6 @@ const FALLBACK_PRETTIER_CONFIG: PrettierConfig = {
   trailingComma: 'all',
   bracketSpacing: false,
 };
-
-export function isRouteAliasParams(value: any): value is RouteAliasParams {
-  return (
-    typeof value === 'object' &&
-    'category' in value &&
-    'group' in value &&
-    'item' in value
-  );
-}
-
-export function isRouteIdMatchParams(
-  params: RouteParams,
-): params is RouteIdMatchParams {
-  return typeof params === 'object' && 'id' in params;
-}
-
-function isPositionAvailable(
-  node: ConventionIndexNode,
-  insertIndex: number,
-  siblings: ConventionIndexNode[],
-): boolean {
-  let sibling = siblings[insertIndex];
-
-  let {orderId} = node.entry;
-
-  if (sibling) {
-    if (node.type === 'category' && sibling.type === 'convention') {
-      return false;
-    } else if (node.type === 'convention' && sibling.type === 'category') {
-      return true;
-    } else if (orderId > sibling.entry.orderId) {
-      return false;
-    }
-
-    return true;
-  } else {
-    return true;
-  }
-}
-
-function insertIntoSortedSiblings<T extends ConventionIndexNode>(
-  siblings: T[],
-  node: T,
-): void {
-  let insertIndex = 0;
-
-  while (!isPositionAvailable(node, insertIndex, siblings)) {
-    insertIndex++;
-  }
-
-  siblings.splice(insertIndex, 0, node);
-}
-
-function generateUrl(
-  convention: Convention,
-  categoryMap: Map<number, ConventionIndexCategoryNode>,
-): string | undefined {
-  let names = [];
-
-  let {alias, title} = convention;
-
-  names.push(alias ? alias : title);
-
-  let parentCategoryId = convention.categoryId;
-
-  while (parentCategoryId) {
-    let category = categoryMap.get(parentCategoryId);
-
-    if (!category) {
-      return undefined;
-    }
-
-    let {title, alias, parentId} = category.entry;
-
-    names.push(alias ? alias : title);
-
-    parentCategoryId = parentId;
-  }
-
-  let url = '';
-
-  for (let [index, name] of names.entries()) {
-    let onlyTwoParams = names.length === 2 && index === 1;
-
-    url = `${name}${onlyTwoParams ? '/-' : ''}/${url}`;
-  }
-
-  return url;
-}
-
-function buildIndexTree(
-  categories: Category[],
-  conventions: Convention[],
-  urlMap: Map<string, string>,
-): ConventionIndexNode[] {
-  let categoryMap = new Map<number, ConventionIndexCategoryNode>();
-
-  let result: ConventionIndexNode[] = [];
-
-  // create mapping for categories
-  for (let category of categories) {
-    let node: ConventionIndexCategoryNode = {
-      type: 'category',
-      entry: category,
-      children: [],
-    };
-    categoryMap.set(category.id, node);
-  }
-
-  for (let node of categoryMap.values()) {
-    let {entry} = node;
-
-    let {parentId} = entry;
-
-    let siblings = result;
-
-    if (parentId) {
-      if (!categoryMap.has(parentId)) {
-        continue;
-      }
-
-      siblings = categoryMap.get(parentId)!.children;
-    }
-
-    insertIntoSortedSiblings(siblings, node);
-  }
-
-  for (let convention of conventions) {
-    let {categoryId} = convention;
-
-    if (!categoryMap.has(categoryId)) {
-      continue;
-    }
-
-    let siblings = categoryMap.get(categoryId)!.children;
-
-    let url = generateUrl(convention, categoryMap);
-
-    if (url) {
-      urlMap.set(url, JSON.stringify(convention));
-    }
-
-    insertIntoSortedSiblings(siblings, {
-      type: 'convention',
-      entry: convention,
-      url,
-    });
-  }
-
-  return result;
-}
 
 interface GetIndexSuccessData {
   categories: Category[];
@@ -625,22 +475,53 @@ export class ConventionService {
     if (convention && item) {
       let conventionStore = this.conventionStore;
 
-      let data = await this.getConventionItemVersions(itemId, page);
-
       conventionStore.currentVersionConventionPath = await this.getPathByConvention(
         convention,
       );
 
-      conventionStore.currentVersionConvention = convention;
-
       conventionStore.currentVersionConventionItem = item;
 
+      conventionStore.currentVersionConvention = convention;
+
       conventionStore.currentVersionPage = page;
+
+      await this.getVersions();
+    }
+  }
+
+  @action
+  async getVersions(): Promise<void> {
+    let {
+      currentVersionConventionItem: item,
+      currentVersionPage: page,
+    } = this.conventionStore;
+
+    if (item) {
+      let conventionStore = this.conventionStore;
+
+      let {id: itemId} = item;
+      let data = await this.getConventionItemVersions(itemId, page);
 
       conventionStore.versionGroups = buildVersionGroups(data.versions);
 
       conventionStore.versionPageCount = data.pageCount;
     }
+  }
+
+  async rollbackToConventionItemVersion(
+    itemVersion: ConventionItemVersion,
+  ): Promise<void> {
+    let {id} = itemVersion;
+
+    await this.apiService.post('convention/item/rollback', {toVersionId: id});
+
+    let {currentConvention: convention} = this.conventionStore;
+
+    if (convention) {
+      await this.freshCurrentConventionItems(convention.id);
+    }
+
+    await this.getVersions();
   }
 
   @action
@@ -712,6 +593,157 @@ export class ConventionService {
 
     localStorage.setItem('convention_new_item_draft_dict', dictString);
   }
+}
+
+export function isRouteAliasParams(value: any): value is RouteAliasParams {
+  return (
+    typeof value === 'object' &&
+    'category' in value &&
+    'group' in value &&
+    'item' in value
+  );
+}
+
+export function isRouteIdMatchParams(
+  params: RouteParams,
+): params is RouteIdMatchParams {
+  return typeof params === 'object' && 'id' in params;
+}
+
+function isPositionAvailable(
+  node: ConventionIndexNode,
+  insertIndex: number,
+  siblings: ConventionIndexNode[],
+): boolean {
+  let sibling = siblings[insertIndex];
+
+  let {orderId} = node.entry;
+
+  if (sibling) {
+    if (node.type === 'category' && sibling.type === 'convention') {
+      return false;
+    } else if (node.type === 'convention' && sibling.type === 'category') {
+      return true;
+    } else if (orderId > sibling.entry.orderId) {
+      return false;
+    }
+
+    return true;
+  } else {
+    return true;
+  }
+}
+
+function insertIntoSortedSiblings<T extends ConventionIndexNode>(
+  siblings: T[],
+  node: T,
+): void {
+  let insertIndex = 0;
+
+  while (!isPositionAvailable(node, insertIndex, siblings)) {
+    insertIndex++;
+  }
+
+  siblings.splice(insertIndex, 0, node);
+}
+
+function generateUrl(
+  convention: Convention,
+  categoryMap: Map<number, ConventionIndexCategoryNode>,
+): string | undefined {
+  let names = [];
+
+  let {alias, title} = convention;
+
+  names.push(alias ? alias : title);
+
+  let parentCategoryId = convention.categoryId;
+
+  while (parentCategoryId) {
+    let category = categoryMap.get(parentCategoryId);
+
+    if (!category) {
+      return undefined;
+    }
+
+    let {title, alias, parentId} = category.entry;
+
+    names.push(alias ? alias : title);
+
+    parentCategoryId = parentId;
+  }
+
+  let url = '';
+
+  for (let [index, name] of names.entries()) {
+    let onlyTwoParams = names.length === 2 && index === 1;
+
+    url = `${name}${onlyTwoParams ? '/-' : ''}/${url}`;
+  }
+
+  return url;
+}
+
+function buildIndexTree(
+  categories: Category[],
+  conventions: Convention[],
+  urlMap: Map<string, string>,
+): ConventionIndexNode[] {
+  let categoryMap = new Map<number, ConventionIndexCategoryNode>();
+
+  let result: ConventionIndexNode[] = [];
+
+  // create mapping for categories
+  for (let category of categories) {
+    let node: ConventionIndexCategoryNode = {
+      type: 'category',
+      entry: category,
+      children: [],
+    };
+    categoryMap.set(category.id, node);
+  }
+
+  for (let node of categoryMap.values()) {
+    let {entry} = node;
+
+    let {parentId} = entry;
+
+    let siblings = result;
+
+    if (parentId) {
+      if (!categoryMap.has(parentId)) {
+        continue;
+      }
+
+      siblings = categoryMap.get(parentId)!.children;
+    }
+
+    insertIntoSortedSiblings(siblings, node);
+  }
+
+  for (let convention of conventions) {
+    let {categoryId} = convention;
+
+    if (!categoryMap.has(categoryId)) {
+      continue;
+    }
+
+    let siblings = categoryMap.get(categoryId)!.children;
+
+    let url = generateUrl(convention, categoryMap);
+
+    if (url) {
+      urlMap.set(url, JSON.stringify(convention));
+    }
+
+    insertIntoSortedSiblings(siblings, {
+      type: 'convention',
+      entry: convention,
+      url,
+    });
+  }
+
+  return result;
 }
 
 function buildVersionGroups(

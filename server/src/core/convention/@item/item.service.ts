@@ -160,14 +160,15 @@ export class ItemService {
   async rollbackItem(
     item: Item,
     toVersion: ItemVersion,
+    userId: number,
     @TransactionRepository(Item) itemRepository?: Repository<Item>,
     @TransactionRepository(ItemVersion)
     itemVersionRepository?: Repository<ItemVersion>,
   ): Promise<Item> {
-    let message = `Rollback to version: ${toVersion.id}`;
+    let message = `Rollback to version: ${toVersion.hash}`;
 
     let itemVersion = await createItemVersion(
-      {...toVersion, id: undefined, fromId: toVersion.id, message},
+      {...toVersion, id: undefined, fromId: toVersion.id, message, userId},
       itemVersionRepository!,
     );
 

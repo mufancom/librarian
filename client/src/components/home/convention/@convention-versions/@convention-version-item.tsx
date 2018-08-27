@@ -1,9 +1,12 @@
-import {Avatar, Button, Card, Tooltip} from 'antd';
+import {Avatar, Button, Card, Popconfirm, Tooltip, message} from 'antd';
 import classNames from 'classnames';
 import React, {Component} from 'react';
 import CopyToClipboard from 'react-copy-to-clipboard';
 
+import {fetchErrorMessage} from 'services/api-service';
+import {ConventionService} from 'services/convention-service';
 import {UserService} from 'services/user-service';
+import {AuthStore} from 'stores/auth-store';
 import {ConventionItemVersionWithUserInfo} from 'stores/convention-store';
 import {styled} from 'theme';
 import {formatAsTimeAgo} from 'utils/date';
@@ -60,10 +63,10 @@ const CardRightSide = styled.div`
 
   .ant-btn-group {
     display: inline;
-    margin-right: 15px;
   }
 
   .rollback-button {
+    margin-left: 15px !important;
     font-size: 12px;
     padding: 0;
   }
@@ -79,7 +82,13 @@ export class ConventionVersionItem extends Component<
   ConventionVersionItemProps
 > {
   @inject
+  authStore!: AuthStore;
+
+  @inject
   userService!: UserService;
+
+  @inject
+  conventionService!: ConventionService;
 
   render(): JSX.Element {
     let {className, item} = this.props;
@@ -119,14 +128,42 @@ export class ConventionVersionItem extends Component<
               </CopyToClipboard>
               <Button style={{width: '82px'}}>{hash.slice(0, 7)}</Button>
             </ButtonGroup>
-            <Button className="rollback-button" style={{width: '52px'}}>
-              {'回滚'}
-            </Button>
+            {this.authStore.isLoggedIn ? (
+              <Popconfirm
+                placement="topRight"
+                title="您确定要回滚到该版本?"
+                onConfirm={this.onRollbackButtonClick}
+                okText="确定"
+                cancelText="取消"
+              >
+                <Button className="rollback-button" style={{width: '52px'}}>
+                  回滚
+                </Button>
+              </Popconfirm>
+            ) : (
+              undefined
+            )}
           </CardRightSide>
         </Card>
       </Wrapper>
     );
   }
+
+  onRollbackButtonClick = async (): Promise<void> => {
+    let {item} = this.props;
+
+    let {itemVersion} = item;
+
+    try {
+      await this.conventionService.rollbackToConventionItemVersion(itemVersion);
+
+      message.success('版本回滚成功');
+    } catch (error) {
+      let errorMessage = fetchErrorMessage(error);
+
+      message.error(errorMessage);
+    }
+  };
 
   static Wrapper = Wrapper;
 }

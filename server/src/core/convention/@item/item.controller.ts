@@ -118,7 +118,7 @@ export class ItemController {
 
   @Post('rollback')
   @UseGuards(AuthGuard)
-  async rollback(@Body() data: RollbackDTO) {
+  async rollback(@Body() data: RollbackDTO, @Req() {user}: Request) {
     let itemVersion = await this.itemService.getItemVersionById(
       data.toVersionId,
     );
@@ -139,6 +139,6 @@ export class ItemController {
       );
     }
 
-    await this.itemService.rollbackItem(item, itemVersion);
+    await this.itemService.rollbackItem(item, itemVersion, user.id);
   }
 }
