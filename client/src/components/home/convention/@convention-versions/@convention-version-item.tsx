@@ -1,7 +1,8 @@
-import {Avatar, Button, Card, Popconfirm, Tooltip, message} from 'antd';
+import {Avatar, Button, Card, Drawer, Popconfirm, Tooltip, message} from 'antd';
 import classNames from 'classnames';
 import React, {Component} from 'react';
 import CopyToClipboard from 'react-copy-to-clipboard';
+import {action, observable} from '../../../../../../node_modules/mobx';
 
 import {fetchErrorMessage} from 'services/api-service';
 import {ConventionService} from 'services/convention-service';
@@ -10,7 +11,10 @@ import {AuthStore} from 'stores/auth-store';
 import {ConventionItemVersionWithUserInfo} from 'stores/convention-store';
 import {styled} from 'theme';
 import {formatAsTimeAgo} from 'utils/date';
+import {mark} from 'utils/markdown';
 import {inject, observer} from 'utils/mobx';
+
+import {MarkdownStyle} from '../../../common';
 
 const ButtonGroup = Button.Group;
 
@@ -39,8 +43,9 @@ const CardLeftSide = styled.div`
   float: left;
 `;
 
-const CardTitle = styled.div`
+const CardTitle = styled.a`
   font-size: 15px;
+  color: ${props => props.theme.text.regular};
 `;
 
 const CardSubtitle = styled.div`
@@ -63,14 +68,19 @@ const CardRightSide = styled.div`
 
   .ant-btn-group {
     display: inline;
-  }
-
-  .rollback-button {
     margin-left: 15px !important;
-    font-size: 12px;
-    padding: 0;
   }
 `;
+
+const pStyle = {
+  fontSize: 16,
+  color: 'rgba(0,0,0,0.85)',
+  lineHeight: '24px',
+  display: 'block',
+  marginBottom: 16,
+};
+
+const Markdown = styled(MarkdownStyle)``;
 
 export interface ConventionVersionItemProps {
   className?: string;
@@ -90,12 +100,15 @@ export class ConventionVersionItem extends Component<
   @inject
   conventionService!: ConventionService;
 
+  @observable
+  previewDrawerVisible = false;
+
   render(): JSX.Element {
     let {className, item} = this.props;
 
     let {itemVersion, user} = item;
 
-    let {id, message, hash, createdAt, fromId} = itemVersion;
+    let {id, message, hash, createdAt, fromId, content} = itemVersion;
 
     let {username, email} = user;
 
@@ -107,6 +120,18 @@ export class ConventionVersionItem extends Component<
 
     return (
       <Wrapper className={classNames('convention-version-item', className)}>
+        <Drawer
+          placement="right"
+          closable={true}
+          visible={this.previewDrawerVisible}
+          onClose={this.onPreviewDrawerClose}
+          width="60%"
+        >
+          <p style={{...pStyle, marginBottom: 24}}>{message}</p>
+          <p>
+            <Markdown dangerouslySetInnerHTML={{__html: mark(content).html}} />
+          </p>
+        </Drawer>
         <Card>
           <CardLeftSide>
             <CardTitle>{message}</CardTitle>
@@ -123,26 +148,33 @@ export class ConventionVersionItem extends Component<
             <ButtonGroup>
               <CopyToClipboard text={hash}>
                 <Tooltip placement="left" title="已复制" trigger="click">
-                  <Button className="copy-button" icon="copy" />
+                  <Button
+                    title="复制版本Hash"
+                    className="copy-button"
+                    icon="copy"
+                  />
                 </Tooltip>
               </CopyToClipboard>
-              <Button style={{width: '82px'}}>{hash.slice(0, 7)}</Button>
+              <Button title={hash} style={{width: '82px'}}>
+                {hash.slice(0, 7)}
+              </Button>
             </ButtonGroup>
-            {this.authStore.isLoggedIn ? (
-              <Popconfirm
-                placement="topRight"
-                title="您确定要回滚到该版本?"
-                onConfirm={this.onRollbackButtonClick}
-                okText="确定"
-                cancelText="取消"
-              >
-                <Button className="rollback-button" style={{width: '52px'}}>
-                  回滚
-                </Button>
-              </Popconfirm>
-            ) : (
-              undefined
-            )}
+            <ButtonGroup>
+              <Button title="预览" icon="eye-o" onClick={this.onPreviewClick} />
+              {this.authStore.isLoggedIn ? (
+                <Popconfirm
+                  placement="topRight"
+                  title="您确定要回滚到该版本?"
+                  onConfirm={this.onRollbackButtonClick}
+                  okText="确定"
+                  cancelText="取消"
+                >
+                  <Button title="回滚" icon="rollback" />
+                </Popconfirm>
+              ) : (
+                undefined
+              )}
+            </ButtonGroup>
           </CardRightSide>
         </Card>
       </Wrapper>
@@ -163,6 +195,16 @@ export class ConventionVersionItem extends Component<
 
       message.error(errorMessage);
     }
+  };
+
+  @action
+  onPreviewClick = (): void => {
+    this.previewDrawerVisible = true;
+  };
+
+  @action
+  onPreviewDrawerClose = (): void => {
+    this.previewDrawerVisible = false;
   };
 
   static Wrapper = Wrapper;
