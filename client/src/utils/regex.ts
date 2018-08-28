@@ -18,3 +18,13 @@ export function getMarkdownTitle(
 
   return fallback;
 }
+
+export function replacePunctuation(
+  source: string,
+  withStr: string = '',
+): string {
+  return source.replace(
+    /[\~|\`|\!|\@|\#|\$|\%|\^|\&|\*|\(|\)|\-|\_|\+|\=|\||\\|\[|\]|\{|\}|\;|\:|\"|\'|\,|\<|\.|\>|\/|\?]/g,
+    withStr,
+  );
+}

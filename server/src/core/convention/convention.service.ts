@@ -1,5 +1,6 @@
 import {Injectable} from '@nestjs/common';
 import {InjectRepository} from '@nestjs/typeorm';
+import Segment from 'segment';
 import {DeepPartial, Repository} from 'typeorm';
 
 import {Convention, ConventionStatus} from './convention.entity';
@@ -16,10 +17,28 @@ export interface IndexJSON {
 
 @Injectable()
 export class ConventionService {
+  segment: Segment;
+
   constructor(
     @InjectRepository(Convention)
     private conventionRepository: Repository<Convention>,
-  ) {}
+  ) {
+    this.segment = new Segment();
+
+    this.segment.useDefault();
+  }
+
+  doSegment(text: string): string[] {
+    let segmentItems = this.segment.doSegment(text, {stripPunctuation: true});
+
+    let result: string[] = [];
+
+    for (let item of segmentItems) {
+      result.push(item.w);
+    }
+
+    return result;
+  }
 
   async getConventions(): Promise<Convention[]> {
     return this.conventionRepository
@@ -38,6 +57,39 @@ export class ConventionService {
         deleted: ConventionStatus.deleted,
       })
       .getOne();
+  }
+
+  async search(
+    keywords: string,
+    pageSize: number,
+    page: number,
+  ): Promise<Convention[]> {
+    let result = await this.conventionRepository
+      .createQueryBuilder()
+      .where(
+        'match (`title`, `alias`) against (:keywords in natural language mode) and status != :deleted',
+        {
+          keywords,
+          deleted: ConventionStatus.deleted,
+        },
+      )
+      .offset(pageSize * (page - 1))
+      .take(pageSize)
+      .getMany();
+
+    if (!result.length) {
+      result = await this.conventionRepository
+        .createQueryBuilder()
+        .where('title like :keywords and status != :deleted', {
+          keywords: `%${keywords}%`,
+          deleted: ConventionStatus.deleted,
+        })
+        .offset(pageSize * (page - 1))
+        .take(pageSize)
+        .getMany();
+    }
+
+    return result;
   }
 
   async findSiblingByTitleOrAlias(

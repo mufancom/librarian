@@ -8694,6 +8694,10 @@ scroll-into-view-if-needed@^2.2.16:
   dependencies:
     compute-scroll-into-view "1.0.7"
 
+segment@^0.1.3:
+  version "0.1.3"
+  resolved "https://registry.yarnpkg.com/segment/-/segment-0.1.3.tgz#605f80fd6c7131c46e38103a17b1688f09efafa7"
+
 select-hose@^2.0.0:
   version "2.0.0"
   resolved "https://registry.npmjs.org/select-hose/-/select-hose-2.0.0.tgz#625d8658f865af43ec962bfc376a37359a4994ca"

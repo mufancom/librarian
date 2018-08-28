@@ -123,6 +123,12 @@ export interface ItemVersionGroup {
   children: ConventionItemVersionWithUserInfo[];
 }
 
+export interface SearchResult {
+  segments: string[];
+  conventions: Convention[];
+  items: ConventionItem[];
+}
+
 export type PrettierConfig = Options;
 
 export class ConventionStore {
@@ -167,6 +173,9 @@ export class ConventionStore {
 
   @observable
   editItemDraftDict: EditItemDraftDict = {};
+
+  @observable
+  searchResult: SearchResult | undefined;
 
   @observable
   prettierConfig: PrettierConfig | undefined;

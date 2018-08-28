@@ -16,7 +16,7 @@ const {Sider} = Layout;
 const Wrapper = styled.div`
   ${ConventionSideSearch.Wrapper} {
     margin-left: 36px;
-    margin-top: 27px;
+    margin-top: 24px;
   }
 
   .nav-sider {

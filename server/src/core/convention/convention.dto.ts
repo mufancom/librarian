@@ -1,4 +1,11 @@
-import {IsNumber, IsOptional, Length, Matches, Max} from 'class-validator';
+import {
+  Allow,
+  IsNumber,
+  IsOptional,
+  Length,
+  Matches,
+  Min,
+} from 'class-validator';
 
 import {REGEX_TITLE} from 'utils/regex';
 
@@ -8,7 +15,7 @@ export class CreateDTO {
 
   @IsOptional()
   @IsNumber()
-  @Max(-1)
+  @Min(-1)
   readonly afterOrderId?: number;
 
   @Length(1, 20)
@@ -27,7 +34,7 @@ export class EditDTO {
 
   @IsOptional()
   @IsNumber()
-  @Max(-1)
+  @Min(-1)
   readonly afterOrderId?: number;
 
   @IsOptional()

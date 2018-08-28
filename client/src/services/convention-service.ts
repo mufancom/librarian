@@ -16,6 +16,7 @@ import {
   ItemVersionGroup,
   NewItemDraftDict,
   PrettierConfig,
+  SearchResult,
 } from 'stores/convention-store';
 import {Heading, mark, prettify, prettifyWithCursor} from 'utils/markdown';
 
@@ -269,6 +270,15 @@ export class ConventionService {
         this.conventionStore.currentConvention = convention;
       }
     }
+  }
+
+  @action
+  async search(keywords: string): Promise<void> {
+    this.conventionStore.searchResult = await this.apiService.post<
+      SearchResult
+    >('convention/search', {
+      keywords,
+    });
   }
 
   async createConvention(

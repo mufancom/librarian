@@ -144,4 +144,19 @@ export class ConventionController {
 
     await this.conventionService.delete(convention);
   }
+
+  @Post('search')
+  async search(@Body('keywords') keywords: string) {
+    if (!keywords) {
+      return {segments: [], convention: [], items: []};
+    }
+
+    let segments = this.conventionService.doSegment(keywords);
+
+    let conventions = await this.conventionService.search(keywords, 3, 1);
+
+    let items = await this.itemService.search(keywords, 8, 1);
+
+    return {segments, conventions, items};
+  }
 }

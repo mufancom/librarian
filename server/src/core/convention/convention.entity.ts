@@ -2,6 +2,7 @@ import {
   Column,
   CreateDateColumn,
   Entity,
+  Index,
   PrimaryGeneratedColumn,
 } from 'typeorm';
 
@@ -11,6 +12,7 @@ export enum ConventionStatus {
 }
 
 @Entity()
+@Index(['title', 'alias'], {fulltext: true})
 export class Convention {
   @PrimaryGeneratedColumn()
   id!: number;

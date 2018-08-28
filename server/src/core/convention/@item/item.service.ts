@@ -62,6 +62,25 @@ export class ItemService {
       .getMany();
   }
 
+  async search(
+    keywords: string,
+    pageSize: number,
+    page: number,
+  ): Promise<Item[]> {
+    return this.itemRepository
+      .createQueryBuilder()
+      .where(
+        'match (`content`) against (:keywords in natural language mode) and status != :deleted',
+        {
+          keywords,
+          deleted: ItemStatus.deleted,
+        },
+      )
+      .offset(pageSize * (page - 1))
+      .take(pageSize)
+      .getMany();
+  }
+
   @Transaction()
   async createItem(
     userId: number,
