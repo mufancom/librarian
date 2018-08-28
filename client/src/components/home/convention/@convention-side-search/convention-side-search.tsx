@@ -7,6 +7,7 @@ import ReactDOM from 'react-dom';
 
 import {ConventionService} from 'services/convention-service';
 import {ConventionStore, SearchResult} from 'stores/convention-store';
+import {RouterStore} from 'stores/router-store';
 import {styled} from 'theme';
 import {inject, observer} from 'utils/mobx';
 
@@ -64,7 +65,10 @@ function renderConventionItemResult(
     return (
       <OptGroup key="item" label="条目">
         {items.map(item => (
-          <Option key={item.id} value={`item:${item.id}`}>
+          <Option
+            key={item.id}
+            value={`convention:${item.conventionId}, item:${item.id}`}
+          >
             <SearchConventionItem segments={segments} item={item} />
           </Option>
         ))}
@@ -97,6 +101,9 @@ function renderResult(data: SearchResult | undefined): JSX.Element[] {
 
 @observer
 export class ConventionSideSearch extends Component<ConventionSideSearchProps> {
+  @inject
+  routerStore!: RouterStore;
+
   @inject
   conventionStore!: ConventionStore;
 
@@ -188,7 +195,30 @@ export class ConventionSideSearch extends Component<ConventionSideSearchProps> {
   };
 
   @action
-  onItemSelect = (_value: SelectValue): void => {};
+  onItemSelect = async (selectValue: SelectValue): Promise<void> => {
+    let value = selectValue.toString();
+
+    let result = value.match(/convention:(\d+)(?:, item:(\d+))?/);
+
+    if (result) {
+      let conventionId = parseInt(result[1]);
+
+      let itemId = result[2] ? parseInt(result[2]) : undefined;
+
+      // tslint:disable-next-line:no-console
+      console.log(conventionId, itemId);
+
+      let convention = await this.conventionService.getConvention(conventionId);
+
+      let path = await this.conventionService.getPathByConvention(convention);
+
+      let fullPath = `/convention/${path}/${
+        itemId ? `#convention-item-${itemId}` : ''
+      }`;
+
+      this.routerStore.push(fullPath);
+    }
+  };
 
   static Wrapper = Wrapper;
 }

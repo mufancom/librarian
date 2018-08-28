@@ -3,6 +3,7 @@ import classNames from 'classnames';
 import * as QueryString from 'query-string';
 import * as React from 'react';
 import {Route, RouteComponentProps, Switch, withRouter} from 'react-router';
+import scrollIntoView from 'scroll-into-view-if-needed';
 import styled from 'styled-components';
 
 import {
@@ -179,8 +180,11 @@ export class Convention extends React.Component<ConventionProps> {
 
       if (!lastConventionId || lastConventionId !== id) {
         doneProgress();
+
         scrollTo(0, 0);
       }
+
+      this.scrollToElementByHash();
     } else {
       this.routerStore.push('/convention/f-o-f');
     }
@@ -206,6 +210,22 @@ export class Convention extends React.Component<ConventionProps> {
 
   onRouteChangeMiss = (): void => {
     this.routerStore.push('/convention/f-o-f');
+  };
+
+  scrollToElementByHash = (): void => {
+    let hash = this.routerStore.location.hash.slice(1);
+
+    let element = document.getElementById(hash);
+
+    if (element) {
+      scrollIntoView(element);
+
+      let {top} = element.getBoundingClientRect();
+
+      if (top < 100) {
+        window.scroll({top: window.scrollY - 100});
+      }
+    }
   };
 
   static Wrapper = Wrapper;

@@ -164,6 +164,7 @@ export class ConventionBodyItem extends Component<ConventionBodyItemProps> {
             </ItemTopToolBar>
 
             <ItemRenderContent
+              id={`convention-item-${item.id}`}
               dangerouslySetInnerHTML={{__html: item.renderedHTML}}
             />
             <ConventionBodyItemFooter item={item} />
