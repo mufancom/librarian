@@ -212,7 +212,7 @@ export class ConventionSideSearch extends Component<ConventionSideSearchProps> {
 
       let path = await this.conventionService.getPathByConvention(convention);
 
-      let fullPath = `/convention/${path}/${
+      let fullPath = `/convention/${path}${
         itemId ? `#convention-item-${itemId}` : ''
       }`;
 
