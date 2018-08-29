@@ -10,7 +10,7 @@ export class RegisterInvitation {
   @PrimaryGeneratedColumn()
   id!: number;
 
-  @Column('link_hash')
+  @Column({name: 'link_hash'})
   linkHash!: string;
 
   @CreateDateColumn({name: 'created_at', type: 'timestamp'})

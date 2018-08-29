@@ -18,6 +18,7 @@ import {
 import {AuthGuard} from 'core/auth';
 import {UserDataService} from 'core/user';
 import {comparePassword, encryptPassword} from 'utils/encryption';
+import {sendMail} from 'utils/mail';
 
 import {ChangePasswordDTO, RegisterDTO} from './user.dto';
 
@@ -26,6 +27,17 @@ export class UserController {
   constructor(
     @Inject(UserDataService) private userDataService: UserDataService,
   ) {}
+
+  @Get('test')
+  async test() {
+    let info = await sendMail({
+      to: '10165101106@stu.ecnu.edu.cn',
+      subject: 'Hello, Scholar!',
+      html: '<b>A mail from node.js!!!</b>',
+    });
+
+    return info;
+  }
 
   @Post('register')
   async register(@Body() data: RegisterDTO) {
