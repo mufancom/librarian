@@ -2,6 +2,12 @@ import * as FS from 'fs';
 import * as Path from 'path';
 
 import {TypeOrmModuleOptions} from '@nestjs/typeorm/dist/interfaces/typeorm-options.interface';
+import JSONTransport from 'nodemailer/lib/json-transport';
+import SendmailTransport from 'nodemailer/lib/sendmail-transport';
+import SESTransport from 'nodemailer/lib/ses-transport';
+import SMTPPool from 'nodemailer/lib/smtp-pool';
+import SMTPTransport from 'nodemailer/lib/smtp-transport';
+import StreamTransport from 'nodemailer/lib/stream-transport';
 import {Options as ClientPrettierConfig} from 'prettier';
 import {ConnectionOptions} from 'typeorm';
 
@@ -18,6 +24,9 @@ const CLIENT_PRETTIER_PATH = Path.join(
   CONFIG_BASE_PATH,
   'client-prettier.json',
 );
+const MAIL_CONFIG_PATH = Path.join(CONFIG_BASE_PATH, 'mail.json');
+
+export type keys<T> = T extends object ? keyof T : never;
 
 export class ConfigService<T extends object> {
   private readonly data: T;
@@ -27,9 +36,9 @@ export class ConfigService<T extends object> {
   }
 
   get(): T;
-  get<K extends keyof T>(key: K): T[K] | undefined;
-  get<K extends keyof T>(key: K, fallback: T[K]): T[K];
-  get<K extends keyof T>(key?: K, fallback?: T[K]): T[K] | T | undefined {
+  get<K extends keys<T>>(key: K): T[K] | undefined;
+  get<K extends keys<T>>(key: K, fallback: T[K]): T[K];
+  get<K extends keys<T>>(key?: K, fallback?: T[K]): T[K] | T | undefined {
     let data = this.data;
 
     if (key) {
@@ -59,6 +68,14 @@ export interface SessionConfig {
   secret: string;
 }
 
+export type MailConfig =
+  | SMTPTransport.Options
+  | SMTPPool.Options
+  | SendmailTransport.Options
+  | StreamTransport.Options
+  | JSONTransport.Options
+  | SESTransport.Options;
+
 export class Config {
   static server = new ConfigService<ServerConfig>(SERVER_CONFIG_PATH);
   static database = new ConfigService<DatabaseConfig>(DATABASE_CONFIG_PATH);
@@ -66,4 +83,5 @@ export class Config {
   static clientPrettier = new ConfigService<ClientPrettierConfig>(
     CLIENT_PRETTIER_PATH,
   );
+  static mail = new ConfigService<MailConfig>(MAIL_CONFIG_PATH);
 }

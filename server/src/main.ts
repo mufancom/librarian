@@ -1,12 +1,11 @@
 import {ExpressSessionMiddleware} from '@nest-middlewares/express-session';
 import {NestFactory} from '@nestjs/core';
 
+import {AppModule} from 'app.module';
 import {HttpExceptionFilter} from 'common/filters/http-exception.filter';
 import {APIInterceptor} from 'common/interceptors/api.interceptor';
 import {ValidationPipe} from 'common/pipes/validation.pipe';
 import {Config} from 'utils/config';
-
-import {AppModule} from 'app.module';
 
 const DEFAULT_PORT = 3002;
 
