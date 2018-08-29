@@ -205,9 +205,6 @@ export class ConventionSideSearch extends Component<ConventionSideSearchProps> {
 
       let itemId = result[2] ? parseInt(result[2]) : undefined;
 
-      // tslint:disable-next-line:no-console
-      console.log(conventionId, itemId);
-
       let convention = await this.conventionService.getConvention(conventionId);
 
       let path = await this.conventionService.getPathByConvention(convention);

@@ -61,6 +61,9 @@ export class ConventionBodyItemCreate extends Component<
   @observable
   initialContent: string = '## 条目标题\n\n条目正文';
 
+  @observable
+  okButtonDisabled = true;
+
   editorRef: React.RefObject<any> = createRef();
 
   autoSaveTimer: any;
@@ -104,6 +107,7 @@ export class ConventionBodyItemCreate extends Component<
                   loading={loading}
                   type="primary"
                   onClick={this.onInnerOkClick}
+                  disabled={this.okButtonDisabled}
                 >
                   完成
                 </Button>
@@ -127,6 +131,8 @@ export class ConventionBodyItemCreate extends Component<
   onContentChange = (content: string): void => {
     this.content = content;
 
+    this.okButtonDisabled = content === this.initialContent;
+
     if (this.content.length !== 0) {
       if (this.autoSaveTimer) {
         clearTimeout(this.autoSaveTimer);
@@ -141,7 +147,9 @@ export class ConventionBodyItemCreate extends Component<
     let newItemDraft = this.getCurrentDraft();
 
     if (newItemDraft) {
-      this.setContent(newItemDraft.content);
+      let {content} = newItemDraft;
+
+      this.setContent(content);
     }
   };
 

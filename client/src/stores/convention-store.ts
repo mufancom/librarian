@@ -86,6 +86,7 @@ export interface ConventionItemVersion {
 export interface ItemDraft {
   content: string;
   savedAt: string;
+  versionId: number;
 }
 
 export interface EditItemDraftDict {

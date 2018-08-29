@@ -3,8 +3,7 @@ import {InjectRepository} from '@nestjs/typeorm';
 import Segment from 'segment';
 import {DeepPartial, Repository} from 'typeorm';
 
-import {Convention, ConventionStatus} from './convention.entity';
-import {ItemService} from './item';
+import {Convention, ConventionStatus, ItemService} from 'core/convention';
 
 export interface IndexTree {
   title: string;
@@ -23,7 +22,7 @@ export class ConventionService {
   constructor(
     @InjectRepository(Convention)
     private conventionRepository: Repository<Convention>,
-    private itemService: ItemService,
+    @InjectRepository(ItemService) private itemService: ItemService,
   ) {
     this.segment = new Segment();
 
@@ -239,7 +238,7 @@ export class ConventionService {
   async deleteByCategory(categoryId: number): Promise<void> {
     let conventions = await this.conventionRepository
       .createQueryBuilder()
-      .where('category_id = :categoryId and status != :deleted', {
+      .where('category_id = :categoryId and state = :deleted', {
         categoryId,
         deleted: ConventionStatus.deleted,
       })

@@ -54,6 +54,9 @@ export class ConventionBodyItemEdit extends Component<
   @observable
   titleHint = getMarkdownTitle(this.props.item.content, '编辑条目');
 
+  @observable
+  okButtonDisabled = true;
+
   fromVersionId = this.props.item.versionId;
 
   editorRef: React.RefObject<any> = createRef();
@@ -94,6 +97,7 @@ export class ConventionBodyItemEdit extends Component<
               loading={loading}
               type="primary"
               onClick={this.onInnerOkClick}
+              disabled={this.okButtonDisabled}
             >
               完成
             </Button>
@@ -112,6 +116,8 @@ export class ConventionBodyItemEdit extends Component<
   @action
   onContentChange = (content: string): void => {
     this.content = content;
+
+    this.okButtonDisabled = content === this.props.item.content;
 
     this.titleHint = getMarkdownTitle(content, '编辑条目');
 
