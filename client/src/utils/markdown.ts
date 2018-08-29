@@ -41,9 +41,10 @@ class HeadingRenderer extends Renderer {
 
   heading(text: string, level: number): string {
     let id = this._heading(text, level);
-    return `<h${level} id="${encodeURI(
-      `${id} ${text}`,
-    )}">${text}</h${level}>\n`;
+
+    let elementId = encodeURIComponent(filterHTMLTags(`${id} ${text}`));
+
+    return `<h${level} id="${elementId}">${text}</h${level}>\n`;
   }
 }
 
@@ -191,7 +192,7 @@ function buildHeadingTree(headings: PlainHeading[]): Heading[] {
       }
     }
 
-    heading.id = encodeURI(`${id} ${heading.text}`);
+    heading.id = encodeURIComponent(`${id} ${heading.text}`);
 
     treeToHookOn.push(heading);
     lastHeading = heading;
