@@ -210,13 +210,22 @@ export class ConventionBodyItem extends Component<ConventionBodyItemProps> {
   };
 
   @action
-  onEditOkClick = async (content: string, versionId: number): Promise<void> => {
+  onEditOkClick = async (
+    content: string,
+    versionId: number,
+    commitMessage: string,
+  ): Promise<void> => {
     let {item} = this.props;
 
     this.editLoading = true;
 
     try {
-      await this.conventionService.editConventionItem(item, versionId, content);
+      await this.conventionService.editConventionItem(
+        item,
+        versionId,
+        content,
+        commitMessage,
+      );
 
       message.success('条目编辑成功！');
 

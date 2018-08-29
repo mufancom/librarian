@@ -229,7 +229,7 @@ export class ConventionBody extends Component<ConventionBodyProps> {
   };
 
   @action
-  onOkClick = async (content: string): Promise<void> => {
+  onOkClick = async (content: string, commitMessage: string): Promise<void> => {
     let {currentConvention} = this.conventionStore;
 
     this.createConventionLoading = true;
@@ -238,6 +238,7 @@ export class ConventionBody extends Component<ConventionBodyProps> {
       await this.conventionService.createConventionItem(
         currentConvention!.id,
         content,
+        commitMessage,
       );
 
       message.success('添加条目成功！');

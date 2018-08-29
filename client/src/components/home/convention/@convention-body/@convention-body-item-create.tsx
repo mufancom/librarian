@@ -1,4 +1,4 @@
-import {Button} from 'antd';
+import {Button, Input, Popover} from 'antd';
 import classNames from 'classnames';
 import {action, observable} from 'mobx';
 import React, {Component, createRef} from 'react';
@@ -37,12 +37,22 @@ const AddConventionHeadOperations = styled.div`
   margin-right: 3px;
 `;
 
+function createCommitMessagePopover(
+  inputRef: React.RefObject<Input>,
+): JSX.Element {
+  return (
+    <div>
+      <Input placeholder="编辑说明" ref={inputRef} />
+    </div>
+  );
+}
+
 export interface ConventionBodyItemCreateProps {
   className?: string;
   show: boolean;
   loading?: boolean;
   onCancelClick?(): void;
-  onOkClick?(content: string): void;
+  onOkClick?(content: string, message: string): void;
 }
 
 @observer
@@ -65,6 +75,8 @@ export class ConventionBodyItemCreate extends Component<
   okButtonDisabled = true;
 
   editorRef: React.RefObject<any> = createRef();
+
+  commitMessageInput: React.RefObject<Input> = createRef();
 
   autoSaveTimer: any;
 
@@ -103,14 +115,20 @@ export class ConventionBodyItemCreate extends Component<
                 <Button style={{marginRight: '10px'}} onClick={onCancelClick}>
                   取消
                 </Button>
-                <Button
-                  loading={loading}
-                  type="primary"
-                  onClick={this.onInnerOkClick}
-                  disabled={this.okButtonDisabled}
+                <Popover
+                  placement="bottomRight"
+                  content={createCommitMessagePopover(this.commitMessageInput)}
+                  trigger="hover"
                 >
-                  完成
-                </Button>
+                  <Button
+                    loading={loading}
+                    type="primary"
+                    onClick={this.onInnerOkClick}
+                    disabled={this.okButtonDisabled}
+                  >
+                    完成
+                  </Button>
+                </Popover>
               </AddConventionHeadOperations>
             </AddConventionHead>
             <ConventionBodyItemEditor
@@ -167,8 +185,16 @@ export class ConventionBodyItemCreate extends Component<
   onInnerOkClick = (): void => {
     let {onOkClick} = this.props;
 
+    let input = this.commitMessageInput.current!;
+
+    let message = '';
+
+    if (input) {
+      message = input.input.value;
+    }
+
     if (onOkClick) {
-      onOkClick(this.content);
+      onOkClick(this.content, message);
     }
   };
 

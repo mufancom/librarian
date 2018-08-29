@@ -334,12 +334,14 @@ export class ConventionService {
   async createConventionItem(
     conventionId: number,
     content: string,
+    message: string,
   ): Promise<void> {
     content = await this.prettify(content);
 
     await this.apiService.post('convention/item/create', {
       conventionId,
       content,
+      message,
     });
 
     await this.freshCurrentConventionItems(conventionId);
@@ -357,6 +359,7 @@ export class ConventionService {
     conventionItem: ConventionItem,
     fromVersionId: number,
     content: string,
+    message: string,
   ): Promise<void> {
     let {id, conventionId} = conventionItem;
 
@@ -366,6 +369,7 @@ export class ConventionService {
       id,
       fromVersionId,
       content,
+      message,
     });
 
     await this.freshCurrentConventionItems(conventionId);
