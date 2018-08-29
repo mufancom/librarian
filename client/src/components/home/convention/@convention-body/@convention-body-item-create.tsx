@@ -8,7 +8,10 @@ import {ConventionStore, ItemDraft} from 'stores/convention-store';
 import {styled} from 'theme';
 import {inject, observer} from 'utils/mobx';
 
-import {ConventionBodyItemEditor} from './@convention-body-item-editor';
+import {
+  ConventionBodyItemEditor,
+  createCommitMessagePopover,
+} from './@convention-body-item-editor';
 import {ConventionBodyItemDraftHint} from './@convention-body-item-editor/convention-body-item-draft-hint';
 
 const AUTO_SAVE_INTERVAL = 10000;
@@ -36,16 +39,6 @@ const AddConventionHeadOperations = styled.div`
   float: right;
   margin-right: 3px;
 `;
-
-function createCommitMessagePopover(
-  inputRef: React.RefObject<Input>,
-): JSX.Element {
-  return (
-    <div>
-      <Input placeholder="编辑说明" ref={inputRef} />
-    </div>
-  );
-}
 
 export interface ConventionBodyItemCreateProps {
   className?: string;
@@ -116,8 +109,14 @@ export class ConventionBodyItemCreate extends Component<
                   取消
                 </Button>
                 <Popover
+                  overlayStyle={{
+                    visibility: this.okButtonDisabled ? 'hidden' : 'visible',
+                  }}
                   placement="bottomRight"
-                  content={createCommitMessagePopover(this.commitMessageInput)}
+                  content={createCommitMessagePopover(
+                    this.commitMessageInput,
+                    this.onInnerOkClick,
+                  )}
                   trigger="hover"
                 >
                   <Button

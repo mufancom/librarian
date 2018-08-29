@@ -1,5 +1,6 @@
 import 'react-mde/lib/styles/css/react-mde-all.css';
 
+import {Input} from 'antd';
 import classNames from 'classnames';
 import {action, observable} from 'mobx';
 import React, {Component, createRef} from 'react';
@@ -19,6 +20,23 @@ import {mark} from 'utils/markdown';
 import {inject, observer} from 'utils/mobx';
 
 import {ResizeListener} from '../../../../common';
+
+export function createCommitMessagePopover(
+  inputRef: React.RefObject<Input>,
+  onEnterKeyDown: () => void,
+): JSX.Element {
+  function onKeyDown(event: React.KeyboardEvent): void {
+    if (event.which === 13) {
+      onEnterKeyDown();
+    }
+  }
+
+  return (
+    <div>
+      <Input placeholder="编辑说明" ref={inputRef} onKeyDown={onKeyDown} />
+    </div>
+  );
+}
 
 const Wrapper = styled.div`
   display: block;
