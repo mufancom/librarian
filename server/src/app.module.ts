@@ -1,9 +1,9 @@
 import {Module} from '@nestjs/common';
 import {TypeOrmModule} from '@nestjs/typeorm';
 
-import {AuthModule} from 'core/auth';
-import {ConventionModule} from 'core/convention';
-import {UserModule} from 'core/user';
+import {AuthModule} from 'controllers/auth';
+import {ConventionModule} from 'controllers/convention';
+import {UserModule} from 'controllers/user';
 import {Config} from 'utils/config';
 
 @Module({

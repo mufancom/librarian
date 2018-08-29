@@ -4,6 +4,7 @@ import Segment from 'segment';
 import {DeepPartial, Repository} from 'typeorm';
 
 import {Convention, ConventionStatus} from './convention.entity';
+import {ItemService} from './item';
 
 export interface IndexTree {
   title: string;
@@ -22,6 +23,7 @@ export class ConventionService {
   constructor(
     @InjectRepository(Convention)
     private conventionRepository: Repository<Convention>,
+    private itemService: ItemService,
   ) {
     this.segment = new Segment();
 
@@ -229,6 +231,24 @@ export class ConventionService {
     convention.status = ConventionStatus.deleted;
     convention.deletedAt = new Date();
 
-    return this.conventionRepository.save(convention);
+    let deleted = await this.conventionRepository.save(convention);
+
+    await this.itemService.deleteItemByConventionId(deleted.id);
+
+    return deleted;
+  }
+
+  async deleteByCategory(categoryId: number): Promise<void> {
+    let conventions = await this.conventionRepository
+      .createQueryBuilder()
+      .where('category_id = :categoryId and status != :deleted', {
+        categoryId,
+        deleted: ConventionStatus.deleted,
+      })
+      .getMany();
+
+    for (let convention of conventions) {
+      await this.delete(convention);
+    }
   }
 }

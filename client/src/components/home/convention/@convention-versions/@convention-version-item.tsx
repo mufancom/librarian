@@ -1,8 +1,8 @@
 import {Avatar, Button, Card, Drawer, Popconfirm, Tooltip, message} from 'antd';
 import classNames from 'classnames';
+import {action, observable} from 'mobx';
 import React, {Component} from 'react';
 import CopyToClipboard from 'react-copy-to-clipboard';
-import {action, observable} from '../../../../../../node_modules/mobx';
 
 import {fetchErrorMessage} from 'services/api-service';
 import {ConventionService} from 'services/convention-service';

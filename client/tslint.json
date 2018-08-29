@@ -20,6 +20,7 @@
         "assets"
       ]
     ],
+    "import-path-base-url": [true, {"baseUrl": "src"}],
     "no-inferred-empty-object-type": false
   }
 }

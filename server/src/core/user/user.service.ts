@@ -11,7 +11,7 @@ export type UserServiceFindByIdentifierSearchFieldName =
   | 'usernameAndEmail';
 
 @Injectable()
-export class UserService {
+export class UserDataService {
   constructor(
     @InjectRepository(User) private userRepository: Repository<User>,
   ) {}

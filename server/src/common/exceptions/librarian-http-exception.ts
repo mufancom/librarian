@@ -1,5 +1,5 @@
 import {HttpException, HttpStatus} from '@nestjs/common';
-import {Translation} from 'shared/translation';
+import {Translation} from '../../../../shared/package/translation';
 
 export class LibrarianHttpException extends HttpException {
   constructor(code: string, message: keyof Translation) {

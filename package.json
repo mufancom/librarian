@@ -5,6 +5,7 @@
     "lerna:publish": "lerna publish --npm-client=npm --registry=https://registry.npmjs.org"
   },
   "devDependencies": {
+    "@magicspace/configs": "^0.1.29",
     "dot-template-types": "^0.0.7",
     "lerna": "^2.11.0",
     "prettier": "^1.13.7",

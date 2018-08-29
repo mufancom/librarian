@@ -1,17 +1,19 @@
-import {Injectable} from '@nestjs/common';
+import {Inject, Injectable} from '@nestjs/common';
 
-import {UserService} from '../user/user.service';
+import {UserDataService} from '../user';
 
 @Injectable()
 export class AuthService {
-  constructor(private readonly userService: UserService) {}
+  constructor(
+    @Inject(UserDataService) private readonly userDataService: UserDataService,
+  ) {}
 
   async findUserById(id: number) {
-    return this.userService.findByIdentifier(id, 'id');
+    return this.userDataService.findByIdentifier(id, 'id');
   }
 
   async findUserByUsernameOrEmail(usernameOrEmail: string) {
-    return this.userService.findByIdentifier(
+    return this.userDataService.findByIdentifier(
       usernameOrEmail,
       'usernameAndEmail',
     );

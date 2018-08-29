@@ -1,4 +1,4 @@
-import {underscoreToCamelCase} from 'utils/regex';
+import {underscoreToCamelCase} from './regex';
 
 export interface SeparatedJoinedResult<L, R> {
   left: L;

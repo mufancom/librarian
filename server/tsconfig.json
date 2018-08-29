@@ -10,8 +10,8 @@
 
     "baseUrl": "src",
 
-    "rootDir": "./src",
-    "outDir": "./bld"
+    "rootDir": "src",
+    "outDir": "bld"
   },
   "include": ["src", "types"]
 }

@@ -1,23 +1,22 @@
 import {Module} from '@nestjs/common';
 import {TypeOrmModule} from '@nestjs/typeorm';
 
-import {AuthModule} from '../auth';
+import {CoreAuthModule} from '../auth';
 
-import {CategoryModule} from './@category';
-import {ItemModule} from './@item';
-import {ConventionController} from './convention.controller';
+import {CoreCategoryModule} from './category';
 import {Convention} from './convention.entity';
 import {ConventionService} from './convention.service';
+import {CoreItemModule} from './item';
 
 @Module({
   imports: [
     TypeOrmModule.forFeature([Convention]),
-    CategoryModule,
-    ItemModule,
-    AuthModule,
+    CoreCategoryModule,
+    CoreItemModule,
+    CoreAuthModule,
   ],
-  controllers: [ConventionController],
+  controllers: [],
   providers: [ConventionService],
   exports: [ConventionService],
 })
-export class ConventionModule {}
+export class CoreConventionModule {}
