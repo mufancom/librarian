@@ -148,9 +148,17 @@ export class UserController {
       expiredAt,
     });
 
+    let mailGlobalVariable = Config.mail.get('global') as any;
+
+    let websiteName = 'librarian';
+
+    if (mailGlobalVariable && 'websiteName' in mailGlobalVariable) {
+      websiteName = mailGlobalVariable['websiteName'];
+    }
+
     await sendMail({
       to: invitation.email,
-      subject: `${inviter} 邀请您加入Librarian`,
+      subject: `${inviter} 邀请您加入 ${websiteName}`,
       html: mailContent,
     });
 

@@ -11,6 +11,7 @@ import {Content as HomeContent} from './content';
 import {ConventionWithRouter} from './convention';
 import {Header as HomeHeader} from './header';
 import {HeaderLayoutWithRouter} from './header/header-layout';
+import {RegisterInvitation} from './user';
 
 const {Content} = Layout;
 
@@ -35,15 +36,26 @@ export class HomeContainer extends React.Component {
     return (
       <Wrapper>
         <Provider {...homeStore}>
-          <Layout>
-            <HeaderLayoutWithRouter />
-            <Content style={{marginTop: 110}}>
-              <Switch>
-                <Route path="/convention" component={ConventionWithRouter} />
-                <Route path="/" component={HomeContent} />
-              </Switch>
-            </Content>
-          </Layout>
+          <Switch>
+            <Route
+              path="/user/register-invitation"
+              component={RegisterInvitation}
+            />
+            <Route>
+              <Layout>
+                <HeaderLayoutWithRouter />
+                <Content style={{marginTop: 110}}>
+                  <Switch>
+                    <Route
+                      path="/convention"
+                      component={ConventionWithRouter}
+                    />
+                    <Route path="/" component={HomeContent} />
+                  </Switch>
+                </Content>
+              </Layout>
+            </Route>
+          </Switch>
         </Provider>
       </Wrapper>
     );

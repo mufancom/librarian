@@ -31,6 +31,9 @@ ReactDOM.render(
 );
 
 ServiceWorker.register();
+export * from 'services';
+export * from 'stores';
+export * from 'theme';
 export * from './services';
 export * from './stores';
 export * from './theme';

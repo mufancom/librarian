@@ -100,4 +100,18 @@ export class UserService {
 
     return `https://en.gravatar.com/${emailHash}`;
   }
+
+  async grantRegisterWithInvitation(code: string): Promise<void> {
+    await this.apiService.get(`/user/grant-register?hash=${code}`);
+  }
+
+  async registerWithInvitation(
+    username: string,
+    password: string,
+  ): Promise<void> {
+    await this.apiService.post('user/regiter-with-invitation', {
+      username,
+      password,
+    });
+  }
 }

@@ -11,6 +11,8 @@
 
     "baseUrl": "src",
     "rootDir": "src",
+    "noUnusedLocals": false,
+    "noUnusedParameters": false,
     "outDir": "bld"
   },
   "include": ["src", "types"]
