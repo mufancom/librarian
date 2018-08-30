@@ -225,6 +225,7 @@ export class UserController {
 
     await this.userService.create({
       ...data,
+      email: registerInvitation.email,
       password: await encryptPassword(data.password),
     });
 

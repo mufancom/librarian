@@ -20,7 +20,7 @@
                                 <tr style="padding:0;vertical-align:top;text-align:left;">
                                   <td style="word-break:break-word;-webkit-hyphens:auto;-moz-hyphens:auto;hyphens:auto;border-collapse:collapse ;padding:0px 0px 10px;vertical-align:top;text-align:left;color:#202020;font-weight:normal;margin:0;line-height:19px;font-size:14px;">
 
-                                    <img src={{it.global.logoURL}} class="logo" width="120" height="34" style="outline:none;text-decoration:none;-ms-interpolation-mode:bicubic;width:auto;max-width:100%;float:left;clear:both;display:block;margin:20px 0 30px 0;">
+                                    <img src={{=it.global.logoURL}} class="logo" width="120" height="34" style="outline:none;text-decoration:none;-ms-interpolation-mode:bicubic;width:auto;max-width:100%;float:left;clear:both;display:block;margin:20px 0 30px 0;">
 
 
                                   </td>
@@ -53,7 +53,7 @@
                               <tr style="padding:0;vertical-align:top;text-align:left;">
                                 <td style="word-break:break-word;-webkit-hyphens:auto;-moz-hyphens:auto;hyphens:auto;border-collapse:collapse ;padding:0px 0px 10px;vertical-align:top;text-align:left;color:#202020;font-weight:normal;margin:0;line-height:19px;font-size:14px;">
                                   <h1 style="color:#202020;font-weight:normal;padding:0;margin:0;text-align:left;line-height:1.3;word-break:normal;font-size:30px;">加入
-                                    {{it.global.websiteName}}
+                                    {{=it.global.websiteName}}
                                   </h1>
                                   <br style=""><br style="">
                                 </td>
@@ -74,22 +74,22 @@
                             <tbody>
                               <tr style="padding:0;vertical-align:top;text-align:left;">
                                 <td style="word-break:break-word;-webkit-hyphens:auto;-moz-hyphens:auto;hyphens:auto;border-collapse:collapse ;padding:0px 0px 10px;vertical-align:top;text-align:left;color:#202020;font-weight:normal;margin:0;line-height:19px;font-size:14px;">
-                                  <h2 style="color:#303133;font-weight:normal;padding:0;margin:0;text-align:left;line-height:1.3;word-break:normal;font-size:26px;">{{it.inviter}}
+                                  <h2 style="color:#303133;font-weight:normal;padding:0;margin:0;text-align:left;line-height:1.3;word-break:normal;font-size:26px;">{{=it.inviter}}
                                   </h2>
                                   <h4 style="color:#303133;font-weight:normal;padding:0;margin:0;text-align:left;line-height:1.3;word-break:normal;font-size:18px;margin-bottom: 20px;">邀请您加入
-                                    {{it.global.websiteName}}, {{it.expiredAt}}内有效
+                                    {{=it.global.websiteName}}, {{=it.expiredAt}}内有效
                                   </h4>
                                   <br>
                                   <table style="border-spacing:0;border-collapse:collapse;padding:0;vertical-align:top;text-align:left; margin-bottom: 50px;">
                                     <tbody>
                                       <tr style="padding:0;vertical-align:top;text-align:left;">
                                         <td style="word-break:break-word;-webkit-hyphens:auto;-moz-hyphens:auto;hyphens:auto;border-collapse:collapse ;padding:0px 0px 10px;vertical-align:top;text-align:left;color:#202020;font-weight:normal;margin:0;line-height:19px;font-size:14px;">
-                                          <a href="{{it.link}}" style="text-decoration:none;color:white;background-color:#409eff;padding:8px 16px;border-radius:4px;font-size:10px;text-transform:uppercase;font-weight:bold;"
+                                          <a href="{{=it.link}}" style="text-decoration:none;color:white;background-color:#409eff;padding:8px 16px;border-radius:4px;font-size:10px;text-transform:uppercase;font-weight:bold;"
                                             class="button-green" rel="noopener" target="_blank">去注册
                                           </a>
                                         </td>
                                         <td class="chat" style="word-break:break-word;-webkit-hyphens:auto;-moz-hyphens:auto;hyphens:auto;border-collapse:collapse ;padding:0px 0px 10px;vertical-align:middle;text-align:left;color:#202020;font-weight:normal;margin:0;line-height:19px;font-size:14px;">
-                                          &nbsp; &nbsp;<a href="{{it.turnDownLink}}" style="color:#F56C6C;text-decoration:none;"
+                                          &nbsp; &nbsp;<a href="{{=it.turnDownLink}}" style="color:#F56C6C;text-decoration:none;"
                                             rel="noopener" target="_blank">拒绝邀请
                                           </a>&nbsp;
                                         </td>
@@ -119,7 +119,7 @@
                             <tbody>
                               <tr style="padding:0;vertical-align:top;text-align:left;">
                                 <td style="word-break:break-word;-webkit-hyphens:auto;-moz-hyphens:auto;hyphens:auto;border-collapse:collapse ;padding:0px 0px 10px;vertical-align:top;text-align:left;color:#303133;font-weight:normal;margin:0;line-height:19px;font-size:14px;">
-                                  如果上方注册按钮不能正常点击，请复制并粘贴以下链接到浏览器的地址输入框:<br><a href="{{it.link}}" target="_blank">{{it.link}}</a>
+                                  如果上方注册按钮不能正常点击，请复制并粘贴以下链接到浏览器的地址输入框:<br><a href="{{=it.link}}" target="_blank">{{=it.link}}</a>
                                   <br>
                                 </td>
                                 <td class="expander" style="word-break:break-word;-webkit-hyphens:auto;-moz-hyphens:auto;hyphens:auto;border-collapse:collapse ;padding:0 ;vertical-align:top;text-align:left;visibility:hidden;width:0px;color:#202020;font-weight:normal;margin:0;line-height:19px;font-size:14px;"></td>
@@ -141,8 +141,8 @@
                               <tr style="padding:0;vertical-align:top;text-align:left;">
                                 <td class="promo-inner" style="word-break:break-word;-webkit-hyphens:auto;-moz-hyphens:auto;hyphens:auto;border-collapse:collapse ;padding:16px;vertical-align:top;text-align:left;color:#202020;font-weight:normal;margin:0;line-height:19px;font-size:14px;">
                                   <h4 style="margin-bottom:10px;color:#202020;font-weight:normal;padding:0;margin:0;text-align:left;line-height:1.3;word-break:normal;font-size:18px;">还从未到
-                                    {{it.global.websiteName}} 逛过?</h4><br style="">
-                                  <a href="{{it.global.websiteURL}}" style="text-decoration:none;color:white;background-color:#409EFF;padding:8px 16px;border-radius:4px;font-size:10px;text-transform:uppercase;font-weight:bold;"
+                                    {{=it.global.websiteName}} 逛过?</h4><br style="">
+                                  <a href="{{=it.global.websiteURL}}" style="text-decoration:none;color:white;background-color:#409EFF;padding:8px 16px;border-radius:4px;font-size:10px;text-transform:uppercase;font-weight:bold;"
                                     class="button-green" rel="noopener" target="_blank">访问</a>
                                 </td>
                                 <td class="expander" style="word-break:break-word;-webkit-hyphens:auto;-moz-hyphens:auto;hyphens:auto;border-collapse:collapse ;padding:0 ;vertical-align:top;text-align:left;visibility:hidden;width:0px;color:#202020;font-weight:normal;margin:0;line-height:19px;font-size:14px;"></td>
@@ -174,7 +174,7 @@
                                 <td align="center" style="word-break:break-word;-webkit-hyphens:auto;-moz-hyphens:auto;hyphens:auto;border-collapse:collapse ;padding:0px 0px 10px;vertical-align:top;text-align:left;color:#202020;font-weight:normal;margin:0;line-height:19px;font-size:14px;">
                                   <center style="width:100%;min-width:580px;">
                                     <p style="margin:0;margin-bottom:10px;color:#202020;font-weight:normal;padding:0;text-align:left;line-height:19px;font-size:14px;">Copyright
-                                      © 2018 {{it.global.websiteName}}<br style="">All rights reserved.</p>
+                                      © 2018 {{=it.global.websiteName}}<br>All rights reserved.</p>
                                   </center>
                                 </td>
                                 <td class="expander" style="word-break:break-word;-webkit-hyphens:auto;-moz-hyphens:auto;hyphens:auto;border-collapse:collapse ;padding:0 ;vertical-align:top;text-align:left;visibility:hidden;width:0px;color:#202020;font-weight:normal;margin:0;line-height:19px;font-size:14px;"></td>

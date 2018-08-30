@@ -34,7 +34,7 @@ export function splitJoinedResult<L, R>(
 export function isOutDated(date: Date): boolean {
   let now = Date.now();
 
-  return now < date.getTime();
+  return now > date.getTime();
 }
 
 /**

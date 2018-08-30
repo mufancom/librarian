@@ -65,7 +65,7 @@ export class UserService {
   ): Promise<RegisterInvitation | undefined> {
     return this.registerInvitationRepository
       .createQueryBuilder()
-      .where('id := id', {id})
+      .where('id = :id', {id})
       .getOne();
   }
 
@@ -75,7 +75,7 @@ export class UserService {
     return this.registerInvitationRepository
       .createQueryBuilder()
       .where(
-        'link_hash := hash and status != :accepted and status != :declined',
+        'link_hash = :hash and status != :accepted and status != :declined',
         {
           hash,
           accepted: RegisterInvitationStatus.accepted,
