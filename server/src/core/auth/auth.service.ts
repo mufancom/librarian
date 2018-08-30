@@ -1,11 +1,11 @@
 import {Inject, Injectable} from '@nestjs/common';
 
-import {UserDataService} from '../user';
+import {UserService} from '../user';
 
 @Injectable()
 export class AuthService {
   constructor(
-    @Inject(UserDataService) private readonly userDataService: UserDataService,
+    @Inject(UserService) private readonly userDataService: UserService,
   ) {}
 
   async findUserById(id: number) {

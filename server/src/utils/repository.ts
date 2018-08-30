@@ -30,3 +30,22 @@ export function splitJoinedResult<L, R>(
     right: rightObject,
   };
 }
+
+export function isOutDated(date: Date): boolean {
+  let now = Date.now();
+
+  return now < date.getTime();
+}
+
+/**
+ * @param period number seconds
+ */
+export function describeAPeriodOfTime(period: number): string {
+  if (period < 60) {
+    return `${period} 秒`;
+  } else if (period < 3600) {
+    return `${period / 60} 分钟`;
+  }
+
+  return `${period / 3600} 小时`;
+}

@@ -19,6 +19,8 @@ export const zh: Translation = {
   AUTHENTICATION_FAILED: '授权失败',
   USERNAME_PASSWORD_MISMATCH: '用户名或密码错误',
   NO_ACCESS_TO_CURRENT_COMMENT: '没有权限修改当前评论',
+  REGISTER_NOT_OPEN: '注册未开放',
+  REGISTER_INVITATION_NOT_AVAILABLE: '注册邀请未被开放',
 
   RESOURCE_NOT_FOUND: '资源不存在',
   USER_NOT_FOUND: '用户不存在',
@@ -28,6 +30,7 @@ export const zh: Translation = {
   CONVENTION_ITEM_NOT_FOUND: '规范条目不存在',
   CONVENTION_ITEM_VERSION_NOT_FOUND: '不存在该规范条目版本',
   COMMENT_NOT_FOUND: '评论不存在',
+  REGISTER_INVITATION_NOT_FOUND: '注册邀请已失效',
 
   RESOURCE_CONFLICTING: '资源冲突',
   USERNAME_ALREADY_EXISTS: '用户名已经被占用',

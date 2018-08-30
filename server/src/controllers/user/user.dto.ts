@@ -19,3 +19,17 @@ export class RegisterDTO {
   @Length(8, 48)
   readonly password!: string;
 }
+
+export class GenerateInvitationDTO {
+  @Length(6, 50)
+  @IsEmail()
+  email!: string;
+}
+
+export class RegisterWithInvitationDTO {
+  @Length(4, 20)
+  readonly username!: string;
+
+  @Length(8, 48)
+  readonly password!: string;
+}

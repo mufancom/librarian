@@ -1,22 +1,23 @@
 import * as FS from 'fs';
 import * as Path from 'path';
 
-import nodemailer, {getTestMessageUrl} from 'nodemailer';
+import Dot from 'dot';
+import Nodemailer from 'nodemailer';
 import Mail from 'nodemailer/lib/mailer';
 
 import {ASSETS_DIR} from 'paths';
 
 import {Config} from './config';
 
-const MAIL_TAMPLATE_PATH = Path.join(ASSETS_DIR, 'mail-templates');
+const MAIL_TEMPLATE_PATH = Path.join(ASSETS_DIR, 'mail-templates');
 
-const TEMPLATE_SUFFIX = '.tpl';
+const TEMPLATE_SUFFIX = '.html';
 
 const defaultSendMailOptions = {
   from: Config.mail.get('from'),
 };
 
-let transport = nodemailer.createTransport(Config.mail.get());
+let transport = Nodemailer.createTransport(Config.mail.get());
 
 export function sendMail(options: Mail.Options) {
   options = {...defaultSendMailOptions, ...options};
@@ -37,6 +38,7 @@ export interface RegisterInvitationMailTemplate {
   parameters: {
     inviter: string;
     link: string;
+    turnDownLink: string;
     expiredAt: string;
   };
 }
@@ -44,7 +46,7 @@ export interface RegisterInvitationMailTemplate {
 export type MailTemplate = RegisterInvitationMailTemplate;
 
 interface MailTemplateCacheDict {
-  [key: string]: string;
+  [key: string]: Dot.RenderFunction;
 }
 
 class MailTemplateService {
@@ -54,7 +56,7 @@ class MailTemplateService {
     this.cache = {};
   }
 
-  async get(filename: string): Promise<string | undefined> {
+  async get(filename: string): Promise<Dot.RenderFunction | undefined> {
     if (filename in this.cache) {
       return this.cache[filename];
     }
@@ -65,14 +67,17 @@ class MailTemplateService {
       return undefined;
     }
 
-    this.cache[filename] = file;
-    return file;
+    let renderFunc = Dot.compile(file);
+
+    this.cache[filename] = renderFunc;
+    return renderFunc;
   }
 
   private async read(filename: string): Promise<string | undefined> {
+    let filePath = Path.join(MAIL_TEMPLATE_PATH, filename);
+
     return new Promise<string | undefined>((resolve, reject) => {
-      let filepath = Path.join(MAIL_TAMPLATE_PATH, filename);
-      FS.readFile(filepath, (error, data) => {
+      FS.readFile(filePath, (error, data) => {
         if (error) {
           reject(error);
         }
@@ -85,22 +90,20 @@ class MailTemplateService {
 
 const mailTemplateService = new MailTemplateService();
 
-function renderTemplate(
-  template: string,
-  _parameters: {[key: string]: string},
-): string {
-  return template;
-}
-
-export async function getMailTemplate<
+export async function renderMailTemplate<
   T extends MailTemplate,
   K extends T['type'],
   P extends T['parameters']
 >(type: K, parameters: P): Promise<string> {
   let template = await mailTemplateService.get(type + TEMPLATE_SUFFIX);
 
+  let variables = {
+    global: Config.mail.get('global'),
+    ...(parameters as object),
+  };
+
   if (template) {
-    return renderTemplate(template, parameters);
+    return template(variables);
   }
 
   throw new Error('Template not found');

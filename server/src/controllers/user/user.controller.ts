@@ -1,3 +1,5 @@
+import url from 'url';
+
 import {
   Body,
   Controller,
@@ -16,42 +18,48 @@ import {
   ResourceNotFoundException,
 } from 'common/exceptions';
 import {AuthGuard} from 'core/auth';
-import {UserDataService} from 'core/user';
+import {
+  RegisterInvitation,
+  RegisterInvitationGuard,
+  RegisterInvitationStatus,
+  UserService,
+} from 'core/user';
+import {Config} from 'utils/config';
 import {comparePassword, encryptPassword} from 'utils/encryption';
-import {sendMail} from 'utils/mail';
+import {renderMailTemplate, sendMail} from 'utils/mail';
+import {describeAPeriodOfTime} from 'utils/repository';
 
-import {ChangePasswordDTO, RegisterDTO} from './user.dto';
+import {
+  ChangePasswordDTO,
+  GenerateInvitationDTO,
+  RegisterDTO,
+  RegisterWithInvitationDTO,
+} from './user.dto';
 
 @Controller('user')
 export class UserController {
-  constructor(
-    @Inject(UserDataService) private userDataService: UserDataService,
-  ) {}
-
-  @Get('test')
-  async test() {
-    let info = await sendMail({
-      to: '10165101106@stu.ecnu.edu.cn',
-      subject: 'Hello, Scholar!',
-      html: '<b>A mail from node.js!!!</b>',
-    });
-
-    return info;
-  }
+  constructor(@Inject(UserService) private userService: UserService) {}
 
   @Post('register')
   async register(@Body() data: RegisterDTO) {
+    let registerConfig = Config.user.get('register');
+
     if (
-      await this.userDataService.findByIdentifier(data.username, 'username')
+      registerConfig &&
+      (!registerConfig.enable || registerConfig.method !== 'open')
     ) {
+      throw new AuthenticationFailedException('REGISTER_NOT_OPEN');
+    }
+
+    if (await this.userService.findByIdentifier(data.username, 'username')) {
       throw new ResourceConflictingException('USERNAME_ALREADY_EXISTS');
     }
 
-    if (await this.userDataService.findByIdentifier(data.email, 'email')) {
+    if (await this.userService.findByIdentifier(data.email, 'email')) {
       throw new ResourceConflictingException('EMAIL_ALREADY_EXISTS');
     }
 
-    await this.userDataService.create({
+    await this.userService.create({
       ...data,
       password: await encryptPassword(data.password),
     });
@@ -69,12 +77,12 @@ export class UserController {
 
     user.password = await encryptPassword(data.newPassword);
 
-    await this.userDataService.save(user);
+    await this.userService.save(user);
   }
 
   @Get('info')
   async info(@Query('id') id: number) {
-    let user = await this.userDataService.findByIdentifier(id, 'id');
+    let user = await this.userService.findByIdentifier(id, 'id');
 
     if (!user) {
       throw new ResourceNotFoundException('USER_NOT_FOUND');
@@ -83,5 +91,145 @@ export class UserController {
     let {username, email} = user;
 
     return {id, username, email};
+  }
+
+  @Post('generate-invitation')
+  @UseGuards(AuthGuard)
+  async generateInvitation(
+    @Body() data: GenerateInvitationDTO,
+    @Req() {user}: Request,
+  ) {
+    let registerConfig = Config.user.get('register');
+
+    if (
+      !registerConfig ||
+      !registerConfig.enable ||
+      registerConfig.method !== 'invitation'
+    ) {
+      throw new AuthenticationFailedException(
+        'REGISTER_INVITATION_NOT_AVAILABLE',
+      );
+    }
+
+    if (await this.userService.findByIdentifier(data.email, 'email')) {
+      throw new ResourceConflictingException('EMAIL_ALREADY_EXISTS');
+    }
+
+    let lifespan = registerConfig.invitationLifespan
+      ? registerConfig.invitationLifespan
+      : 36000;
+
+    let invitation = await this.userService.createRegisterInvitation(
+      user.id,
+      data.email,
+      lifespan,
+    );
+
+    let inviter = user.username;
+
+    let website = Config.server.get('clientURL', 'http://localhost: 3000');
+
+    let link = url.resolve(
+      website,
+      `/user/register-invitation?code=${invitation.linkHash}`,
+    );
+
+    let turnDownLink = url.resolve(
+      website,
+      `/user/register-invitation/decline?code=${invitation.linkHash}`,
+    );
+
+    let expiredAt = describeAPeriodOfTime(lifespan);
+
+    let mailContent = await renderMailTemplate('register-invitation', {
+      inviter,
+      link,
+      turnDownLink,
+      expiredAt,
+    });
+
+    await sendMail({
+      to: invitation.email,
+      subject: `${inviter} 邀请您加入Librarian`,
+      html: mailContent,
+    });
+
+    return invitation;
+  }
+
+  @Get('decline-invitation')
+  async declineInvitation(@Query('hash') linkHash: string) {
+    let invitation = await this.userService.findRegisterInvitationByHash(
+      linkHash,
+    );
+
+    if (!invitation || invitation.status !== RegisterInvitationStatus.pending) {
+      throw new ResourceNotFoundException('REGISTER_INVITATION_NOT_FOUND');
+    }
+
+    invitation.status = RegisterInvitationStatus.declined;
+
+    await this.userService.saveRegisterInvitation(invitation);
+  }
+
+  @Get('grant-register')
+  async grantRegistration(
+    @Query('hash') linkHash: string,
+    @Req() req: Request,
+  ) {
+    let invitation = (await this.userService.findRegisterInvitationByHash(
+      linkHash,
+    )) as RegisterInvitation;
+
+    await this.userService.validateRegisterInvitation(
+      invitation,
+      RegisterInvitationStatus.pending,
+    );
+
+    let session = req.session!;
+
+    session.registerInvitation = {id: invitation.id};
+
+    invitation.status = RegisterInvitationStatus.granted;
+
+    await this.userService.saveRegisterInvitation(invitation);
+  }
+
+  @Post('register-with-invitation')
+  @UseGuards(RegisterInvitationGuard)
+  async registerWithInvitation(
+    @Body() data: RegisterWithInvitationDTO,
+    @Req() {registerInvitation}: Request,
+  ) {
+    let registerConfig = Config.user.get('register');
+
+    if (
+      !registerConfig ||
+      !registerConfig.enable ||
+      registerConfig.method !== 'invitation'
+    ) {
+      throw new AuthenticationFailedException(
+        'REGISTER_INVITATION_NOT_AVAILABLE',
+      );
+    }
+
+    if (await this.userService.findByIdentifier(data.username, 'username')) {
+      throw new ResourceConflictingException('USERNAME_ALREADY_EXISTS');
+    }
+
+    if (
+      await this.userService.findByIdentifier(registerInvitation.email, 'email')
+    ) {
+      throw new ResourceConflictingException('EMAIL_ALREADY_EXISTS');
+    }
+
+    await this.userService.create({
+      ...data,
+      password: await encryptPassword(data.password),
+    });
+
+    registerInvitation.status = RegisterInvitationStatus.accepted;
+
+    await this.userService.saveRegisterInvitation(registerInvitation);
   }
 }

@@ -13,7 +13,7 @@ import {AuthService} from './auth.service';
 
 declare global {
   namespace Express {
-    class Request {
+    interface Request {
       user: User;
     }
 

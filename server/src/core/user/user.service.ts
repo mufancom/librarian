@@ -2,6 +2,18 @@ import {Injectable} from '@nestjs/common';
 import {InjectRepository} from '@nestjs/typeorm';
 import {DeepPartial, Repository} from 'typeorm';
 
+import {
+  ResourceConflictingException,
+  ResourceNotFoundException,
+} from 'common/exceptions';
+import {Config} from 'utils/config';
+import {md5} from 'utils/encryption';
+import {isOutDated} from 'utils/repository';
+
+import {
+  RegisterInvitation,
+  RegisterInvitationStatus,
+} from './register-invitation.entity';
 import {User} from './user.entity';
 
 export type UserServiceFindByIdentifierSearchFieldName =
@@ -11,9 +23,11 @@ export type UserServiceFindByIdentifierSearchFieldName =
   | 'usernameAndEmail';
 
 @Injectable()
-export class UserDataService {
+export class UserService {
   constructor(
     @InjectRepository(User) private userRepository: Repository<User>,
+    @InjectRepository(RegisterInvitation)
+    private registerInvitationRepository: Repository<RegisterInvitation>,
   ) {}
 
   async findByIdentifier(
@@ -44,5 +58,78 @@ export class UserDataService {
   async create(userLike: DeepPartial<User>): Promise<User> {
     let user = this.userRepository.create(userLike);
     return this.userRepository.save(user);
+  }
+
+  async findRegisterInvitationById(
+    id: number,
+  ): Promise<RegisterInvitation | undefined> {
+    return this.registerInvitationRepository
+      .createQueryBuilder()
+      .where('id := id', {id})
+      .getOne();
+  }
+
+  async findRegisterInvitationByHash(
+    hash: string,
+  ): Promise<RegisterInvitation | undefined> {
+    return this.registerInvitationRepository
+      .createQueryBuilder()
+      .where(
+        'link_hash := hash and status != :accepted and status != :declined',
+        {
+          hash,
+          accepted: RegisterInvitationStatus.accepted,
+          declined: RegisterInvitationStatus.declined,
+        },
+      )
+      .getOne();
+  }
+
+  async createRegisterInvitation(
+    fromUserId: number,
+    email: string,
+    lifespan: number,
+  ): Promise<RegisterInvitation> {
+    let now = Date.now();
+
+    let expiredAt = new Date(now + 1000 * lifespan);
+
+    let invitationLike = {
+      fromUserId,
+      email,
+      expiredAt,
+      status: RegisterInvitationStatus.pending,
+    };
+
+    let invitation = this.registerInvitationRepository.create(invitationLike);
+
+    let linkHash = await md5(invitation);
+
+    invitation.linkHash = linkHash;
+
+    return this.registerInvitationRepository.save(invitation);
+  }
+
+  async validateRegisterInvitation(
+    invitation: RegisterInvitation | undefined,
+    status: RegisterInvitationStatus,
+  ): Promise<void> {
+    if (
+      !invitation ||
+      isOutDated(invitation.expiredAt) ||
+      invitation.status !== status
+    ) {
+      throw new ResourceNotFoundException('REGISTER_INVITATION_NOT_FOUND');
+    }
+
+    if (await this.findByIdentifier(invitation.email, 'email')) {
+      throw new ResourceConflictingException('EMAIL_ALREADY_EXISTS');
+    }
+  }
+
+  async saveRegisterInvitation(
+    invitation: RegisterInvitation,
+  ): Promise<RegisterInvitation> {
+    return this.registerInvitationRepository.save(invitation);
   }
 }

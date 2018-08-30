@@ -16,27 +16,12 @@
     esutils "^2.0.2"
     js-tokens "^4.0.0"
 
-"@magicspace/configs@^0.1.24":
-  version "0.1.24"
-  resolved "https://registry.npmjs.org/@magicspace/configs/-/configs-0.1.24.tgz#c8ef43d17c630cf10bb21b7e3b89e8503e6a04e3"
-  dependencies:
-    "@magicspace/tslint-rules" "^0.1.20"
-    tslint-config-prettier "^1.10.0"
-
 "@magicspace/configs@^0.1.29":
   version "0.1.29"
   resolved "https://registry.yarnpkg.com/@magicspace/configs/-/configs-0.1.29.tgz#4d11dc655cc73b6bab94dfc6e4039c5ed9c9c1a0"
   dependencies:
     "@magicspace/tslint-rules" "^0.1.25"
     tslint-config-prettier "^1.10.0"
-
-"@magicspace/tslint-rules@^0.1.20":
-  version "0.1.20"
-  resolved "https://registry.npmjs.org/@magicspace/tslint-rules/-/tslint-rules-0.1.20.tgz#97fa91f97dc55aa76acf91c21c892ce332043fe2"
-  dependencies:
-    lodash "^4.17.10"
-    resolve "^1.8.1"
-    tsutils "^2.28.0"
 
 "@magicspace/tslint-rules@^0.1.25":
   version "0.1.25"
@@ -120,6 +105,10 @@
 "@types/cookiejar@*":
   version "2.1.0"
   resolved "https://registry.npmjs.org/@types/cookiejar/-/cookiejar-2.1.0.tgz#4b7daf2c51696cfc70b942c11690528229d1a1ce"
+
+"@types/dot@^1.1.2":
+  version "1.1.2"
+  resolved "https://registry.yarnpkg.com/@types/dot/-/dot-1.1.2.tgz#dd9f794c74f4e26076273e45f55b8b036f3aaf5d"
 
 "@types/draft-js@^0.10.24":
   version "0.10.24"
@@ -3032,6 +3021,10 @@ dot-template-types@^0.0.7:
   resolved "https://registry.npmjs.org/dot-template-types/-/dot-template-types-0.0.7.tgz#b697da82b87f4eb72b83f079696ac37e008fc25b"
   dependencies:
     "@types/fs-extra" "~5.0.0"
+
+dot@^1.1.2:
+  version "1.1.2"
+  resolved "https://registry.yarnpkg.com/dot/-/dot-1.1.2.tgz#c7377019fc4e550798928b2b9afeb66abfa1f2f9"
 
 dotenv-expand@4.2.0:
   version "4.2.0"

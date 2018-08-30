@@ -19,6 +19,8 @@ export const en: Translation = {
   AUTHENTICATION_FAILED: 'Authentication failed',
   USERNAME_PASSWORD_MISMATCH: 'Username and password mismatch',
   NO_ACCESS_TO_CURRENT_COMMENT: 'Permission not granted to edit the comment',
+  REGISTER_NOT_OPEN: 'Registration is not open',
+  REGISTER_INVITATION_NOT_AVAILABLE: 'Register invitation is not available',
 
   RESOURCE_NOT_FOUND: 'Resource not found',
   USER_NOT_FOUND: 'User not found',
@@ -29,6 +31,7 @@ export const en: Translation = {
   CONVENTION_ITEM_VERSION_NOT_FOUND:
     'The version of the convention item does not exist',
   COMMENT_NOT_FOUND: 'Comment not found',
+  REGISTER_INVITATION_NOT_FOUND: 'Register invitation is unfortunately expired',
 
   RESOURCE_CONFLICTING: 'Field already exists',
   USERNAME_ALREADY_EXISTS: 'Username already exists',

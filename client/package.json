@@ -37,7 +37,7 @@
     "build": "react-app-rewired build --scripts-version react-scripts-ts"
   },
   "devDependencies": {
-    "@magicspace/configs": "^0.1.24",
+    "@magicspace/configs": "^0.1.29",
     "@types/classnames": "^2.2.6",
     "@types/color": "^3.0.0",
     "@types/draft-js": "^0.10.24",

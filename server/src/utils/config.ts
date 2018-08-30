@@ -25,6 +25,7 @@ const CLIENT_PRETTIER_PATH = Path.join(
   'client-prettier.json',
 );
 const MAIL_CONFIG_PATH = Path.join(CONFIG_BASE_PATH, 'mail.json');
+const USER_CONFIG_PATH = Path.join(CONFIG_BASE_PATH, 'user.json');
 
 export type keys<T> = T extends object ? keyof T : never;
 
@@ -57,6 +58,7 @@ export interface ServerConfig {
   port: number;
   enableCors: boolean;
   corsOrigin: string;
+  clientURL: string;
 }
 
 export type DatabaseConfig = ExcludeProperty<
@@ -68,13 +70,21 @@ export interface SessionConfig {
   secret: string;
 }
 
-export type MailConfig =
+export type MailConfig = (
   | SMTPTransport.Options
   | SMTPPool.Options
   | SendmailTransport.Options
   | StreamTransport.Options
   | JSONTransport.Options
-  | SESTransport.Options;
+  | SESTransport.Options) & {global: object};
+
+export interface UserConfig {
+  register: {
+    enable: boolean;
+    method: 'invitation' | 'open';
+    invitationLifespan: number;
+  };
+}
 
 export class Config {
   static server = new ConfigService<ServerConfig>(SERVER_CONFIG_PATH);
@@ -84,4 +94,5 @@ export class Config {
     CLIENT_PRETTIER_PATH,
   );
   static mail = new ConfigService<MailConfig>(MAIL_CONFIG_PATH);
+  static user = new ConfigService<UserConfig>(USER_CONFIG_PATH);
 }

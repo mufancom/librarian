@@ -20,6 +20,8 @@ export interface Translation {
   AUTHENTICATION_FAILED: string;
   USERNAME_PASSWORD_MISMATCH: string;
   NO_ACCESS_TO_CURRENT_COMMENT: string;
+  REGISTER_NOT_OPEN: string;
+  REGISTER_INVITATION_NOT_AVAILABLE: string;
 
   /* Resource not found */
   RESOURCE_NOT_FOUND: string;
@@ -30,6 +32,7 @@ export interface Translation {
   CONVENTION_ITEM_NOT_FOUND: string;
   CONVENTION_ITEM_VERSION_NOT_FOUND: string;
   COMMENT_NOT_FOUND: string;
+  REGISTER_INVITATION_NOT_FOUND: string;
 
   /* Resource conflicting */
   RESOURCE_CONFLICTING: string;
