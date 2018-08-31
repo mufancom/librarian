@@ -4151,6 +4151,10 @@ highlight.js@^9.12.0, highlight.js@^9.6.0:
   version "9.12.0"
   resolved "https://registry.yarnpkg.com/highlight.js/-/highlight.js-9.12.0.tgz#e6d9dbe57cbefe60751f02af336195870c90c01e"
 
+highlight@^0.2.4:
+  version "0.2.4"
+  resolved "https://registry.yarnpkg.com/highlight/-/highlight-0.2.4.tgz#8ac02875b03f5935e0675852b76cfe1fd58e0dff"
+
 history@^4.7.2:
   version "4.7.2"
   resolved "https://registry.npmjs.org/history/-/history-4.7.2.tgz#22b5c7f31633c5b8021c7f4a8a954ac139ee8d5b"

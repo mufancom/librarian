@@ -87,6 +87,7 @@ export class ItemService {
 
   @Transaction()
   async createItem(
+    convention: Convention,
     userId: number,
     conventionId: number,
     afterOrderId: number | undefined,
@@ -119,6 +120,10 @@ export class ItemService {
 
     itemVersion.conventionItemId = item.id;
     await saveItemVersion(itemVersion, itemVersionRepository!);
+
+    this.notificationService
+      .notifyCreationOfNewConventionItem(convention, item)
+      .catch(console.error);
 
     return item;
   }

@@ -53,9 +53,20 @@ export interface ConventionChangeMailTemplate {
   };
 }
 
+export interface ConventionCreateMailTemplate {
+  type: 'convention-create-notification';
+  parameters: {
+    link: string;
+    convention: string;
+    item: string;
+    highlightedContent: string;
+  };
+}
+
 export type MailTemplate =
   | RegisterInvitationMailTemplate
-  | ConventionChangeMailTemplate;
+  | ConventionChangeMailTemplate
+  | ConventionCreateMailTemplate;
 
 interface MailTemplateCacheDict {
   [key: string]: Dot.RenderFunction;

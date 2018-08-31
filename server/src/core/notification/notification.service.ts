@@ -4,6 +4,7 @@ import {Inject, Injectable} from '@nestjs/common';
 
 import {Config} from 'utils/config';
 import {diffMarkdown} from 'utils/diff';
+import {highlight} from 'utils/highlight';
 import {renderMailTemplate, sendMail} from 'utils/mail';
 import {getMarkdownTitle} from 'utils/regex';
 
@@ -52,16 +53,43 @@ export class NotificationService {
       item: itemTitle,
     });
 
-    let subject = `${convention.title} - ${itemTitle} 条目内容变动，请留意！`;
+    let subject = `${convention.title} 下 ${itemTitle} 条目内容变动，请留意！`;
 
-    await this.sendMailToAllUsers({
-      subject,
-      html,
-    });
+    if (Config.notification.get('email')) {
+      await this.sendMailToAllUsers({
+        subject,
+        html,
+      });
+    }
   }
 
   async notifyCreationOfNewConventionItem(
     convention: Convention,
     item: Item,
-  ): Promise<void> {}
+  ): Promise<void> {
+    let clientURL = Config.server.get('clientURL', 'http://localhost:3002');
+
+    let link = URL.resolve(
+      clientURL,
+      `convention/${convention.id}/-/-/-#convention-item-${item.id}`,
+    );
+
+    let itemTitle = getMarkdownTitle(item.content, `#${item.id}`);
+
+    let html = await renderMailTemplate('convention-create-notification', {
+      link,
+      convention: convention.title,
+      item: itemTitle,
+      highlightedContent: highlight(item.content),
+    });
+
+    let subject = `${convention.title} 新增条目：${itemTitle} ，请留意！`;
+
+    if (Config.notification.get('email')) {
+      await this.sendMailToAllUsers({
+        subject,
+        html,
+      });
+    }
+  }
 }

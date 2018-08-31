@@ -35,13 +35,18 @@ export class ItemController {
   @Post('create')
   @UseGuards(AuthGuard)
   async create(@Body() data: CreateDTO, @Req() {user}: Request) {
-    if (!(await this.conventionService.findOneById(data.conventionId))) {
+    let convention = await this.conventionService.findOneById(
+      data.conventionId,
+    );
+
+    if (!convention) {
       throw new ResourceNotFoundException('CONVENTION_NOT_FOUND');
     }
 
     let {conventionId, afterOrderId, message} = data;
 
     let {id} = await this.itemService.createItem(
+      convention,
       user.id,
       conventionId,
       afterOrderId,
