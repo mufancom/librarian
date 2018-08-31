@@ -76,7 +76,7 @@ export class Convention extends React.Component<ConventionProps> {
               >
                 <Switch>
                   <Route
-                    path="/convention/:id(\d+)/:category/:group/:item"
+                    path="/convention/:id(\d+)/:category/:group/:item/*"
                     component={(props: any) => (
                       <RouteTrackerWithRouter
                         {...props}
@@ -140,9 +140,9 @@ export class Convention extends React.Component<ConventionProps> {
         convention,
       );
 
-      let nowFullPath = this.routerStore.location.pathname;
+      let nowFullPath = match.url;
 
-      let payload = nowFullPath.slice(oldPath.length);
+      let payload = nowFullPath.slice(oldPath.length + 1);
 
       let {hash, search} = this.routerStore.location;
 

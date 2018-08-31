@@ -59,4 +59,9 @@ export class NotificationService {
       html,
     });
   }
+
+  async notifyCreationOfNewConventionItem(
+    convention: Convention,
+    item: Item,
+  ): Promise<void> {}
 }
