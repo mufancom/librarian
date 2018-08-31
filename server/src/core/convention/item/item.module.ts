@@ -2,6 +2,7 @@ import {Module, forwardRef} from '@nestjs/common';
 import {TypeOrmModule} from '@nestjs/typeorm';
 
 import {CoreAuthModule} from '../../auth';
+import {CoreNotificationModule} from '../../notification';
 import {CoreConventionModule} from '../convention.module';
 
 import {ItemCommentService} from './item-comment';
@@ -17,6 +18,7 @@ import {ItemService} from './item.service';
     TypeOrmModule.forFeature([Item, ItemVersion, ItemThumbUp, ItemComment]),
     forwardRef(() => CoreConventionModule),
     CoreAuthModule,
+    CoreNotificationModule,
   ],
   controllers: [],
   providers: [ItemService, ItemCommentService, ItemThumbUpService],

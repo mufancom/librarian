@@ -61,6 +61,14 @@ export class ItemController {
       throw new ResourceNotFoundException('CONVENTION_ITEM_NOT_FOUND');
     }
 
+    let convention = await this.conventionService.findOneById(
+      item.conventionId,
+    );
+
+    if (!convention) {
+      throw new ResourceNotFoundException('CONVENTION_NOT_FOUND');
+    }
+
     let {fromVersionId, content, message} = data;
 
     if (item.versionId !== fromVersionId) {
@@ -69,6 +77,7 @@ export class ItemController {
 
     let {versionId} = await this.itemService.editItem(
       user.id,
+      convention,
       item,
       fromVersionId,
       content,

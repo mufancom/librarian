@@ -26,6 +26,10 @@ const CLIENT_PRETTIER_PATH = Path.join(
 );
 const MAIL_CONFIG_PATH = Path.join(CONFIG_BASE_PATH, 'mail.json');
 const USER_CONFIG_PATH = Path.join(CONFIG_BASE_PATH, 'user.json');
+const NOTIFICATION_CONFIG_PATH = Path.join(
+  CONFIG_BASE_PATH,
+  'notification.json',
+);
 
 export type keys<T> = T extends object ? keyof T : never;
 
@@ -86,6 +90,10 @@ export interface UserConfig {
   };
 }
 
+export interface NotificationConfig {
+  email: boolean;
+}
+
 export class Config {
   static server = new ConfigService<ServerConfig>(SERVER_CONFIG_PATH);
   static database = new ConfigService<DatabaseConfig>(DATABASE_CONFIG_PATH);
@@ -95,4 +103,7 @@ export class Config {
   );
   static mail = new ConfigService<MailConfig>(MAIL_CONFIG_PATH);
   static user = new ConfigService<UserConfig>(USER_CONFIG_PATH);
+  static notification = new ConfigService<NotificationConfig>(
+    NOTIFICATION_CONFIG_PATH,
+  );
 }

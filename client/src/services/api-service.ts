@@ -1,4 +1,4 @@
-import * as Url from 'url';
+import * as URL from 'url';
 
 import axios from 'axios';
 import {Translation} from 'shared/translation';
@@ -90,7 +90,7 @@ export class APIService {
     body?: any,
     {type, onUploadProgress, onDownloadProgress}: RequestOptions = {},
   ): Promise<T> {
-    let url = Url.resolve(API_BASE_URL, path);
+    let url = URL.resolve(API_BASE_URL, path);
     let response;
 
     try {
@@ -142,7 +142,7 @@ export class APIService {
     path: string,
     {type, onUploadProgress, onDownloadProgress}: RequestOptions = {},
   ): Promise<string> {
-    let url = Url.resolve(RESOURCE_BASE_URL, path);
+    let url = URL.resolve(RESOURCE_BASE_URL, path);
 
     let response = await axios({
       method: 'get',

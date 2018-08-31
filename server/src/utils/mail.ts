@@ -8,6 +8,7 @@ import Mail from 'nodemailer/lib/mailer';
 import {ASSETS_DIR} from 'paths';
 
 import {Config} from './config';
+import {DiffGroup} from './diff';
 
 const MAIL_TEMPLATE_PATH = Path.join(ASSETS_DIR, 'mail-templates');
 
@@ -42,7 +43,19 @@ export interface RegisterInvitationMailTemplate {
   };
 }
 
-export type MailTemplate = RegisterInvitationMailTemplate;
+export interface ConventionChangeMailTemplate {
+  type: 'convention-change-notification';
+  parameters: {
+    diffGroups: DiffGroup[];
+    link: string;
+    convention: string;
+    item: string;
+  };
+}
+
+export type MailTemplate =
+  | RegisterInvitationMailTemplate
+  | ConventionChangeMailTemplate;
 
 interface MailTemplateCacheDict {
   [key: string]: Dot.RenderFunction;

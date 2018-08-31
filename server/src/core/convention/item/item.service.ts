@@ -1,4 +1,4 @@
-import {Injectable} from '@nestjs/common';
+import {Inject, Injectable} from '@nestjs/common';
 import {InjectRepository} from '@nestjs/typeorm';
 import {
   DeepPartial,
@@ -9,7 +9,9 @@ import {
 
 import {splitJoinedResult} from 'utils/repository';
 
+import {NotificationService} from '../../notification';
 import {User} from '../../user';
+import {Convention} from '../convention.entity';
 
 import {
   createItemVersion,
@@ -39,6 +41,8 @@ export class ItemService {
     @InjectRepository(Item) private itemRepository: Repository<Item>,
     @InjectRepository(ItemVersion)
     private itemVersionRepository: Repository<ItemVersion>,
+    @Inject(NotificationService)
+    private notificationService: NotificationService,
   ) {}
 
   async getItemById(id: number): Promise<Item | undefined> {
@@ -122,6 +126,7 @@ export class ItemService {
   @Transaction()
   async editItem(
     userId: number,
+    convention: Convention,
     item: Item,
     fromVersionId: number,
     content: string,
@@ -141,13 +146,21 @@ export class ItemService {
       itemVersionRepository!,
     );
 
+    let oldItem = {...item};
+
     item.content = content;
     item.versionId = itemVersion.id;
     item.versionHash = itemVersion.hash;
     item.versionCreatedAt = itemVersion.createdAt;
 
     // TODO: consistency backward check
-    return saveItem(item, itemRepository!);
+    item = await saveItem(item, itemRepository!);
+
+    this.notificationService
+      .notifyChangesFromConvention(convention, oldItem, item)
+      .catch(console.error);
+
+    return item;
   }
 
   @Transaction()

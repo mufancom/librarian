@@ -1,4 +1,4 @@
-import {Injectable} from '@nestjs/common';
+import {Inject, Injectable} from '@nestjs/common';
 import {InjectRepository} from '@nestjs/typeorm';
 import Segment from 'segment';
 import {DeepPartial, Repository} from 'typeorm';
@@ -22,7 +22,7 @@ export class ConventionService {
   constructor(
     @InjectRepository(Convention)
     private conventionRepository: Repository<Convention>,
-    @InjectRepository(ItemService) private itemService: ItemService,
+    @Inject(ItemService) private itemService: ItemService,
   ) {
     this.segment = new Segment();
 

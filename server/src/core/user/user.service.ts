@@ -6,7 +6,6 @@ import {
   ResourceConflictingException,
   ResourceNotFoundException,
 } from 'common/exceptions';
-import {Config} from 'utils/config';
 import {md5} from 'utils/encryption';
 import {isOutDated} from 'utils/repository';
 
@@ -49,6 +48,10 @@ export class UserService {
       .createQueryBuilder()
       .where(sql, {identifier})
       .getOne();
+  }
+
+  async getAllUsers(): Promise<User[]> {
+    return this.userRepository.createQueryBuilder().getMany();
   }
 
   async save(user: User): Promise<User> {
