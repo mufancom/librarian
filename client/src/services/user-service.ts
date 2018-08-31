@@ -111,7 +111,7 @@ export class UserService {
 
   async grantRegisterWithInvitation(code: string): Promise<RegisterInvitation> {
     return this.apiService.get<RegisterInvitation>(
-      `/user/grant-register?hash=${code}`,
+      `user/grant-register?hash=${code}`,
     );
   }
 
