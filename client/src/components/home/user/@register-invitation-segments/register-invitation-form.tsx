@@ -1,11 +1,13 @@
-import {Button, Col, Form, Icon, Input, Row} from 'antd';
+import {Button, Col, Form, Icon, Input, Row, message} from 'antd';
 import {FormComponentProps} from 'antd/lib/form/Form';
 import classNames from 'classnames';
-import {observable} from 'mobx';
+import {action, observable} from 'mobx';
 import React, {Component, FormEvent} from 'react';
 
+import {fetchErrorMessage} from 'services/api-service';
+import {UserService} from 'services/user-service';
 import {styled} from 'theme';
-import {observer} from 'utils/mobx';
+import {inject, observer} from 'utils/mobx';
 
 import {RegisterInvitationLogo} from './@register-invitation-logo';
 
@@ -15,14 +17,16 @@ const Wrapper = styled.div``;
 
 const Header = styled.div`
   display: block;
+  animation: fadeUpIn 0.3s;
 `;
 
 const Content = styled.div`
   margin-top: 35px;
-  padding: 25px;
+  padding: 25px 25px 5px 25px;
   background-color: #fff;
   border-radius: 4px;
   border: 1px solid ${props => props.theme.border.light};
+  animation: fadeUpIn 0.5s;
 `;
 
 const FormTitle = styled.div`
@@ -32,8 +36,16 @@ const FormTitle = styled.div`
   color: ${props => props.theme.text.primary};
 `;
 
+const FormFooter = styled.div`
+  display: flex;
+  justify-content: space-between;
+`;
+
+const HomeLink = styled.a``;
+
 interface RegisterFromProps {
   email: string;
+  loading?: boolean;
   onSubmit?(username: string, password: string): void;
 }
 
@@ -49,6 +61,8 @@ class RegisterForm extends Component<RegisterFromProps & FormComponentProps> {
   }
 
   render(): JSX.Element {
+    let {loading} = this.props;
+
     let {getFieldDecorator} = this.props.form;
 
     return (
@@ -115,14 +129,19 @@ class RegisterForm extends Component<RegisterFromProps & FormComponentProps> {
           )}
         </FormItem>
         <FormItem>
-          <Button
-            type="primary"
-            htmlType="submit"
-            className="login-form-button"
-          >
-            注册
-          </Button>
-          &nbsp; <a href="/">已有账号？去登录</a>
+          <FormFooter>
+            <Button
+              type="primary"
+              htmlType="submit"
+              className="login-form-button"
+              loading={loading}
+            >
+              注册
+            </Button>
+            <HomeLink href="/">
+              访问 Librarian <Icon type="arrow-right" />
+            </HomeLink>
+          </FormFooter>
         </FormItem>
       </Form>
     );
@@ -166,14 +185,22 @@ const WrappedRegisterForm = Form.create<RegisterFromProps>()(RegisterForm);
 
 export interface RegisterInvitationFormProps {
   className?: string;
+  email: string;
+  onFinish?(): void;
 }
 
 @observer
 export class RegisterInvitationForm extends Component<
   RegisterInvitationFormProps
 > {
+  @inject
+  userService!: UserService;
+
+  @observable
+  loading = false;
+
   render(): JSX.Element {
-    let {className} = this.props;
+    let {className, email} = this.props;
 
     return (
       <Wrapper className={classNames('register-invitation-form', className)}>
@@ -198,13 +225,38 @@ export class RegisterInvitationForm extends Component<
             </Header>
             <Content>
               <FormTitle>邀请注册</FormTitle>
-              <WrappedRegisterForm email="529189858@qq.com" />
+              <WrappedRegisterForm
+                email={email}
+                onSubmit={this.onSubmit}
+                loading={this.loading}
+              />
             </Content>
           </Col>
         </Row>
       </Wrapper>
     );
   }
+
+  @action
+  onSubmit = async (username: string, password: string): Promise<void> => {
+    this.loading = true;
+
+    let {onFinish} = this.props;
+
+    try {
+      await this.userService.registerWithInvitation(username, password);
+
+      if (onFinish) {
+        onFinish();
+      }
+    } catch (error) {
+      let errorMessage = fetchErrorMessage(error);
+
+      message.error(errorMessage);
+    }
+
+    this.loading = false;
+  };
 
   static Wrapper = Wrapper;
 }

@@ -38,7 +38,6 @@ export interface RegisterInvitationMailTemplate {
   parameters: {
     inviter: string;
     link: string;
-    turnDownLink: string;
     expiredAt: string;
   };
 }

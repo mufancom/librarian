@@ -8,7 +8,7 @@ import {observer} from 'utils/mobx';
 const Wrapper = styled.div`
   width: 100px;
   margin: auto;
-  padding-top: 39vh;
+  padding-top: 40vh;
 `;
 
 const LoadingSpinner = styled.div`

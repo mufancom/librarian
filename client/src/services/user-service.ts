@@ -1,6 +1,7 @@
 import md5 from 'md5';
 import {action} from 'mobx';
 
+import {RegisterInvitation} from 'components/home';
 import {AuthStore} from 'stores/auth-store';
 
 import {APIService} from './api-service';
@@ -13,6 +14,7 @@ interface LoginSuccessData {
   username: string;
   avatar: string | null;
   email: string;
+  registerInvitationEnabled: boolean;
 }
 
 interface CheckStatusSuccessData extends LoginSuccessData {}
@@ -38,6 +40,7 @@ export class UserService {
       this.authStore.username = data.username;
       this.authStore.email = data.email;
       this.authStore.avatar = this.getAvatarUrl(data.email);
+      this.authStore.registerInvitationEnabled = data.registerInvitationEnabled;
     } catch (error) {}
   }
 
@@ -53,6 +56,7 @@ export class UserService {
     this.authStore.username = data.username;
     this.authStore.email = data.email;
     this.authStore.avatar = this.getAvatarUrl(data.email);
+    this.authStore.registerInvitationEnabled = data.registerInvitationEnabled;
 
     return data.username;
   }
@@ -101,15 +105,21 @@ export class UserService {
     return `https://en.gravatar.com/${emailHash}`;
   }
 
-  async grantRegisterWithInvitation(code: string): Promise<void> {
-    await this.apiService.get(`/user/grant-register?hash=${code}`);
+  async generateInvitation(email: string): Promise<void> {
+    await this.apiService.post('user/generate-invitation', {email});
+  }
+
+  async grantRegisterWithInvitation(code: string): Promise<RegisterInvitation> {
+    return this.apiService.get<RegisterInvitation>(
+      `/user/grant-register?hash=${code}`,
+    );
   }
 
   async registerWithInvitation(
     username: string,
     password: string,
   ): Promise<void> {
-    await this.apiService.post('user/regiter-with-invitation', {
+    await this.apiService.post('user/register-with-invitation', {
       username,
       password,
     });

@@ -11,16 +11,27 @@ import {inject, observer} from 'utils/mobx';
 
 import {
   RegisterInvitationFailed,
+  RegisterInvitationFinished,
   RegisterInvitationForm,
   RegisterInvitationPending,
 } from './@register-invitation-segments';
 
-enum InvitationState {
+enum RegisterInvitationStatus {
   pending,
   granted,
   accepted,
   declined,
   expired,
+}
+
+export interface RegisterInvitation {
+  id: number;
+  fromUserId: number;
+  email: string;
+  linkHash: string;
+  createdAt: string;
+  expiredAt: string;
+  status: RegisterInvitationStatus;
 }
 
 export interface RegisterInvitationQueries {
@@ -46,13 +57,16 @@ export class RegisterInvitation extends Component<RegisterInvitationProps> {
   userService!: UserService;
 
   @observable
-  invitationState: InvitationState = InvitationState.granted;
+  invitationState: RegisterInvitationStatus = RegisterInvitationStatus.pending;
+
+  @observable
+  invitation: RegisterInvitation | undefined;
 
   @observable
   errorMessage: string = '';
 
   async componentWillMount(): Promise<void> {
-    // await this.getInvitationGranted();
+    await this.getInvitationGranted();
   }
 
   render(): JSX.Element {
@@ -60,19 +74,28 @@ export class RegisterInvitation extends Component<RegisterInvitationProps> {
 
     return (
       <Wrapper className={classNames('register-invitation', className)}>
-        {this.invitationState === InvitationState.pending ? (
+        {this.invitationState === RegisterInvitationStatus.pending ? (
           <RegisterInvitationPending />
         ) : (
           undefined
         )}
 
-        {this.invitationState === InvitationState.granted ? (
-          <RegisterInvitationForm />
+        {this.invitationState === RegisterInvitationStatus.granted ? (
+          <RegisterInvitationForm
+            email={this.invitation ? this.invitation.email : '-'}
+            onFinish={this.onRegisterFinish}
+          />
         ) : (
           undefined
         )}
 
-        {this.invitationState === InvitationState.expired ? (
+        {this.invitationState === RegisterInvitationStatus.accepted ? (
+          <RegisterInvitationFinished />
+        ) : (
+          undefined
+        )}
+
+        {this.invitationState === RegisterInvitationStatus.expired ? (
           <RegisterInvitationFailed errorMessage={this.errorMessage} />
         ) : (
           undefined
@@ -92,15 +115,22 @@ export class RegisterInvitation extends Component<RegisterInvitationProps> {
         throw new Error('没有权限访问');
       }
 
-      await this.userService.grantRegisterWithInvitation(code);
+      this.invitation = await this.userService.grantRegisterWithInvitation(
+        code,
+      );
 
-      this.invitationState = InvitationState.granted;
+      this.invitationState = RegisterInvitationStatus.granted;
     } catch (error) {
       let errorMessage = fetchErrorMessage(error);
 
-      this.invitationState = InvitationState.expired;
+      this.invitationState = RegisterInvitationStatus.expired;
       this.errorMessage = errorMessage;
     }
+  };
+
+  @action
+  onRegisterFinish = (): void => {
+    this.invitationState = RegisterInvitationStatus.accepted;
   };
 
   static Wrapper = Wrapper;

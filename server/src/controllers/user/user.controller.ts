@@ -134,17 +134,11 @@ export class UserController {
       `/user/register-invitation?code=${invitation.linkHash}`,
     );
 
-    let turnDownLink = url.resolve(
-      website,
-      `/user/register-invitation/decline?code=${invitation.linkHash}`,
-    );
-
     let expiredAt = describeAPeriodOfTime(lifespan);
 
     let mailContent = await renderMailTemplate('register-invitation', {
       inviter,
       link,
-      turnDownLink,
       expiredAt,
     });
 
@@ -200,7 +194,7 @@ export class UserController {
 
     invitation.status = RegisterInvitationStatus.granted;
 
-    await this.userService.saveRegisterInvitation(invitation);
+    return this.userService.saveRegisterInvitation(invitation);
   }
 
   @Post('register-with-invitation')

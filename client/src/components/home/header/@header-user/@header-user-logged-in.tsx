@@ -1,5 +1,6 @@
-import {Dropdown, Menu, message} from 'antd';
+import {Dropdown, Menu, Switch, message} from 'antd';
 import classNames from 'classnames';
+import {action, observable} from 'mobx';
 import React, {Component, createRef} from 'react';
 import ReactDOM from 'react-dom';
 
@@ -9,6 +10,8 @@ import {AuthStore} from 'stores/auth-store';
 import {styled} from 'theme';
 import {i18n} from 'utils/lang';
 import {inject, observer} from 'utils/mobx';
+
+import {InputModal} from '../../../common';
 
 import {HeaderUserIcon} from './@header-user-icon';
 
@@ -27,8 +30,11 @@ const Wrapper = styled.div`
 `;
 
 const createDropdownMenu = (
-  logoutOnclick: any,
-  changeAvatarOnclick: any,
+  showInvite: boolean,
+  logoutOnclick?: () => void,
+  changeAvatarOnclick?: () => void,
+  changePasswordOnclick?: () => void,
+  inviteOnclick?: () => void,
 ): JSX.Element => (
   <Menu
     getPopupContainer={() => document.body}
@@ -40,8 +46,16 @@ const createDropdownMenu = (
       <a onClick={changeAvatarOnclick}>修改头像</a>
     </Menu.Item>
     <Menu.Item>
-      <a href="#">修改密码</a>
+      <a onClick={changePasswordOnclick}>修改密码</a>
     </Menu.Item>
+    <Menu.Divider />
+    {showInvite ? (
+      <Menu.Item>
+        <a onClick={inviteOnclick}>邀请注册</a>
+      </Menu.Item>
+    ) : (
+      undefined
+    )}
     <Menu.Divider />
     <Menu.Item>
       <a onClick={logoutOnclick}>退出</a>
@@ -61,6 +75,12 @@ export class HeaderUserLoggedIn extends Component<HeaderUserLoggedInProps> {
   @inject
   userService!: UserService;
 
+  @observable
+  inviteModalVisible = false;
+
+  @observable
+  inviteModalLoading = false;
+
   wrapperRef: React.RefObject<any> = createRef();
 
   render(): JSX.Element {
@@ -71,10 +91,21 @@ export class HeaderUserLoggedIn extends Component<HeaderUserLoggedInProps> {
         className={classNames('header-user-logged-in', className)}
         ref={this.wrapperRef}
       >
+        <InputModal
+          visible={this.inviteModalVisible}
+          title="邀请注册"
+          placeholder="被邀请邮箱地址"
+          loading={this.inviteModalLoading}
+          onOkButtonClick={this.onInviteModalOkClick}
+          onCancelButtonClick={this.onInviteModalCancelClick}
+        />
         <Dropdown
           overlay={createDropdownMenu(
+            this.authStore.registerInvitationEnabled,
             this.onMenuLogoutClick,
             this.onMenuChangeAvatarClick,
+            undefined,
+            this.onInviteClick,
           )}
           getPopupContainer={this.getWrapperDom}
         >
@@ -103,6 +134,35 @@ export class HeaderUserLoggedIn extends Component<HeaderUserLoggedInProps> {
     } catch (error) {
       message.error(fetchErrorMessage(error));
     }
+  };
+
+  @action
+  onInviteClick = (): void => {
+    this.inviteModalVisible = true;
+  };
+
+  @action
+  onInviteModalOkClick = async (value: string): Promise<void> => {
+    this.inviteModalLoading = true;
+
+    try {
+      await this.userService.generateInvitation(value);
+
+      this.inviteModalVisible = false;
+
+      message.success('邀请链接已发送');
+    } catch (error) {
+      let errorMessage = fetchErrorMessage(error);
+
+      message.error(errorMessage);
+    }
+
+    this.inviteModalLoading = false;
+  };
+
+  @action
+  onInviteModalCancelClick = (): void => {
+    this.inviteModalVisible = false;
   };
 
   static Wrapper = Wrapper;

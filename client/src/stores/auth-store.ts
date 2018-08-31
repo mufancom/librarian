@@ -2,27 +2,22 @@ import {computed, observable} from 'mobx';
 
 export class AuthStore {
   @observable
-  id: number;
+  id = 0;
 
   @observable
-  avatar: string;
+  avatar = '';
 
   @observable
-  username: string;
+  username = '';
 
   @observable
-  role: number;
+  role = 0;
 
   @observable
-  email: string;
+  email = '';
 
-  constructor() {
-    this.id = 0;
-    this.role = 0;
-    this.avatar = '';
-    this.username = '';
-    this.email = '';
-  }
+  @observable
+  registerInvitationEnabled = false;
 
   @computed
   get isLoggedIn(): boolean {

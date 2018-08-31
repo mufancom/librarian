@@ -105,6 +105,8 @@ export class UserService {
 
     let linkHash = await md5(invitation);
 
+    linkHash += await md5(linkHash + now);
+
     invitation.linkHash = linkHash;
 
     return this.registerInvitationRepository.save(invitation);
