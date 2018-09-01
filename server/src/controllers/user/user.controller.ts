@@ -16,18 +16,18 @@ import {
   AuthenticationFailedException,
   ResourceConflictingException,
   ResourceNotFoundException,
-} from 'common/exceptions';
-import {AuthGuard} from 'core/auth';
+} from '../../common/exceptions';
+import {AuthGuard} from '../../core/auth';
 import {
   RegisterInvitation,
   RegisterInvitationGuard,
   RegisterInvitationStatus,
   UserService,
-} from 'core/user';
-import {Config} from 'utils/config';
-import {comparePassword, encryptPassword} from 'utils/encryption';
-import {renderMailTemplate, sendMail} from 'utils/mail';
-import {describeAPeriodOfTime} from 'utils/repository';
+} from '../../core/user';
+import {Config} from '../../utils/config';
+import {comparePassword, encryptPassword} from '../../utils/encryption';
+import {renderMailTemplate, sendMail} from '../../utils/mail';
+import {describeAPeriodOfTime} from '../../utils/repository';
 
 import {
   ChangePasswordDTO,

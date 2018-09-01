@@ -11,8 +11,8 @@ import StreamTransport from 'nodemailer/lib/stream-transport';
 import {Options as ClientPrettierConfig} from 'prettier';
 import {ConnectionOptions} from 'typeorm';
 
-import {ExcludeProperty} from 'lang';
-import {PROJECT_DIR} from 'paths';
+import {ExcludeProperty} from '../lang';
+import {PROJECT_DIR} from '../paths';
 
 const hasOwnProperty = Object.prototype.hasOwnProperty;
 

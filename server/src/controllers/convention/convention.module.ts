@@ -1,11 +1,11 @@
 import {Module} from '@nestjs/common';
 
-import {CoreAuthModule} from 'core/auth';
+import {CoreAuthModule} from '../../core/auth';
 import {
   CoreCategoryModule,
   CoreConventionModule,
   CoreItemModule,
-} from 'core/convention';
+} from '../../core/convention';
 
 import {CategoryModule} from './@category';
 import {ItemModule} from './@item';

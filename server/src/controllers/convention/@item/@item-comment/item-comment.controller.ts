@@ -15,9 +15,9 @@ import {
   AuthenticationFailedException,
   ResourceNotFoundException,
   ValidationException,
-} from 'common/exceptions';
-import {AuthGuard} from 'core/auth';
-import {ItemCommentService, ItemService} from 'core/convention';
+} from '../../../../common/exceptions';
+import {AuthGuard} from '../../../../core/auth';
+import {ItemCommentService, ItemService} from '../../../../core/convention';
 
 import {EditDTO, PostDTO} from './item-comment.dto';
 

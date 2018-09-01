@@ -2,8 +2,7 @@ import {Injectable} from '@nestjs/common';
 import {InjectRepository} from '@nestjs/typeorm';
 import {DeepPartial, Repository} from 'typeorm';
 
-import {UnnecessaryRequestException} from 'common/exceptions';
-
+import {UnnecessaryRequestException} from '../../../../common/exceptions';
 import {User} from '../../../user';
 import {ItemService} from '../item.service';
 

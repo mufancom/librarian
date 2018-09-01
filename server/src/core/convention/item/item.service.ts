@@ -7,8 +7,7 @@ import {
   TransactionRepository,
 } from 'typeorm';
 
-import {splitJoinedResult} from 'utils/repository';
-
+import {splitJoinedResult} from '../../../utils/repository';
 import {NotificationService} from '../../notification';
 import {User} from '../../user';
 import {Convention} from '../convention.entity';

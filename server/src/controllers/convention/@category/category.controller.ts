@@ -11,9 +11,9 @@ import {
 import {
   ResourceConflictingException,
   ResourceNotFoundException,
-} from 'common/exceptions';
-import {AuthGuard} from 'core/auth';
-import {CategoryService} from 'core/convention';
+} from '../../../common/exceptions';
+import {AuthGuard} from '../../../core/auth';
+import {CategoryService} from '../../../core/convention';
 
 import {CreateDTO, EditDTO} from './category.dto';
 

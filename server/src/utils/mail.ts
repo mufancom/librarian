@@ -5,7 +5,7 @@ import Dot from 'dot';
 import Nodemailer from 'nodemailer';
 import Mail from 'nodemailer/lib/mailer';
 
-import {ASSETS_DIR} from 'paths';
+import {ASSETS_DIR} from '../paths';
 
 import {Config} from './config';
 import {DiffGroup} from './diff';

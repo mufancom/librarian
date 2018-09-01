@@ -10,10 +10,10 @@ import {
 } from '@nestjs/common';
 import {Request} from 'express';
 
-import {AuthenticationFailedException} from 'common/exceptions';
-import {AuthGuard, AuthService} from 'core/auth';
-import {Config} from 'utils/config';
-import {comparePassword} from 'utils/encryption';
+import {AuthenticationFailedException} from '../../common/exceptions';
+import {AuthGuard, AuthService} from '../../core/auth';
+import {Config} from '../../utils/config';
+import {comparePassword} from '../../utils/encryption';
 
 import {LoginDTO} from './auth.dto';
 

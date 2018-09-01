@@ -2,13 +2,16 @@
   "name": "librarian",
   "private": true,
   "scripts": {
-    "lerna:publish": "lerna publish --npm-client=npm --registry=https://registry.npmjs.org"
+    "lerna:publish": "lerna publish --npm-client=npm --registry=https://registry.npmjs.org",
+    "deploy": "ts-node --project scripts scripts/deploy.ts"
   },
   "devDependencies": {
     "@magicspace/configs": "^0.1.29",
+    "@types/rimraf": "^2.0.2",
     "dot-template-types": "^0.0.7",
     "lerna": "^2.11.0",
     "prettier": "^1.13.7",
+    "rimraf": "^2.6.2",
     "tslint": "^5.11.0",
     "tslint-language-service": "^0.9.9",
     "typescript": "^2.9.2",

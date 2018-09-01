@@ -1,9 +1,9 @@
 import {Controller, Get, Inject, Param, Req, UseGuards} from '@nestjs/common';
 import {Request} from 'express';
 
-import {ResourceNotFoundException} from 'common/exceptions';
-import {AuthGuard} from 'core/auth';
-import {ItemService, ItemThumbUpService} from 'core/convention';
+import {ResourceNotFoundException} from '../../../../common/exceptions';
+import {AuthGuard} from '../../../../core/auth';
+import {ItemService, ItemThumbUpService} from '../../../../core/convention';
 
 @Controller('convention/item/thumb-up')
 export class ItemThumbUpController {

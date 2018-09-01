@@ -1,8 +1,8 @@
 import {Module} from '@nestjs/common';
 
-import {CoreAuthModule} from 'core/auth';
-import {CoreConventionModule, CoreItemModule} from 'core/convention';
-import {CoreNotificationModule} from 'core/notification';
+import {CoreAuthModule} from '../../../core/auth';
+import {CoreConventionModule, CoreItemModule} from '../../../core/convention';
+import {CoreNotificationModule} from '../../../core/notification';
 
 import {ItemCommentController} from './@item-comment';
 import {ItemThumbUpController} from './@item-thumb-up';

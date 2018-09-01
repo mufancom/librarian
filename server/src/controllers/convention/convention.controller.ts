@@ -3,10 +3,14 @@ import {Body, Controller, Get, Param, Post, UseGuards} from '@nestjs/common';
 import {
   ResourceConflictingException,
   ResourceNotFoundException,
-} from 'common/exceptions';
-import {AuthGuard} from 'core/auth';
-import {CategoryService, ConventionService, ItemService} from 'core/convention';
-import {Config} from 'utils/config';
+} from '../../common/exceptions';
+import {AuthGuard} from '../../core/auth';
+import {
+  CategoryService,
+  ConventionService,
+  ItemService,
+} from '../../core/convention';
+import {Config} from '../../utils/config';
 
 import {EditDTO} from './@category';
 import {CreateDTO} from './convention.dto';

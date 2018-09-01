@@ -1,6 +1,6 @@
 import {IsNumber, IsOptional, Length, Matches, Min} from 'class-validator';
 
-import {REGEX_TITLE} from 'utils/regex';
+import {REGEX_TITLE} from '../../utils/regex';
 
 export class CreateDTO {
   @IsNumber()

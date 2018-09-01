@@ -4,19 +4,7 @@
     "explicit-return-type": false,
     "no-implicit-dependencies": [
       true,
-      [
-        "shared",
-        "app.module",
-        "controllers",
-        "common",
-        "core",
-        "utils",
-        "lang",
-        "paths",
-        "fs-extra",
-        "class-transformer",
-        "prettier"
-      ]
+      ["shared", "fs-extra", "class-transformer", "prettier"]
     ],
     "import-path-base-url": [true, {"baseUrl": "src"}]
   }

@@ -2,8 +2,7 @@ import {Injectable} from '@nestjs/common';
 import {InjectRepository} from '@nestjs/typeorm';
 import {DeepPartial, Repository} from 'typeorm';
 
-import {splitJoinedResult} from 'utils/repository';
-
+import {splitJoinedResult} from '../../../../utils/repository';
 import {User} from '../../../user';
 import {ItemService} from '../item.service';
 

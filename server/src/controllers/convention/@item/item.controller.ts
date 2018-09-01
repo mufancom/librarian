@@ -15,13 +15,13 @@ import {
   ResourceConflictingException,
   ResourceNotFoundException,
   UnnecessaryRequestException,
-} from 'common/exceptions';
-import {AuthGuard} from 'core/auth';
+} from '../../../common/exceptions';
+import {AuthGuard} from '../../../core/auth';
 import {
   ConventionService,
   ITEM_VERSION_PAGE_SIZE,
   ItemService,
-} from 'core/convention';
+} from '../../../core/convention';
 
 import {CreateDTO, EditDTO, RollbackDTO, ShiftDTO} from './item.dto';
 

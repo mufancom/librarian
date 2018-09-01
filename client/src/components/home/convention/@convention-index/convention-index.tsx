@@ -22,10 +22,9 @@ export class ConventionIndex extends Component<ConventionIndexProps> {
         <h1>TODOs</h1>
         <p>- Comment</p>
         <p>- Thumbs up</p>
-        <p>- Version review and rollback</p>
-        <p>- Search in conventions</p>
         <p>- User change password</p>
         <p>- A new markdown editor</p>
+        <p>- Diff editor</p>
         <p>- Q&A</p>
       </Wrapper>
     );

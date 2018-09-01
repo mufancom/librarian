@@ -1,7 +1,7 @@
 import {Module} from '@nestjs/common';
 
-import {CoreAuthModule} from 'core/auth';
-import {CoreCategoryModule} from 'core/convention';
+import {CoreAuthModule} from '../../../core/auth';
+import {CoreCategoryModule} from '../../../core/convention';
 
 import {CategoryController} from './category.controller';
 

@@ -5,9 +5,9 @@ import {DeepPartial, Repository} from 'typeorm';
 import {
   ResourceConflictingException,
   ResourceNotFoundException,
-} from 'common/exceptions';
-import {md5} from 'utils/encryption';
-import {isOutDated} from 'utils/repository';
+} from '../../common/exceptions';
+import {md5} from '../../utils/encryption';
+import {isOutDated} from '../../utils/repository';
 
 import {
   RegisterInvitation,

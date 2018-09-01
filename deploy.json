@@ -1,0 +1,7 @@
+{
+  "devAPIURL": "http://localhost:3002/",
+  "prodAPIURL": "https://librarian.mufan.io/api/",
+  "clientBuildDir": "build",
+  "clientDeployPath": "D:/test/",
+  "serverBuildDir": "bld"
+}

@@ -1,6 +1,6 @@
 import {DeepPartial, Repository} from 'typeorm';
 
-import {md5} from 'utils/encryption';
+import {md5} from '../../../utils/encryption';
 
 import {ItemVersion} from './item-version.entity';
 import {Item, ItemStatus} from './item.entity';

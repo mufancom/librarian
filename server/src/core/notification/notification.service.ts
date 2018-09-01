@@ -2,12 +2,11 @@ import * as URL from 'url';
 
 import {Inject, Injectable} from '@nestjs/common';
 
-import {Config} from 'utils/config';
-import {diffMarkdown} from 'utils/diff';
-import {highlight} from 'utils/highlight';
-import {renderMailTemplate, sendMail} from 'utils/mail';
-import {getMarkdownTitle} from 'utils/regex';
-
+import {Config} from '../../utils/config';
+import {diffMarkdown} from '../../utils/diff';
+import {highlight} from '../../utils/highlight';
+import {renderMailTemplate, sendMail} from '../../utils/mail';
+import {getMarkdownTitle} from '../../utils/regex';
 import {Convention, Item} from '../convention';
 import {UserService} from '../user';
 

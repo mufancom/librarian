@@ -3,7 +3,7 @@ import {InjectRepository} from '@nestjs/typeorm';
 import Segment from 'segment';
 import {DeepPartial, Repository} from 'typeorm';
 
-import {Convention, ConventionStatus, ItemService} from 'core/convention';
+import {Convention, ConventionStatus, ItemService} from '../../core/convention';
 
 export interface IndexTree {
   title: string;
