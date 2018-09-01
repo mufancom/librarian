@@ -108,11 +108,11 @@ async function deploy(): Promise<void> {
 
   console.info('Building client side...');
 
-  // await buildClient(configs);
+  await buildClient(configs);
 
   console.info('moving client build files...');
 
-  // await moveClientBuild(configs);
+  await moveClientBuild(configs);
 
   console.info('Restoring environment variables...');
 
