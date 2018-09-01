@@ -10,6 +10,7 @@ bld/
 
 yarn-error.log
 lerna-debug.log
+dtpl.error.log
 
 # Data
 
