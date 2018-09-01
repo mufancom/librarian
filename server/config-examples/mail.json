@@ -1,0 +1,15 @@
+{
+  "host": "smtp.qq.com",
+  "port": 465,
+  "secure": true,
+  "auth": {
+    "user": "mhisf@vip.qq.com",
+    "pass": "pnvsqxiijhxxcbbc"
+  },
+  "from": "mhisf@vip.qq.com",
+  "global": {
+    "websiteName": "Librarian",
+    "websiteURL": "https://librarian.mufan.io/",
+    "logoURL": "http://oj1jlgvbv.bkt.clouddn.com/librarian/18/8/30/1logo.png"
+  }
+}

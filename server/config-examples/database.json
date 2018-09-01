@@ -4,8 +4,8 @@
   "port": 3306,
   "username": "root",
   "password": "root",
-  "database": "librarian",
-  "entities": ["./src/**/*.entity{.ts,.js}"],
+  "database": "librarian_backup",
+  "entities": ["./bld/**/*.entity{.ts,.js}"],
   "synchronize": false,
   "debug": false
 }

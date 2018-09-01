@@ -1,0 +1,7 @@
+{
+  "register": {
+    "enable": true,
+    "method": "invitation",
+    "invitationLifespan": 36000
+  }
+}

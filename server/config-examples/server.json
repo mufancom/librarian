@@ -1,4 +1,6 @@
 {
   "port": 3002,
-  "corsOrigin": "http://localhost:3000"
+  "enableCors": true,
+  "corsOrigin": "http://localhost:3000",
+  "clientURL": "https://librarian.mufan.io"
 }
