@@ -14,6 +14,10 @@ async function getConfigs(): Promise<DeployConfigs> {
   return Utils.parseConfig<DeployConfigs>(configPath);
 }
 
+async function installDependencies(): Promise<void> {
+  await Utils.exec('yarn install', Utils.PROJECT_DIR);
+}
+
 async function replaceVariables(
   configs: DeployConfigs,
 ): Promise<() => Promise<void>> {
@@ -94,9 +98,11 @@ async function startServer(configs: DeployConfigs): Promise<void> {
 async function deploy(): Promise<void> {
   console.info('================ Deployment Started =================');
 
+  console.info('Reading deploy configuration...');
   let configs = await getConfigs();
 
-  console.info('Reading deploy configuration...');
+  console.info('Installing dependencies...');
+  await installDependencies();
 
   console.info('Replacing environment variables...');
 
