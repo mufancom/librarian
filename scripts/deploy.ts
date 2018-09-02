@@ -37,7 +37,7 @@ export async function replaceVariables(
 }
 
 export async function buildShared(_configs: DeployConfigs): Promise<void> {
-  let execOut = await Utils.exec('yarn build');
+  let execOut = await Utils.exec('yarn build', Utils.SHARED_PROJECT_DIR);
 
   if (execOut.stderr) {
     throw new Error(execOut.stderr);
