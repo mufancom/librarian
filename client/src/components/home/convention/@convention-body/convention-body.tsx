@@ -51,6 +51,10 @@ const Wrapper = styled(MarkdownStyle)`
       }
     }
 
+    .ant-anchor-link {
+      line-height: 1.07;
+    }
+
     .ant-anchor-link .ant-anchor-link {
       padding-left: 8px;
     }
