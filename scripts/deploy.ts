@@ -1,6 +1,6 @@
 import * as Utils from './utils';
 
-interface DeployConfigs {
+export interface DeployConfigs {
   devAPIURL: string;
   prodAPIURL: string;
   clientBuildDir: string;
@@ -8,17 +8,17 @@ interface DeployConfigs {
   serverBuildDir: string;
 }
 
-async function getConfigs(): Promise<DeployConfigs> {
+export async function getConfigs(): Promise<DeployConfigs> {
   let configPath = Utils.joinPath(Utils.PROJECT_DIR, 'deploy.json');
 
   return Utils.parseConfig<DeployConfigs>(configPath);
 }
 
-async function installDependencies(): Promise<void> {
+export async function installDependencies(): Promise<void> {
   await Utils.exec('yarn install', Utils.PROJECT_DIR);
 }
 
-async function replaceVariables(
+export async function replaceVariables(
   configs: DeployConfigs,
 ): Promise<() => Promise<void>> {
   const API_SERVICE_PATH = Utils.joinPath(
@@ -35,11 +35,11 @@ async function replaceVariables(
   );
 }
 
-async function cleanClientBuild(configs: DeployConfigs): Promise<void> {
+export async function cleanClientBuild(configs: DeployConfigs): Promise<void> {
   await Utils.deleteFile(configs.clientBuildDir);
 }
 
-async function buildClient(_configs: DeployConfigs): Promise<void> {
+export async function buildClient(_configs: DeployConfigs): Promise<void> {
   let execOut = await Utils.exec('yarn build', Utils.CLIENT_PROJECT_DIR);
 
   if (execOut.stderr) {
@@ -58,7 +58,7 @@ async function moveClientBuild(configs: DeployConfigs): Promise<void> {
   await Utils.renameFile(clientBuildPath, configs.clientDeployPath);
 }
 
-async function cleanServerBuild(configs: DeployConfigs): Promise<void> {
+export async function cleanServerBuild(configs: DeployConfigs): Promise<void> {
   let serverBuildPath = Utils.joinPath(
     Utils.SERVER_PROJECT_DIR,
     configs.serverBuildDir,
@@ -67,7 +67,7 @@ async function cleanServerBuild(configs: DeployConfigs): Promise<void> {
   await Utils.deleteFile(serverBuildPath);
 }
 
-async function buildServer(_configs: DeployConfigs): Promise<void> {
+export async function buildServer(_configs: DeployConfigs): Promise<void> {
   let execOut = await Utils.exec('yarn tsc', Utils.SERVER_PROJECT_DIR);
 
   if (execOut.stderr) {
@@ -75,7 +75,7 @@ async function buildServer(_configs: DeployConfigs): Promise<void> {
   }
 }
 
-async function stopServer(_configs: DeployConfigs): Promise<void> {
+export async function stopServer(_configs: DeployConfigs): Promise<void> {
   try {
     await Utils.exec('pm2 stop librarian');
   } catch (error) {}
@@ -85,7 +85,7 @@ async function stopServer(_configs: DeployConfigs): Promise<void> {
   } catch (error) {}
 }
 
-async function startServer(configs: DeployConfigs): Promise<void> {
+export async function startServer(configs: DeployConfigs): Promise<void> {
   let serverEntrancePath = Utils.joinPath(
     Utils.SERVER_PROJECT_DIR,
     configs.serverBuildDir,
@@ -95,7 +95,7 @@ async function startServer(configs: DeployConfigs): Promise<void> {
   await Utils.exec(`pm2 start ${serverEntrancePath} --name="librarian"`);
 }
 
-async function deploy(): Promise<void> {
+export async function deploy(): Promise<void> {
   console.info('================ Deployment Started =================');
 
   console.info('Reading deploy configuration...');
@@ -104,25 +104,25 @@ async function deploy(): Promise<void> {
   console.info('Installing dependencies...');
   await installDependencies();
 
-  console.info('Replacing environment variables...');
+  // console.info('Replacing environment variables...');
 
-  let restoreVariables = await replaceVariables(configs);
+  // let restoreVariables = await replaceVariables(configs);
 
-  console.info('Cleaning old client build...');
+  // console.info('Cleaning old client build...');
 
-  await cleanClientBuild(configs);
+  // await cleanClientBuild(configs);
 
-  console.info('Building client side...');
+  // console.info('Building client side...');
 
-  await buildClient(configs);
+  // await buildClient(configs);
 
-  console.info('moving client build files...');
+  // console.info('moving client build files...');
 
-  await moveClientBuild(configs);
+  // await moveClientBuild(configs);
 
-  console.info('Restoring environment variables...');
+  // console.info('Restoring environment variables...');
 
-  await restoreVariables();
+  // await restoreVariables();
 
   console.info('Cleaning old server build...');
 
