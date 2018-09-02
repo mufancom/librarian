@@ -36,15 +36,6 @@ export async function replaceVariables(
   );
 }
 
-export async function cleanSharedBuild(configs: DeployConfigs): Promise<void> {
-  let sharedBuildPath = Utils.joinPath(
-    Utils.SHARED_PROJECT_DIR,
-    configs.sharedBuildDir,
-  );
-
-  await Utils.deleteFile(sharedBuildPath);
-}
-
 export async function buildShared(_configs: DeployConfigs): Promise<void> {
   let execOut = await Utils.exec('yarn build');
 
@@ -65,7 +56,7 @@ export async function buildClient(_configs: DeployConfigs): Promise<void> {
   }
 }
 
-async function moveClientBuild(configs: DeployConfigs): Promise<void> {
+export async function moveClientBuild(configs: DeployConfigs): Promise<void> {
   let clientBuildPath = Utils.joinPath(
     Utils.CLIENT_PROJECT_DIR,
     configs.clientBuildDir,
@@ -120,11 +111,8 @@ export async function deploy(): Promise<void> {
   let configs = await getConfigs();
 
   console.info('Installing dependencies...');
+
   await installDependencies();
-
-  console.info('Cleaning old shared build...');
-
-  await cleanSharedBuild(configs);
 
   console.info('Building shared side...');
 

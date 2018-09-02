@@ -1,6 +1,7 @@
 {
   "devAPIURL": "http://localhost:3002/",
   "prodAPIURL": "https://librarian.mufan.io/api/",
+  "sharedBuildDir": "package",
   "clientBuildDir": "build",
   "clientDeployPath": "/www/wwwroot/convention.mufan.io",
   "serverBuildDir": "bld"
