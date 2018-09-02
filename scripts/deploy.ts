@@ -3,6 +3,7 @@ import * as Utils from './utils';
 export interface DeployConfigs {
   devAPIURL: string;
   prodAPIURL: string;
+  sharedBuildDir: string;
   clientBuildDir: string;
   clientDeployPath: string;
   serverBuildDir: string;
@@ -33,6 +34,23 @@ export async function replaceVariables(
     configs.devAPIURL,
     configs.prodAPIURL,
   );
+}
+
+export async function cleanSharedBuild(configs: DeployConfigs): Promise<void> {
+  let sharedBuildPath = Utils.joinPath(
+    Utils.SHARED_PROJECT_DIR,
+    configs.sharedBuildDir,
+  );
+
+  await Utils.deleteFile(sharedBuildPath);
+}
+
+export async function buildShared(_configs: DeployConfigs): Promise<void> {
+  let execOut = await Utils.exec('yarn build');
+
+  if (execOut.stderr) {
+    throw new Error(execOut.stderr);
+  }
 }
 
 export async function cleanClientBuild(configs: DeployConfigs): Promise<void> {
@@ -103,6 +121,14 @@ export async function deploy(): Promise<void> {
 
   console.info('Installing dependencies...');
   await installDependencies();
+
+  console.info('Cleaning old shared build...');
+
+  await cleanSharedBuild(configs);
+
+  console.info('Building shared side...');
+
+  await buildShared(configs);
 
   // console.info('Replacing environment variables...');
 

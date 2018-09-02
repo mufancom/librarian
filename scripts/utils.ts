@@ -6,6 +6,7 @@ import {promisify} from 'util';
 import rimraf from 'rimraf';
 
 export const PROJECT_DIR = Path.join(__dirname, '..');
+export const SHARED_PROJECT_DIR = Path.join(PROJECT_DIR, 'shared');
 export const SERVER_PROJECT_DIR = Path.join(PROJECT_DIR, 'server');
 export const CLIENT_PROJECT_DIR = Path.join(PROJECT_DIR, 'client');
 
