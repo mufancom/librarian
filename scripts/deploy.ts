@@ -101,7 +101,10 @@ export async function startServer(configs: DeployConfigs): Promise<void> {
     'main.js',
   );
 
-  await Utils.exec(`pm2 start ${serverEntrancePath} --name="librarian"`);
+  await Utils.exec(
+    `pm2 start ${serverEntrancePath} --name="librarian"`,
+    Utils.SERVER_PROJECT_DIR,
+  );
 }
 
 export async function deploy(): Promise<void> {
