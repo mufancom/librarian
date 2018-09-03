@@ -38,9 +38,11 @@ export class NotificationService {
 
     let clientURL = Config.server.get('clientURL', 'http://localhost:3002');
 
+    let {id: conventionId} = convention;
+
     let link = URL.resolve(
       clientURL,
-      `convention/${convention.id}/-/-/-#convention-item-${newItem.id}`,
+      `convention/${conventionId}/-/-/-/#convention-item-${newItem.id}`,
     );
 
     let itemTitle = getMarkdownTitle(newItem.content, `#${newItem.id}`);
@@ -70,7 +72,7 @@ export class NotificationService {
 
     let link = URL.resolve(
       clientURL,
-      `convention/${convention.id}/-/-/-#convention-item-${item.id}`,
+      `convention/${convention.id}/-/-/-/#convention-item-${item.id}`,
     );
 
     let itemTitle = getMarkdownTitle(item.content, `#${item.id}`);
