@@ -38,6 +38,7 @@ const Wrapper = styled(MarkdownStyle)`
     overflow-y: hidden;
     transition: all 0.3s;
     transform: translateX(0);
+    max-height: none !important;
 
     a {
       text-decoration: none;
