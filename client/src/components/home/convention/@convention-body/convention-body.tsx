@@ -27,13 +27,17 @@ const {Sider, Content} = Layout;
 
 const {Link} = Anchor;
 
+const ANCHOR_INITIAL_TOP = 130;
+const ANCHOR_BOUNDING_BOTTOM = 130;
+
 const Wrapper = styled(MarkdownStyle)`
   padding-bottom: 20px;
 
   .anchor {
     position: fixed;
-    top: 130px;
     overflow-y: hidden;
+    transition: all 0.3s;
+    transform: translateX(0);
 
     a {
       text-decoration: none;
@@ -89,17 +93,17 @@ function formAnchorLinks(tree: Heading[]): React.ReactNode {
 interface HeadingAnchorProps {
   opacity: number;
   headings: Heading[];
+  top: number;
 }
 
 const HeadingAnchor: React.SFC<HeadingAnchorProps> = props => {
-  let {opacity, headings} = props;
+  let {opacity, headings, top} = props;
 
   return (
     <Anchor
       affix={false}
       className="anchor"
-      offsetTop={100}
-      style={{marginLeft: '20px', opacity, transition: 'all .5s'}}
+      style={{marginLeft: '20px', opacity, transition: 'all .5s', top}}
       showInkInFixed={true}
       children={formAnchorLinks(headings)}
     />
@@ -132,6 +136,9 @@ export class ConventionBody extends Component<ConventionBodyProps> {
 
   @observable
   fadeAnchor = true;
+
+  @observable
+  anchorTop = ANCHOR_INITIAL_TOP;
 
   listenerId!: number;
 
@@ -195,6 +202,7 @@ export class ConventionBody extends Component<ConventionBodyProps> {
             <HeadingAnchor
               opacity={this.fadeAnchor ? 0.3 : 1}
               headings={headings}
+              top={this.anchorTop}
             />
           </Sider>
         </Layout>
@@ -209,6 +217,8 @@ export class ConventionBody extends Component<ConventionBodyProps> {
     } else {
       this.fadeAnchor = true;
     }
+
+    this.adjustAnchor();
   };
 
   @action
@@ -255,6 +265,44 @@ export class ConventionBody extends Component<ConventionBodyProps> {
     }
 
     this.createConventionLoading = false;
+  };
+
+  @action
+  adjustAnchor = (): void => {
+    let anchorElements = document.getElementsByClassName('anchor');
+
+    let activeElements = document.getElementsByClassName(
+      'ant-anchor-link-title-active',
+    );
+
+    if (activeElements.length && anchorElements.length) {
+      let anchorElement = anchorElements[0] as HTMLDivElement;
+
+      let activeElement = activeElements[0] as HTMLAnchorElement;
+
+      let {top: anchorTop} = anchorElement.getBoundingClientRect();
+
+      let {top: activeItemTop} = activeElement.getBoundingClientRect();
+
+      let activeItemPositionYInAnchor = activeItemTop - anchorTop;
+
+      let assumedActiveItemTopIfNotScrolled =
+        ANCHOR_INITIAL_TOP + activeItemPositionYInAnchor;
+
+      let {innerHeight: windowHeight} = window;
+
+      let boundingBottom = windowHeight - ANCHOR_BOUNDING_BOTTOM;
+
+      if (assumedActiveItemTopIfNotScrolled > boundingBottom - 20) {
+        this.anchorTop =
+          windowHeight -
+          ANCHOR_BOUNDING_BOTTOM -
+          20 -
+          activeItemPositionYInAnchor;
+      } else {
+        this.anchorTop = ANCHOR_INITIAL_TOP;
+      }
+    }
   };
 
   static Wrapper = Wrapper;

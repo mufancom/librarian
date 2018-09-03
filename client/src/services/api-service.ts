@@ -5,7 +5,7 @@ import {Translation} from 'shared/translation';
 
 import {i18n} from 'utils/lang';
 
-const API_BASE_URL = 'https://librarian.mufan.io/api/';
+const API_BASE_URL = 'http://localhost:3002/';
 
 const RESOURCE_BASE_URL = 'https://librarian.mufan.io/api/';
 
