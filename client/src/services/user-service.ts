@@ -73,6 +73,16 @@ export class UserService {
     });
   }
 
+  async changePassword(
+    oldPassword: string,
+    newPassword: string,
+  ): Promise<void> {
+    await this.apiService.post('user/change-password', {
+      oldPassword,
+      newPassword,
+    });
+  }
+
   @action
   async logout(): Promise<void> {
     await this.apiService.get<any>('auth/logout');

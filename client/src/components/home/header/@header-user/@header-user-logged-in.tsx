@@ -11,7 +11,7 @@ import {styled} from 'theme';
 import {i18n} from 'utils/lang';
 import {inject, observer} from 'utils/mobx';
 
-import {InputModal} from '../../../common';
+import {InputModal, ThreeInputModal} from '../../../common';
 
 import {HeaderUserIcon} from './@header-user-icon';
 
@@ -81,6 +81,12 @@ export class HeaderUserLoggedIn extends Component<HeaderUserLoggedInProps> {
   @observable
   inviteModalLoading = false;
 
+  @observable
+  changePasswordModalVisible = false;
+
+  @observable
+  changePasswordModalLoading = false;
+
   wrapperRef: React.RefObject<any> = createRef();
 
   render(): JSX.Element {
@@ -99,12 +105,25 @@ export class HeaderUserLoggedIn extends Component<HeaderUserLoggedInProps> {
           onOkButtonClick={this.onInviteModalOkClick}
           onCancelButtonClick={this.onInviteModalCancelClick}
         />
+        <ThreeInputModal
+          visible={this.changePasswordModalVisible}
+          title="更改密码"
+          firstPlaceholder="旧密码"
+          firstType="password"
+          secondPlaceholder="新密码"
+          secondType="password"
+          thirdPlaceholder="重复新密码"
+          thirdType="password"
+          loading={this.changePasswordModalLoading}
+          onOkButtonClick={this.onChangePasswordModalOkClick}
+          onCancelButtonClick={this.onChangePasswordModalCancelClick}
+        />
         <Dropdown
           overlay={createDropdownMenu(
             this.authStore.registerInvitationEnabled,
             this.onMenuLogoutClick,
             this.onMenuChangeAvatarClick,
-            undefined,
+            this.onChangePasswordClick,
             this.onInviteClick,
           )}
           getPopupContainer={this.getWrapperDom}
@@ -137,6 +156,11 @@ export class HeaderUserLoggedIn extends Component<HeaderUserLoggedInProps> {
   };
 
   @action
+  onChangePasswordClick = (): void => {
+    this.changePasswordModalVisible = true;
+  };
+
+  @action
   onInviteClick = (): void => {
     this.inviteModalVisible = true;
   };
@@ -163,6 +187,38 @@ export class HeaderUserLoggedIn extends Component<HeaderUserLoggedInProps> {
   @action
   onInviteModalCancelClick = (): void => {
     this.inviteModalVisible = false;
+  };
+
+  @action
+  onChangePasswordModalOkClick = async (
+    oldPassword: string,
+    newPassword: string,
+    repeatPassword: string,
+  ): Promise<void> => {
+    this.changePasswordModalLoading = true;
+
+    try {
+      if (newPassword !== repeatPassword) {
+        throw new Error('两次输入密码不一致');
+      }
+
+      await this.userService.changePassword(oldPassword, newPassword);
+
+      this.changePasswordModalVisible = false;
+
+      message.success('密码已成功更改');
+    } catch (error) {
+      let errorMessage = fetchErrorMessage(error);
+
+      message.error(errorMessage);
+    }
+
+    this.changePasswordModalLoading = false;
+  };
+
+  @action
+  onChangePasswordModalCancelClick = (): void => {
+    this.changePasswordModalVisible = false;
   };
 
   static Wrapper = Wrapper;
