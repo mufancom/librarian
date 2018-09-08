@@ -14,9 +14,15 @@ interface ConventionItemMailTimerDict {
   [key: number]: NodeJS.Timer | undefined;
 }
 
+interface ConventionItemLastMailSentChangeDict {
+  [key: number]: string;
+}
+
 @Injectable()
 export class NotificationService {
   private mailChangesNotifyTimers: ConventionItemMailTimerDict = {};
+
+  private mailSentChangedContentDict: ConventionItemLastMailSentChangeDict = {};
 
   constructor(@Inject(UserService) private userService: UserService) {}
 
@@ -40,8 +46,6 @@ export class NotificationService {
     oldItem: Item,
     newItem: Item,
   ): Promise<void> {
-    let diffGroups = diffMarkdown(oldItem.content, newItem.content);
-
     let clientURL = Config.server.get('clientURL', 'http://localhost:3002');
 
     let {id: conventionId} = convention;
@@ -53,23 +57,37 @@ export class NotificationService {
 
     let itemTitle = getMarkdownTitle(newItem.content, `#${newItem.id}`);
 
-    let html = await renderMailTemplate('convention-change-notification', {
-      diffGroups,
-      link,
-      convention: convention.title,
-      item: itemTitle,
-    });
-
-    let subject = `${convention.title} 下 ${itemTitle} 条目内容变动，请留意！`;
-
     let mailConfig = Config.notification.get('email');
 
     if (mailConfig && mailConfig.enable) {
       let send = async (): Promise<void> => {
+        let oldItemContent = oldItem.content;
+
+        let {id} = newItem;
+
+        if (id in this.mailSentChangedContentDict) {
+          oldItemContent = this.mailSentChangedContentDict[id];
+        }
+
+        let diffGroups = diffMarkdown(oldItemContent, newItem.content);
+
+        let html = await renderMailTemplate('convention-change-notification', {
+          diffGroups,
+          link,
+          convention: convention.title,
+          item: itemTitle,
+        });
+
+        let subject = `${
+          convention.title
+        } 下 ${itemTitle} 条目内容变动，请留意！`;
+
         await this.sendMailToAllUsers({
           subject,
           html,
         });
+
+        this.mailSentChangedContentDict[id] = newItem.content;
       };
 
       if (mailConfig.delay) {
