@@ -65,6 +65,15 @@ export class ItemService {
       .getMany();
   }
 
+  async getItemsWithIveReadSection(): Promise<Item[]> {
+    return this.itemRepository
+      .createQueryBuilder()
+      .where('contains_iveread = 1 and status != :deleted', {
+        deleted: ItemStatus.deleted,
+      })
+      .getMany();
+  }
+
   async search(
     keywords: string,
     pageSize: number,

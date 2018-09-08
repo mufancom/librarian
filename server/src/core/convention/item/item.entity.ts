@@ -27,6 +27,9 @@ export class Item {
   @Column({type: 'longtext'})
   content!: string;
 
+  @Column({name: 'contains_iveread'})
+  containsIveRead!: 0 | 1;
+
   @Column({name: 'version_id'})
   versionId!: number;
 

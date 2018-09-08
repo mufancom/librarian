@@ -1,6 +1,7 @@
 import {DeepPartial, Repository} from 'typeorm';
 
 import {md5} from '../../../utils/encryption';
+import {containsIveReadSection} from '../../../utils/regex';
 
 import {ItemVersion} from './item-version.entity';
 import {Item, ItemStatus} from './item.entity';
@@ -32,6 +33,11 @@ export async function createItem(
   itemLike.status = ItemStatus.normal;
   itemLike.commentCount = 0;
   itemLike.thumbUpCount = 0;
+  itemLike.containsIveRead = 0;
+
+  if (containsIveReadSection(itemLike.content)) {
+    itemLike.containsIveRead = 1;
+  }
 
   let item = itemRepository.create(itemLike);
 
@@ -109,6 +115,12 @@ export async function saveItem(
   item: Item,
   itemRepository: Repository<Item>,
 ): Promise<Item> {
+  item.containsIveRead = 0;
+
+  if (containsIveReadSection(item.content)) {
+    item.containsIveRead = 1;
+  }
+
   return itemRepository.save(item);
 }
 

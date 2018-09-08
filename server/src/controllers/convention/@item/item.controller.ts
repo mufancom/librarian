@@ -104,6 +104,11 @@ export class ItemController {
     await this.itemService.shiftItem(item, data.afterOrderId);
   }
 
+  @Get('all-with-iveread')
+  async getAllItemsWithIveReadSection() {
+    return this.itemService.getItemsWithIveReadSection();
+  }
+
   @Get(':id')
   async get(@Param('id') id: number) {
     return this.itemService.getItemById(id);
