@@ -10,8 +10,14 @@ import {getMarkdownTitle} from '../../utils/regex';
 import {Convention, Item} from '../convention';
 import {UserService} from '../user';
 
+interface ConventionItemMailTimerDict {
+  [key: number]: NodeJS.Timer | undefined;
+}
+
 @Injectable()
 export class NotificationService {
+  private mailChangesNotifyTimers: ConventionItemMailTimerDict = {};
+
   constructor(@Inject(UserService) private userService: UserService) {}
 
   async sendMailToAllUsers(mailContent: {
@@ -56,11 +62,34 @@ export class NotificationService {
 
     let subject = `${convention.title} 下 ${itemTitle} 条目内容变动，请留意！`;
 
-    if (Config.notification.get('email')) {
-      await this.sendMailToAllUsers({
-        subject,
-        html,
-      });
+    let mailConfig = Config.notification.get('email');
+
+    if (mailConfig && mailConfig.enable) {
+      let send = async (): Promise<void> => {
+        await this.sendMailToAllUsers({
+          subject,
+          html,
+        });
+      };
+
+      if (mailConfig.delay) {
+        let {id} = newItem;
+
+        if (
+          id in this.mailChangesNotifyTimers &&
+          this.mailChangesNotifyTimers[id]
+        ) {
+          clearTimeout(this.mailChangesNotifyTimers[id]!);
+        }
+
+        this.mailChangesNotifyTimers[id] = setTimeout(async () => {
+          this.mailChangesNotifyTimers[id] = undefined;
+
+          await send();
+        }, mailConfig.delay * 1000);
+      } else {
+        await send();
+      }
     }
   }
 

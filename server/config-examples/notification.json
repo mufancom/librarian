@@ -1,3 +1,6 @@
 {
-  "email": true
+  "email": {
+    "enable": true,
+    "delay": 300
+  }
 }

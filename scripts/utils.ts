@@ -39,7 +39,7 @@ export function readFile(path: string): Promise<string> {
       }
 
       resolve(buffer.toLocaleString());
-    });
+    })
   });
 }
 

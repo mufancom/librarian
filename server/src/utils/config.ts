@@ -91,7 +91,10 @@ export interface UserConfig {
 }
 
 export interface NotificationConfig {
-  email: boolean;
+  email: {
+    enable: boolean;
+    delay: number | false;
+  };
 }
 
 export class Config {

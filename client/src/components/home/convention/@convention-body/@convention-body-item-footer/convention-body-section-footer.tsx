@@ -1,3 +1,4 @@
+import {Icon} from 'antd';
 import classNames from 'classnames';
 import React, {Component} from 'react';
 
@@ -21,7 +22,7 @@ export class ConventionBodyItemFooter extends Component<
 
     return (
       <Wrapper className={classNames('convention-body-item-footer', className)}>
-        &nbsp;
+        <Icon type="like" /> 10
       </Wrapper>
     );
   }
